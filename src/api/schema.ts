@@ -6,21 +6,13 @@ import { nexusPrisma } from 'nexus-plugin-prisma'
 // import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
 import { makeSchema, declarativeWrappingPlugin, asNexusMethod } from 'nexus'
 import * as path from 'path'
-import { CommonQuery } from './graphql/resolvers/query'
-import { CommonMutation } from './graphql/resolvers/mutation/auth'
-import { Subscription } from './graphql/resolvers/subscription'
+import { Query } from './graphql/resolvers/query'
+import { Mutation } from './graphql/resolvers/mutation/auth'
 const jsonScalar = asNexusMethod(JSONObjectResolver, 'json')
 const dateTimeScalar = asNexusMethod(DateTimeResolver, 'date')
 
 export const schema = makeSchema({
-  types: [
-    dateTimeScalar,
-    jsonScalar,
-    Object.values(types),
-    CommonQuery,
-    CommonMutation,
-    Subscription,
-  ],
+  types: [dateTimeScalar, jsonScalar, Object.values(types), Query, Mutation],
   plugins: [
     declarativeWrappingPlugin(),
     nexusPrisma({
@@ -28,6 +20,7 @@ export const schema = makeSchema({
       paginationStrategy: 'prisma',
       scalars: {
         DateTime: DateTimeResolver,
+        //@ts-ignore
         Json: new GraphQLScalarType({
           ...JSONObjectResolver,
           name: 'Json',
