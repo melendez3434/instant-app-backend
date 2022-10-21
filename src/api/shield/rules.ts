@@ -10,9 +10,7 @@ export const isSuperAdmin = rule({
 export const isAdmin = rule({
   cache: 'contextual',
 })(async (parent, args, ctx: Context, info) => {
-  return (
-    ctx.user && (ctx.user.role == 'ADMIN' || ctx.user.role == 'SUPER_ADMIN')
-  )
+  return ctx.user && ctx.user.role == 'admin'
 })
 
 export const isAuth = rule({ cache: 'contextual' })(

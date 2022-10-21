@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import { arg, extendType, intArg, objectType, stringArg } from 'nexus'
-import admin from '../../utils/notifiacation'
+// import admin from '../../utils/notifiacation'
 
 export const NotifiMutation = extendType({
   type: 'Mutation',
@@ -36,10 +36,10 @@ export const NotifiMutation = extendType({
             .filter(({ registrationTokens }) => registrationTokens)
             .map(({ registrationTokens }) => registrationTokens),
         )
-        const response = await admin.messaging().sendMulticast(message)
+        // const response = await admin.messaging().sendMulticast(message)
 
-        console.log(response.successCount + 'messages were sent successfully')
-        return `${response.successCount} messages were sent successfully`
+        // console.log(response.successCount + 'messages were sent successfully')
+        // return `${response.successCount} messages were sent successfully`
       },
     })
   },

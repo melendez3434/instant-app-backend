@@ -5,7 +5,7 @@ import slowDown from 'express-slow-down'
 import { ApolloServer } from 'apollo-server-express'
 import createExpress from 'express'
 import { schema as baseSchema } from './schema'
-import { createContext, prisma } from './utils/createContext'
+import { createContext } from './utils/createContext'
 
 import { permissions } from './shield'
 const { applyMiddleware } = require('graphql-middleware')
@@ -17,11 +17,8 @@ const { createComplexityLimitRule } = require('graphql-validation-complexity')
 
 import passport from 'passport'
 import { createServer } from 'http'
-// import MP from '@knawat/mp'
-const RedisStore = require('rate-limit-redis')
 import { URL } from 'url'
 const session = require('express-session')
-const Redis = require('ioredis')
 import {
   ApolloServerPluginDrainHttpServer,
   ApolloServerPluginLandingPageLocalDefault,
@@ -190,7 +187,9 @@ const apolloServer = async () => {
 
   // apollo.installSubscriptionHandlers(app)
   express.set('port', process.env.PORT || 4000)
-  const app = httpServer.listen(express.get('port'), async () => {})
+  const app = httpServer.listen(express.get('port'), async () => {
+    console.log('server running at port ' + (process.env.PORT || 4000))
+  })
 
   app.setTimeout(25 * 1000) // 10 * 60 seconds * 1000 msecs = 10 minutes
 }
