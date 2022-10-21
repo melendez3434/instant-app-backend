@@ -1,0 +1,53 @@
+import { rule } from 'graphql-shield'
+import { Context } from '../utils/context'
+
+export const isSuperAdmin = rule({
+  cache: 'contextual',
+})(async (parent, args, ctx, info) => {
+  return ctx.user && ctx.user.role == 'SUPER_ADMIN'
+})
+
+export const isAdmin = rule({
+  cache: 'contextual',
+})(async (parent, args, ctx: Context, info) => {
+  return (
+    ctx.user && (ctx.user.role == 'ADMIN' || ctx.user.role == 'SUPER_ADMIN')
+  )
+})
+
+export const isAuth = rule({ cache: 'contextual' })(
+  async (parent, args, ctx, info) => {
+    console.log('🚀 ~ file: rules.ts ~ line 28 ~ ctx.user', ctx.user)
+
+    return Boolean(ctx.user)
+  },
+)
+export const notBreakPagination = rule({ cache: 'strict' })(
+  async (parent, args, ctx, info) => {
+    if (isNaN(args.take)) {
+      throw new Error('you must specify take arg')
+    }
+
+    if (!(args.take <= 100)) {
+      throw new Error("you can't get more than 100")
+    }
+
+    return true
+  },
+)
+
+export const isHaveRole = (role, resolverName) =>
+  rule({ cache: 'contextual' })(async (parent, args, ctx: Context, info) => {
+    if (role?.includes('all')) return true
+    if (!ctx.user?.id) return false
+    const user = await ctx.db.user.findFirst({
+      where: {
+        id: ctx.user?.id,
+      },
+      select: { role: true },
+    })
+
+    if (role?.includes(user?.role)) return true
+
+    return false
+  })
