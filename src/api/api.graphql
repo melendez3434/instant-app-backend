@@ -131,10 +131,6 @@ input StringFilter {
   startsWith: String
 }
 
-type Subscription {
-  hello: String
-}
-
 type User {
   createdAt: DateTime!
   email: String!
