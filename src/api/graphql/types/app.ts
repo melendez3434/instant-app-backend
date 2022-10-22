@@ -50,7 +50,7 @@ export const AppQuery = extendType({
     t.field('app', {
       type: 'App',
       args: {
-        id: intArg(),
+        id: nonNull(intArg()),
       },
       async resolve(source, args, ctx) {
         const { id } = args
