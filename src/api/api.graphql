@@ -62,6 +62,11 @@ input AppAssetWhereInput {
   updatedAt: DateTimeFilter
 }
 
+type AppConnectionPayLoad {
+  count: Int
+  nodes: [App]
+}
+
 input AppListRelationFilter {
   every: AppWhereInput
   none: AppWhereInput
@@ -103,6 +108,10 @@ input AppWhereInput {
   updatedAt: DateTimeFilter
   userAgent: StringNullableFilter
   website: StringFilter
+}
+
+input AppWhereUniqueInput {
+  id: Int
 }
 
 type AuthPayLoad {
@@ -271,11 +280,15 @@ enum MenuType {
 }
 
 type Mutation {
+  addApp(data: addAppInput!): App
   addLink(data: addLinkInput!): Link
+  deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signup(email: String!, password: String!): AuthPayLoad
+  updateApp(data: updateAppInput!, id: Int!): App
+  updateAppAssets(data: updateAppAssetsInput!, id: Int!): AppAsset
   updateLink(data: updateLinkInput!, id: Int!): Link
   updateMyProfile(data: updateMyProfileInput!): User
 }
@@ -382,6 +395,8 @@ input NestedStringNullableFilter {
 }
 
 type Query {
+  app(id: Int!): App
+  apps(orderBy: AppOrderByWithRelationInput, skip: Int, take: Int, where: AppWhereInput): AppConnectionPayLoad
   links(appId: Int!, orderBy: LinkOrderByWithRelationInput, skip: Int, take: Int, where: LinkWhereInput): linkConnectionPayLoad
   me: User
   users(orderBy: UserOrderByWithRelationInput, skip: Int, take: Int, where: UserWhereInput): userConnectionPayLoad
@@ -478,6 +493,11 @@ input UserWhereUniqueInput {
   id: Int
 }
 
+input addAppInput {
+  name: String!
+  website: String!
+}
+
 input addLinkInput {
   appId: Int!
   data: Json
@@ -489,6 +509,26 @@ input addLinkInput {
 type linkConnectionPayLoad {
   count: Int
   nodes: [Link]
+}
+
+input updateAppAssetsInput {
+  appIcon: String
+  backgroundImage: String
+  color: String
+  delay: Float
+  disblayLogo: Boolean
+  logo: String
+  splashMode: SplashMode
+  tagLine: String
+  textThemeMode: ThemeMode
+}
+
+input updateAppInput {
+  appId: String
+  lang: String
+  name: String
+  userAgent: String
+  website: String
 }
 
 input updateLinkInput {

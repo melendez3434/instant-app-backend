@@ -74,7 +74,7 @@ export const AppQuery = extendType({
       },
       async resolve(source, args, ctx) {
         const { where, ...rest } = args
-        args.where = { ...args.where, ownerId: ctx.user.id }
+        args.where = { ...args.where, ownerId: { equals: ctx.user.id } }
 
         return {
           //@ts-ignore
@@ -153,7 +153,7 @@ export const Appmutations = extendType({
       },
     })
     t.field('updateAppAssets', {
-      type: 'App',
+      type: 'AppAsset',
       args: {
         id: nonNull(intArg()),
         data: arg({
@@ -179,6 +179,7 @@ export const Appmutations = extendType({
         // let { ...} = args.data
         return await ctx.db.appAsset.update({
           where: { appid: args.id },
+          //@ts-ignore
           data: {
             ...args.data,
           },
@@ -265,7 +266,7 @@ export const Linkmutations = extendType({
         let { name, type, data, menuType, appId } = args.data
         if (
           !(await ctx.db.app.count({
-            where: { ownerId: ctx.user.id, id: appId },
+            where: { ownerId: { equals: ctx.user.id }, id: appId },
           }))
         )
           throw new Error('must be the owner of the app')
