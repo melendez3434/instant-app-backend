@@ -1,6 +1,5 @@
 import {
   arg,
-  enumType,
   extendType,
   inputObjectType,
   intArg,
@@ -47,6 +46,17 @@ export const Link = objectType({
 export const AppQuery = extendType({
   type: 'Query',
   definition(t) {
+    t.crud.app()
+    t.field('app', {
+      type: 'App',
+      args: {
+        id: intArg(),
+      },
+      async resolve(source, args, ctx) {
+        const { id } = args
+        return await ctx.db.app.findUnique({ where: { id } })
+      },
+    })
     t.crud.apps({ filtering: true, ordering: true, pagination: true })
     t.field('apps', {
       type: objectType({
@@ -68,10 +78,10 @@ export const AppQuery = extendType({
 
         return {
           //@ts-ignore
-          count: await ctx.db.link.count({ where: rest.where }),
+          count: await ctx.db.app.count({ where: rest.where }),
           //@ts-ignore
 
-          nodes: await ctx.db.link.findMany(rest),
+          nodes: await ctx.db.app.findMany(rest),
         }
       },
     })
@@ -96,7 +106,7 @@ export const Appmutations = extendType({
       },
 
       async resolve(_root, args, ctx) {
-        let { name, website, data, menuType, appId } = args.data
+        let { name, website } = args.data
         return await ctx.db.app.create({
           data: {
             name,
@@ -138,6 +148,39 @@ export const Appmutations = extendType({
             appId: appId || undefined,
             lang: lang || undefined,
             userAgent,
+          },
+        })
+      },
+    })
+    t.field('updateAppAssets', {
+      type: 'App',
+      args: {
+        id: nonNull(intArg()),
+        data: arg({
+          type: inputObjectType({
+            name: 'updateAppInput',
+            definition(t) {
+              t.string('appIcon')
+              t.string('logo')
+              t.field('splashMode', { type: 'SplashMode' })
+              t.field('textThemeMode', { type: 'ThemeMode' })
+              t.string('color')
+              t.boolean('disblayLogo')
+              t.string('tagLine')
+              t.float('delay')
+              t.string('backgroundImage')
+            },
+          }),
+          required: true,
+        }),
+      },
+
+      async resolve(_root, args, ctx) {
+        // let { ...} = args.data
+        return await ctx.db.appAsset.update({
+          where: { appid: args.id },
+          data: {
+            ...args.data,
           },
         })
       },

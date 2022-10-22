@@ -1,5 +1,5 @@
 import { allow } from 'graphql-shield'
-import { isAuth } from '../rules'
+import { isAppOwner, isAuth } from '../rules'
 
 export const queriesShield = {
   me: {
@@ -8,6 +8,13 @@ export const queriesShield = {
     desc: '',
     role: ['all'],
     permissions: allow,
+  },
+  app: {
+    name: 'app',
+    slug: 'app',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
   },
   apps: {
     name: 'apps',

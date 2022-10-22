@@ -16,6 +16,13 @@ const appMutationsShield = {
     role: ['all'],
     permissions: isAppOwner,
   },
+  updateAppAssets: {
+    name: 'updateAppAssets',
+    slug: 'updateAppAssets',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
   deleteApp: {
     name: 'deleteApp',
     slug: 'deleteApp',
