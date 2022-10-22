@@ -1,4 +1,5 @@
 import { allow } from 'graphql-shield'
+import { isAuth } from '../rules'
 
 export const mutationsShield = {
   signup: {
@@ -19,8 +20,14 @@ export const mutationsShield = {
     name: 'signOut',
     slug: 'signOut',
     desc: '',
-    plan: 'free',
     role: ['all'],
     permissions: allow,
+  },
+  updateMyProfile: {
+    name: 'updateMyProfile',
+    slug: 'updateMyProfile',
+    desc: '',
+    role: ['all'],
+    permissions: isAuth,
   },
 }

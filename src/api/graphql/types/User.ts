@@ -1,5 +1,7 @@
 import { arg, extendType, inputObjectType, intArg, objectType } from 'nexus'
 import hashPassword from '../../utils/hashPassword'
+import * as bcrypt from 'bcryptjs'
+import isEmail from 'validator/lib/isEmail'
 
 export const User = objectType({
   name: 'User',
@@ -71,6 +73,7 @@ export const Usermutations = extendType({
           type: inputObjectType({
             name: 'updateMyProfileInput',
             definition(t) {
+              t.string('pass')
               t.string('newPass')
               t.string('email')
             },
@@ -81,7 +84,9 @@ export const Usermutations = extendType({
 
       async resolve(_root, args, ctx) {
         const { data } = args
-        let { email, newPass, ...rest } = data
+        let { email, pass, newPass, ...rest } = data
+        if (email && !isEmail(email))
+          throw new Error('The Email field must contain a valid email address.')
 
         const isEmailExist =
           email &&
@@ -97,12 +102,32 @@ export const Usermutations = extendType({
         ) {
           throw new Error('sorry but there is a user already have this email')
         }
-        const password = newPass ? await hashPassword(newPass) : undefined
+
+        if (pass && newPass) {
+          const user = await ctx.db.user.findUnique({
+            where: {
+              id: ctx.user?.id,
+            },
+          })
+          if (!user) throw new Error('no user with this id')
+          const isOldPlass = await bcrypt.compare(pass, user.password)
+          if (!isOldPlass) throw new Error(`old password is Wrong`)
+
+          // 4. Hash their new password
+          const password = await hashPassword(newPass)
+          // 5. Save the new password to the user and remove old resetToken fields
+          const updatedUser = await ctx.db.user.update({
+            where: { id: ctx.user?.id },
+            data: {
+              password,
+            },
+          })
+        }
+
         const user = await ctx.db.user.update({
           where: { id: ctx.user?.id },
           data: {
             ...rest,
-            password,
             email: email || undefined,
           },
         })
