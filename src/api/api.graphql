@@ -2,9 +2,117 @@
 ### Do not make changes to this file directly
 
 
+type App {
+  assets: AppAsset
+  id: Int!
+  lang: String!
+  name: String!
+  userAgent: String
+  website: String!
+}
+
+type AppAsset {
+  appIcon: String
+  backgroundImage: String
+  color: String!
+  createdAt: DateTime!
+  delay: Float
+  disblayLogo: Boolean!
+  id: Int!
+  logo: String
+  splashMode: SplashMode!
+  tagLine: String
+  textThemeMode: ThemeMode!
+}
+
+input AppAssetOrderByWithRelationInput {
+  App: AppOrderByWithRelationInput
+  appIcon: SortOrder
+  appid: SortOrder
+  backgroundImage: SortOrder
+  color: SortOrder
+  createdAt: SortOrder
+  delay: SortOrder
+  disblayLogo: SortOrder
+  id: SortOrder
+  logo: SortOrder
+  splashMode: SortOrder
+  tagLine: SortOrder
+  textThemeMode: SortOrder
+  updatedAt: SortOrder
+}
+
+input AppAssetWhereInput {
+  AND: [AppAssetWhereInput!]
+  App: AppWhereInput
+  NOT: [AppAssetWhereInput!]
+  OR: [AppAssetWhereInput!]
+  appIcon: StringNullableFilter
+  appid: IntFilter
+  backgroundImage: StringNullableFilter
+  color: StringFilter
+  createdAt: DateTimeFilter
+  delay: FloatNullableFilter
+  disblayLogo: BoolFilter
+  id: IntFilter
+  logo: StringNullableFilter
+  splashMode: EnumSplashModeFilter
+  tagLine: StringNullableFilter
+  textThemeMode: EnumThemeModeFilter
+  updatedAt: DateTimeFilter
+}
+
+input AppListRelationFilter {
+  every: AppWhereInput
+  none: AppWhereInput
+  some: AppWhereInput
+}
+
+input AppOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input AppOrderByWithRelationInput {
+  appId: SortOrder
+  assets: AppAssetOrderByWithRelationInput
+  createdAt: SortOrder
+  id: SortOrder
+  lang: SortOrder
+  name: SortOrder
+  navigation: LinkOrderByRelationAggregateInput
+  owner: UserOrderByWithRelationInput
+  ownerId: SortOrder
+  updatedAt: SortOrder
+  userAgent: SortOrder
+  website: SortOrder
+}
+
+input AppWhereInput {
+  AND: [AppWhereInput!]
+  NOT: [AppWhereInput!]
+  OR: [AppWhereInput!]
+  appId: StringFilter
+  assets: AppAssetWhereInput
+  createdAt: DateTimeFilter
+  id: IntFilter
+  lang: StringFilter
+  name: StringFilter
+  navigation: LinkListRelationFilter
+  owner: UserWhereInput
+  ownerId: IntFilter
+  updatedAt: DateTimeFilter
+  userAgent: StringNullableFilter
+  website: StringFilter
+}
+
 type AuthPayLoad {
   token: String
   user: User
+}
+
+input BoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
 }
 
 """
@@ -23,11 +131,50 @@ input DateTimeFilter {
   notIn: [DateTime!]
 }
 
+input EnumLinkTypeFilter {
+  equals: LinkType
+  in: [LinkType!]
+  not: NestedEnumLinkTypeFilter
+  notIn: [LinkType!]
+}
+
+input EnumMenuTypeFilter {
+  equals: MenuType
+  in: [MenuType!]
+  not: NestedEnumMenuTypeFilter
+  notIn: [MenuType!]
+}
+
 input EnumRoleFilter {
   equals: Role
   in: [Role!]
   not: NestedEnumRoleFilter
   notIn: [Role!]
+}
+
+input EnumSplashModeFilter {
+  equals: SplashMode
+  in: [SplashMode!]
+  not: NestedEnumSplashModeFilter
+  notIn: [SplashMode!]
+}
+
+input EnumThemeModeFilter {
+  equals: ThemeMode
+  in: [ThemeMode!]
+  not: NestedEnumThemeModeFilter
+  notIn: [ThemeMode!]
+}
+
+input FloatNullableFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: NestedFloatNullableFilter
+  notIn: [Float!]
 }
 
 input IntFilter {
@@ -46,11 +193,96 @@ The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](
 """
 scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
+"""
+The `JSON` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar Json @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+enum JsonNullValueFilter {
+  AnyNull
+  DbNull
+  JsonNull
+}
+
+input JsonNullableFilter {
+  equals: JsonNullValueFilter
+  not: JsonNullValueFilter
+}
+
+type Link {
+  data: Json
+  id: Int!
+  name: String!
+  type: LinkType!
+}
+
+input LinkListRelationFilter {
+  every: LinkWhereInput
+  none: LinkWhereInput
+  some: LinkWhereInput
+}
+
+input LinkOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input LinkOrderByWithRelationInput {
+  app: AppOrderByWithRelationInput
+  appid: SortOrder
+  createdAt: SortOrder
+  data: SortOrder
+  id: SortOrder
+  menuType: SortOrder
+  name: SortOrder
+  type: SortOrder
+  updatedAt: SortOrder
+}
+
+enum LinkType {
+  callPhone
+  link
+  openModal
+  sendEmail
+}
+
+input LinkWhereInput {
+  AND: [LinkWhereInput!]
+  NOT: [LinkWhereInput!]
+  OR: [LinkWhereInput!]
+  app: AppWhereInput
+  appid: IntFilter
+  createdAt: DateTimeFilter
+  data: JsonNullableFilter
+  id: IntFilter
+  menuType: EnumMenuTypeFilter
+  name: StringFilter
+  type: EnumLinkTypeFilter
+  updatedAt: DateTimeFilter
+}
+
+input LinkWhereUniqueInput {
+  id: Int
+}
+
+enum MenuType {
+  bar
+  main
+  modal
+}
+
 type Mutation {
+  addLink(data: addLinkInput!): Link
+  deleteLink(id: Int!): Link
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signup(email: String!, password: String!): AuthPayLoad
+  updateLink(data: updateLinkInput!, id: Int!): Link
   updateMyProfile(data: updateMyProfileInput!): User
+}
+
+input NestedBoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
 }
 
 input NestedDateTimeFilter {
@@ -64,11 +296,50 @@ input NestedDateTimeFilter {
   notIn: [DateTime!]
 }
 
+input NestedEnumLinkTypeFilter {
+  equals: LinkType
+  in: [LinkType!]
+  not: NestedEnumLinkTypeFilter
+  notIn: [LinkType!]
+}
+
+input NestedEnumMenuTypeFilter {
+  equals: MenuType
+  in: [MenuType!]
+  not: NestedEnumMenuTypeFilter
+  notIn: [MenuType!]
+}
+
 input NestedEnumRoleFilter {
   equals: Role
   in: [Role!]
   not: NestedEnumRoleFilter
   notIn: [Role!]
+}
+
+input NestedEnumSplashModeFilter {
+  equals: SplashMode
+  in: [SplashMode!]
+  not: NestedEnumSplashModeFilter
+  notIn: [SplashMode!]
+}
+
+input NestedEnumThemeModeFilter {
+  equals: ThemeMode
+  in: [ThemeMode!]
+  not: NestedEnumThemeModeFilter
+  notIn: [ThemeMode!]
+}
+
+input NestedFloatNullableFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: NestedFloatNullableFilter
+  notIn: [Float!]
 }
 
 input NestedIntFilter {
@@ -96,7 +367,22 @@ input NestedStringFilter {
   startsWith: String
 }
 
+input NestedStringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  startsWith: String
+}
+
 type Query {
+  links(appId: Int!, orderBy: LinkOrderByWithRelationInput, skip: Int, take: Int, where: LinkWhereInput): linkConnectionPayLoad
   me: User
   users(orderBy: UserOrderByWithRelationInput, skip: Int, take: Int, where: UserWhereInput): userConnectionPayLoad
 }
@@ -116,6 +402,11 @@ enum SortOrder {
   desc
 }
 
+enum SplashMode {
+  color
+  image
+}
+
 input StringFilter {
   contains: String
   endsWith: String
@@ -131,6 +422,26 @@ input StringFilter {
   startsWith: String
 }
 
+input StringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  mode: QueryMode
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+enum ThemeMode {
+  dark
+  light
+}
+
 type User {
   createdAt: DateTime!
   email: String!
@@ -141,6 +452,7 @@ type User {
 }
 
 input UserOrderByWithRelationInput {
+  App: AppOrderByRelationAggregateInput
   createdAt: SortOrder
   email: SortOrder
   id: SortOrder
@@ -151,6 +463,7 @@ input UserOrderByWithRelationInput {
 
 input UserWhereInput {
   AND: [UserWhereInput!]
+  App: AppListRelationFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
   createdAt: DateTimeFilter
@@ -163,6 +476,25 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: Int
+}
+
+input addLinkInput {
+  appId: Int!
+  data: Json
+  menuType: MenuType!
+  name: String!
+  type: LinkType!
+}
+
+type linkConnectionPayLoad {
+  count: Int
+  nodes: [Link]
+}
+
+input updateLinkInput {
+  data: Json
+  name: String
+  type: LinkType
 }
 
 input updateMyProfileInput {

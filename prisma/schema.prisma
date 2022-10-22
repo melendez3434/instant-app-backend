@@ -14,9 +14,77 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  App       App[]
+}
+
+model App {
+  id         Int       @id @default(autoincrement())
+  name       String
+  website    String
+  appId      String
+  lang       String
+  userAgent  String?
+  assets     AppAsset?
+  navigation Link[]    @relation("mainNavigationToLinks")
+  owner      User      @relation(fields: [ownerId], references: [id])
+  ownerId    Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Link {
+  id        Int      @id @default(autoincrement())
+  name      String
+  data      Json?
+  type      LinkType @default(link)
+  app       App      @relation("mainNavigationToLinks", fields: [appid], references: [id])
+  appid     Int
+  menuType  MenuType @default(main)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AppAsset {
+  id              Int        @id @default(autoincrement())
+  splashMode      SplashMode @default(color)
+  color           String
+  textThemeMode   ThemeMode  @default(light)
+  disblayLogo     Boolean
+  tagLine         String?
+  delay           Float?
+  backgroundImage String?
+  logo            String?
+  appIcon         String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  App             App        @relation(fields: [appid], references: [id])
+  appid           Int        @unique
 }
 
 enum Role {
   admin
   user
+}
+
+enum SplashMode {
+  image
+  color
+}
+
+enum ThemeMode {
+  light
+  dark
+}
+
+enum LinkType {
+  link
+  sendEmail
+  callPhone
+  openModal
+}
+
+enum MenuType {
+  main
+  bar
+  modal
 }

@@ -1,7 +1,30 @@
 import { allow } from 'graphql-shield'
-import { isAuth } from '../rules'
+import { isAppOwnerFromLink, isAuth } from '../rules'
 
-export const mutationsShield = {
+const appMutationsShield = {
+  addLink: {
+    name: 'addLink',
+    slug: 'addLink',
+    desc: '',
+    role: ['all'],
+    permissions: isAuth,
+  },
+  updateLink: {
+    name: 'updateLink',
+    slug: 'updateLink',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwnerFromLink,
+  },
+  deleteLink: {
+    name: 'deleteLink',
+    slug: 'deleteLink',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwnerFromLink,
+  },
+}
+const auth = {
   signup: {
     name: 'signup',
     slug: 'signup',
@@ -30,4 +53,9 @@ export const mutationsShield = {
     role: ['all'],
     permissions: isAuth,
   },
+}
+export const mutationsShield = {
+  ...auth,
+
+  ...appMutationsShield,
 }
