@@ -33,6 +33,20 @@ export const notBreakPagination = rule({ cache: 'strict' })(
     return true
   },
 )
+export const isAppOwner = rule({ cache: 'strict' })(
+  async (parent, args, ctx: Context, info) => {
+    if (
+      await ctx.db.app.count({
+        where: { ownerId: ctx.user.id, id: args.id },
+      })
+    ) {
+      return true
+    } else {
+      return false
+    }
+  },
+)
+
 export const isAppOwnerFromLink = rule({ cache: 'strict' })(
   async (parent, args, ctx: Context, info) => {
     if (

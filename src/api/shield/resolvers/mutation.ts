@@ -1,7 +1,28 @@
 import { allow } from 'graphql-shield'
-import { isAppOwnerFromLink, isAuth } from '../rules'
+import { isAppOwner, isAppOwnerFromLink, isAuth } from '../rules'
 
 const appMutationsShield = {
+  addApp: {
+    name: 'addApp',
+    slug: 'addApp',
+    desc: '',
+    role: ['all'],
+    permissions: isAuth,
+  },
+  UpdateApp: {
+    name: 'UpdateApp',
+    slug: 'UpdateApp',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
+  deleteApp: {
+    name: 'deleteApp',
+    slug: 'deleteApp',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
   addLink: {
     name: 'addLink',
     slug: 'addLink',

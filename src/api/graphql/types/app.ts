@@ -44,6 +44,118 @@ export const Link = objectType({
     t.model.type()
   },
 })
+export const AppQuery = extendType({
+  type: 'Query',
+  definition(t) {
+    t.crud.apps({ filtering: true, ordering: true, pagination: true })
+    t.field('apps', {
+      type: objectType({
+        name: 'AppConnectionPayLoad',
+        definition(t) {
+          t.int('count')
+          t.list.field('nodes', { type: 'App' })
+        },
+      }),
+      args: {
+        skip: intArg(),
+        take: intArg(),
+        orderBy: 'AppOrderByWithRelationInput',
+        where: 'AppWhereInput',
+      },
+      async resolve(source, args, ctx) {
+        const { where, ...rest } = args
+        args.where = { ...args.where, ownerId: ctx.user.id }
+
+        return {
+          //@ts-ignore
+          count: await ctx.db.link.count({ where: rest.where }),
+          //@ts-ignore
+
+          nodes: await ctx.db.link.findMany(rest),
+        }
+      },
+    })
+  },
+})
+export const Appmutations = extendType({
+  type: 'Mutation',
+  definition(t) {
+    t.field('addApp', {
+      type: 'App',
+      args: {
+        data: arg({
+          type: inputObjectType({
+            name: 'addAppInput',
+            definition(t) {
+              t.nonNull.string('name')
+              t.nonNull.string('website')
+            },
+          }),
+          required: true,
+        }),
+      },
+
+      async resolve(_root, args, ctx) {
+        let { name, website, data, menuType, appId } = args.data
+        return await ctx.db.app.create({
+          data: {
+            name,
+            website,
+            lang: 'EN',
+            appId: website.split('.').reverse().join('.'),
+            assets: { create: { disblayLogo: true, color: '#000' } },
+            owner: { connect: { id: ctx.user.id } },
+          },
+        })
+      },
+    })
+    t.field('updateApp', {
+      type: 'App',
+      args: {
+        id: nonNull(intArg()),
+        data: arg({
+          type: inputObjectType({
+            name: 'updateAppInput',
+            definition(t) {
+              t.string('name')
+              t.string('website')
+              t.string('lang')
+              t.string('appId')
+              t.string('userAgent')
+            },
+          }),
+          required: true,
+        }),
+      },
+
+      async resolve(_root, args, ctx) {
+        let { name, website, appId, lang, userAgent } = args.data
+        return await ctx.db.app.update({
+          where: { id: args.id },
+          data: {
+            name: name || undefined,
+            website: website || undefined,
+            appId: appId || undefined,
+            lang: lang || undefined,
+            userAgent,
+          },
+        })
+      },
+    })
+    t.field('deleteApp', {
+      type: 'App',
+      args: {
+        id: nonNull(intArg()),
+      },
+
+      async resolve(_root, args, ctx) {
+        return await ctx.db.app.delete({
+          where: { id: args.id },
+        })
+      },
+    })
+  },
+})
 export const LinkQuery = extendType({
   type: 'Query',
   definition(t) {
