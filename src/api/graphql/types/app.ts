@@ -158,7 +158,7 @@ export const Appmutations = extendType({
         id: nonNull(intArg()),
         data: arg({
           type: inputObjectType({
-            name: 'updateAppInput',
+            name: 'updateAppAssetsInput',
             definition(t) {
               t.string('appIcon')
               t.string('logo')
