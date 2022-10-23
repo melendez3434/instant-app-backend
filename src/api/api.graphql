@@ -3,6 +3,7 @@
 
 
 type App {
+  appId: String!
   assets: AppAsset
   id: Int!
   lang: String!

@@ -9,9 +9,9 @@ const appMutationsShield = {
     role: ['all'],
     permissions: isAuth,
   },
-  UpdateApp: {
-    name: 'UpdateApp',
-    slug: 'UpdateApp',
+  updateApp: {
+    name: 'updateApp',
+    slug: 'updateApp',
     desc: '',
     role: ['all'],
     permissions: isAppOwner,

@@ -6,12 +6,14 @@ import {
   nonNull,
   objectType,
 } from 'nexus'
+var url = require('url')
 
 export const App = objectType({
   name: 'App',
   definition(t) {
     t.model.id()
     t.model.name()
+    t.model.appId()
     t.model.website()
     t.model.userAgent()
     t.model.lang()
@@ -107,12 +109,13 @@ export const Appmutations = extendType({
 
       async resolve(_root, args, ctx) {
         let { name, website } = args.data
+
         return await ctx.db.app.create({
           data: {
             name,
             website,
             lang: 'EN',
-            appId: website.split('.').reverse().join('.'),
+            appId: url.parse(website).hostname.split('.').reverse().join('.'),
             assets: { create: { disblayLogo: true, color: '#000' } },
             owner: { connect: { id: ctx.user.id } },
           },
