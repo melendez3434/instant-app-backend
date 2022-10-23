@@ -221,6 +221,7 @@ input JsonNullableFilter {
 
 type Link {
   data: Json
+  icon: String
   id: Int!
   name: String!
   type: LinkType!
@@ -241,6 +242,7 @@ input LinkOrderByWithRelationInput {
   appid: SortOrder
   createdAt: SortOrder
   data: SortOrder
+  icon: SortOrder
   id: SortOrder
   menuType: SortOrder
   name: SortOrder
@@ -263,6 +265,7 @@ input LinkWhereInput {
   appid: IntFilter
   createdAt: DateTimeFilter
   data: JsonNullableFilter
+  icon: StringNullableFilter
   id: IntFilter
   menuType: EnumMenuTypeFilter
   name: StringFilter
@@ -502,6 +505,7 @@ input addAppInput {
 input addLinkInput {
   appId: Int!
   data: Json
+  icon: String
   menuType: MenuType!
   name: String!
   type: LinkType!
@@ -534,6 +538,7 @@ input updateAppInput {
 
 input updateLinkInput {
   data: Json
+  icon: String
   name: String
   type: LinkType
 }

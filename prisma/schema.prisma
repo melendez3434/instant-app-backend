@@ -35,6 +35,7 @@ model App {
 model Link {
   id        Int      @id @default(autoincrement())
   name      String
+  icon      String?
   data      Json?
   type      LinkType @default(link)
   app       App      @relation("mainNavigationToLinks", fields: [appid], references: [id])

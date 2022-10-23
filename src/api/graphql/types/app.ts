@@ -43,6 +43,7 @@ export const Link = objectType({
     t.model.name()
     t.model.data()
     t.model.type()
+    t.model.icon()
   },
 })
 export const AppQuery = extendType({
@@ -255,6 +256,7 @@ export const Linkmutations = extendType({
             name: 'addLinkInput',
             definition(t) {
               t.nonNull.string('name')
+              t.string('icon')
               t.nonNull.int('appId')
               t.nonNull.field('type', { type: 'LinkType' })
               t.nonNull.field('menuType', { type: 'MenuType' })
@@ -296,6 +298,7 @@ export const Linkmutations = extendType({
               t.string('name')
               t.field('type', { type: 'LinkType' })
               t.json('data')
+              t.string('icon')
             },
           }),
           required: true,
