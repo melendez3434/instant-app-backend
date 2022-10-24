@@ -268,7 +268,7 @@ export const Linkmutations = extendType({
       },
 
       async resolve(_root, args, ctx) {
-        let { name, type, data, menuType, appId } = args.data
+        let { name, type, data, menuType, appId, icon } = args.data
         if (
           !(await ctx.db.app.count({
             where: { ownerId: { equals: ctx.user.id }, id: appId },
@@ -282,6 +282,7 @@ export const Linkmutations = extendType({
             data,
             type,
             menuType,
+            icon,
             app: { connect: { id: appId } },
           },
         })
@@ -306,12 +307,13 @@ export const Linkmutations = extendType({
       },
 
       async resolve(_root, args, ctx) {
-        let { name, type, data } = args.data
+        let { name, type, data, icon } = args.data
         return await ctx.db.link.update({
           where: { id: args.id },
           data: {
             name: name || undefined,
             data,
+            icon,
             type: type || undefined,
           },
         })
