@@ -22,24 +22,26 @@ function randomString(length, chars) {
 
 export const Mutation = mutationType({
   definition(t) {
-    t.field('signup', {
+    t.field('signupSuperAdmin', {
       type: 'AuthPayLoad',
       args: {
         email: nonNull(stringArg()),
+        name: nonNull(stringArg()),
+        logo: stringArg(),
         password: nonNull(stringArg()),
       },
       async resolve(_root, args, ctx) {
-        const { email, password } = args
+        const { email, password, name, logo } = args
         console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
         // lowercase their email
         email.toLowerCase()
-
         if (password.length < 8)
           throw new Error('password must be more than 8 characters')
 
         const isEmailExist = await ctx.db.user.findFirst({
           where: {
             email: { equals: email, mode: 'insensitive' },
+            role: 'superAdmin',
           },
         })
 
@@ -51,9 +53,21 @@ export const Mutation = mutationType({
         // create the user in the database
         const admin = await ctx.db.user.create({
           data: {
-            ...args,
+            email,
             password: hash,
-            role: 'user',
+            role: 'superAdmin',
+          },
+        })
+        await ctx.db.builder.create({
+          data: {
+            domain: name + process.env.DOMAIN,
+            name,
+            logo,
+            owner: {
+              connect: {
+                id: admin.id,
+              },
+            },
           },
         })
         const token = ctx.auth.signInWithJWT(admin)
@@ -61,6 +75,47 @@ export const Mutation = mutationType({
         return { user: admin, token }
       },
     }),
+      t.field('signup', {
+        type: 'AuthPayLoad',
+        args: {
+          email: nonNull(stringArg()),
+          password: nonNull(stringArg()),
+        },
+        async resolve(_root, args, ctx) {
+          const { email, password } = args
+          console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
+          // lowercase their email
+          email.toLowerCase()
+
+          if (password.length < 8)
+            throw new Error('password must be more than 8 characters')
+
+          const isEmailExist = await ctx.db.user.findFirst({
+            where: {
+              email: { equals: email, mode: 'insensitive' },
+              builderDomain: { equals: ctx.builderDomain },
+            },
+          })
+
+          if (isEmailExist) {
+            throw new Error('sorry but this email are already exist')
+          }
+          // hash their password
+          const hash = await hashPassword(password)
+          // create the user in the database
+          const admin = await ctx.db.user.create({
+            data: {
+              ...args,
+              password: hash,
+              builder: { connect: { domain: ctx.builderDomain } },
+              role: 'user',
+            },
+          })
+          const token = ctx.auth.signInWithJWT(admin)
+
+          return { user: admin, token }
+        },
+      }),
       t.field('signin', {
         type: objectType({
           name: 'AuthPayLoad',

@@ -125,6 +125,33 @@ input BoolFilter {
   not: NestedBoolFilter
 }
 
+input BuilderOrderByWithRelationInput {
+  createdAt: SortOrder
+  domain: SortOrder
+  id: SortOrder
+  logo: SortOrder
+  name: SortOrder
+  owner: UserOrderByWithRelationInput
+  ownerId: SortOrder
+  updatedAt: SortOrder
+  users: UserOrderByRelationAggregateInput
+}
+
+input BuilderWhereInput {
+  AND: [BuilderWhereInput!]
+  NOT: [BuilderWhereInput!]
+  OR: [BuilderWhereInput!]
+  createdAt: DateTimeFilter
+  domain: StringFilter
+  id: IntFilter
+  logo: StringNullableFilter
+  name: StringFilter
+  owner: UserWhereInput
+  ownerId: IntFilter
+  updatedAt: DateTimeFilter
+  users: UserListRelationFilter
+}
+
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -291,6 +318,7 @@ type Mutation {
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signup(email: String!, password: String!): AuthPayLoad
+  signupSuperAdmin(email: String!, logo: String, name: String!, password: String!): AuthPayLoad
   updateApp(data: updateAppInput!, id: Int!): App
   updateAppAssets(data: updateAppAssetsInput!, id: Int!): AppAsset
   updateLink(data: updateLinkInput!, id: Int!): Link
@@ -413,6 +441,7 @@ enum QueryMode {
 
 enum Role {
   admin
+  superAdmin
   user
 }
 
@@ -470,8 +499,26 @@ type User {
   updatedAt: DateTime!
 }
 
+input UserEmailBuilderDomainCompoundUniqueInput {
+  builderDomain: String!
+  email: String!
+}
+
+input UserListRelationFilter {
+  every: UserWhereInput
+  none: UserWhereInput
+  some: UserWhereInput
+}
+
+input UserOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
 input UserOrderByWithRelationInput {
   App: AppOrderByRelationAggregateInput
+  builder: BuilderOrderByWithRelationInput
+  builderDomain: SortOrder
+  builderMine: BuilderOrderByWithRelationInput
   createdAt: SortOrder
   email: SortOrder
   id: SortOrder
@@ -485,6 +532,9 @@ input UserWhereInput {
   App: AppListRelationFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+  builder: BuilderWhereInput
+  builderDomain: StringNullableFilter
+  builderMine: BuilderWhereInput
   createdAt: DateTimeFilter
   email: StringFilter
   id: IntFilter
@@ -494,6 +544,7 @@ input UserWhereInput {
 }
 
 input UserWhereUniqueInput {
+  email_builderDomain: UserEmailBuilderDomainCompoundUniqueInput
   id: Int
 }
 

@@ -8,13 +8,30 @@ datasource db {
 }
 
 model User {
+  id            Int      @id @default(autoincrement())
+  role          Role     @default(user)
+  email         String
+  password      String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  App           App[]
+  builderMine   Builder? @relation("builderToOwner")
+  builder       Builder? @relation("builderToUsers", fields: [builderDomain], references: [domain])
+  builderDomain String?
+
+  @@unique([email, builderDomain])
+}
+
+model Builder {
   id        Int      @id @default(autoincrement())
-  role      Role     @default(user)
-  email     String
-  password  String
+  name      String
+  domain    String   @unique
+  logo      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  App       App[]
+  owner     User     @relation("builderToOwner", fields: [ownerId], references: [id])
+  ownerId   Int      @unique
+  users     User[]   @relation("builderToUsers")
 }
 
 model App {
@@ -65,6 +82,7 @@ model AppAsset {
 enum Role {
   admin
   user
+  superAdmin
 }
 
 enum SplashMode {

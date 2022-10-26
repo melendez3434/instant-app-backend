@@ -3,6 +3,7 @@ import { Auth } from './auth'
 
 import { PrismaClient } from '@prisma/client'
 import { Response } from 'express'
+import { URL } from 'url'
 
 export const prisma = new PrismaClient({
   log: ['error'],
@@ -48,13 +49,22 @@ export const createContext = async ({
     res,
   })
   const user = await auth.authenticate()
+  const parser = new URL(
+    req?.get('origin') || `https://demo.${process.env.DOMAIN}`,
+  )
 
+  const host =
+    req?.get('shop') ||
+    (process.env.NODE_ENV == 'development' || parser.hostname == 'localhost'
+      ? `demo.${process.env.DOMAIN}`
+      : parser.hostname)
   const ctx = {
     auth,
     user,
     db: prisma,
     prisma,
     req,
+    builderDomain: host || user?.builderDomain,
   }
 
   return ctx

@@ -53,6 +53,13 @@ const appMutationsShield = {
   },
 }
 const auth = {
+  signupSuperAdmin: {
+    name: 'signupSuperAdmin',
+    slug: 'signupSuperAdmin',
+    desc: '',
+    role: ['all'],
+    permissions: allow,
+  },
   signup: {
     name: 'signup',
     slug: 'signup',
