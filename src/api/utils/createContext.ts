@@ -54,10 +54,10 @@ export const createContext = async ({
   )
 
   const host =
-    req?.get('shop') ||
-    (process.env.NODE_ENV == 'development' || parser.hostname == 'localhost'
+    // req?.get('builderDomain') ||
+    process.env.NODE_ENV == 'development' || parser.hostname == 'localhost'
       ? `demo.${process.env.DOMAIN}`
-      : parser.hostname)
+      : parser.hostname
   const ctx = {
     auth,
     user,

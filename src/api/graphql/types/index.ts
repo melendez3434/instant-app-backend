@@ -1,5 +1,6 @@
 export * from './User'
 export * from './app'
+export * from './builder'
 
 // export * from './Notification'
 

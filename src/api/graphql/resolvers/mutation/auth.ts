@@ -60,7 +60,7 @@ export const Mutation = mutationType({
         })
         await ctx.db.builder.create({
           data: {
-            domain: name + process.env.DOMAIN,
+            domain: name + '.' + process.env.DOMAIN,
             name,
             logo,
             owner: {

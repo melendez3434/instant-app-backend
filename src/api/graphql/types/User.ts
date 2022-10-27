@@ -49,7 +49,7 @@ export const UserQuery = extendType({
         take: intArg(),
         orderBy: 'UserOrderByWithRelationInput',
         where: 'UserWhereInput',
-      },
+      }, //@ts-ignore
       async resolve(source, args, ctx) {
         return {
           //@ts-ignore

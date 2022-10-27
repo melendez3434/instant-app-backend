@@ -2,6 +2,13 @@ import { allow } from 'graphql-shield'
 import { isAppOwner, isAuth } from '../rules'
 
 export const queriesShield = {
+  myBuilder: {
+    name: 'myBuilder',
+    slug: 'myBuilder',
+    desc: '',
+    role: ['all'],
+    permissions: allow,
+  },
   me: {
     name: 'me',
     slug: 'me',
