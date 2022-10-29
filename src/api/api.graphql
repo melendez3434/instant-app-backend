@@ -288,9 +288,11 @@ input LinkOrderByWithRelationInput {
 
 enum LinkType {
   callPhone
+  externalLink
   link
   openModal
   sendEmail
+  share
 }
 
 input LinkWhereInput {

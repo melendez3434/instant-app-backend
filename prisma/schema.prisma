@@ -97,6 +97,8 @@ enum ThemeMode {
 
 enum LinkType {
   link
+  externalLink
+  share
   sendEmail
   callPhone
   openModal
