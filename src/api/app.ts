@@ -5,7 +5,7 @@ import slowDown from 'express-slow-down'
 import { ApolloServer } from 'apollo-server-express'
 import createExpress from 'express'
 import { schema as baseSchema } from './schema'
-import { createContext } from './utils/createContext'
+import { createContext, prisma } from './utils/createContext'
 
 import { permissions } from './shield'
 const { applyMiddleware } = require('graphql-middleware')
@@ -188,6 +188,8 @@ const apolloServer = async () => {
   // apollo.installSubscriptionHandlers(app)
   express.set('port', process.env.PORT || 4000)
   const app = httpServer.listen(express.get('port'), async () => {
+    const users = await prisma.user.findMany()
+    console.log('🚀 ~ file: app.ts ~ line 192 ~ app ~ users', users)
     console.log('server running at port ' + (process.env.PORT || 4000))
   })
 

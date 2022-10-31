@@ -1,7 +1,4 @@
 import { arg, extendType, inputObjectType, intArg, objectType } from 'nexus'
-import hashPassword from '../../utils/hashPassword'
-import * as bcrypt from 'bcryptjs'
-import isEmail from 'validator/lib/isEmail'
 
 export const Builder = objectType({
   name: 'Builder',
@@ -38,5 +35,26 @@ export const BuilderQuery = extendType({
 
 export const Buildermutations = extendType({
   type: 'Mutation',
-  definition(t) {},
+  definition(t) {
+    t.field('updateMyBuilder', {
+      type: 'Builder',
+      args: {
+        data: arg({
+          type: inputObjectType({
+            name: 'updateMyBuilderInput',
+            definition(t) {
+              t.nonNull.string('logo')
+            },
+          }),
+          required: true,
+        }),
+      },
+      async resolve(source, args, ctx) {
+        return await ctx.db.builder.update({
+          where: { domain: ctx.builderDomain },
+          data: { logo: args.data.logo },
+        })
+      },
+    })
+  },
 })

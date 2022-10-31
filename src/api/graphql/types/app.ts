@@ -76,15 +76,18 @@ export const AppQuery = extendType({
         where: 'AppWhereInput',
       },
       async resolve(source, args, ctx) {
-        const { where, ...rest } = args
         args.where = { ...args.where, ownerId: { equals: ctx.user.id } }
+        console.log(
+          '🚀 ~ file: app.ts ~ line 81 ~ resolve ~ ctx.user',
+          ctx.user,
+        )
 
         return {
           //@ts-ignore
-          count: await ctx.db.app.count({ where: rest.where }),
+          count: await ctx.db.app.count({ where: args.where }),
           //@ts-ignore
 
-          nodes: await ctx.db.app.findMany(rest),
+          nodes: await ctx.db.app.findMany(args),
         }
       },
     })

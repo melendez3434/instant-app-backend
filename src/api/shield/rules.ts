@@ -4,7 +4,7 @@ import { Context } from '../utils/context'
 export const isSuperAdmin = rule({
   cache: 'contextual',
 })(async (parent, args, ctx, info) => {
-  return ctx.user && ctx.user.role == 'SUPER_ADMIN'
+  return ctx.user && ctx.user.role == 'superAdmin'
 })
 
 export const isAdmin = rule({

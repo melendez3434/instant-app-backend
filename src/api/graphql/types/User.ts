@@ -12,7 +12,11 @@ export const User = objectType({
     t.model.password()
 
     t.model.role()
-
+    t.int('appsCount', {
+      async resolve({ id }, args, ctx) {
+        return await ctx.db.app.count({ where: { ownerId: id } })
+      },
+    })
     t.model.createdAt()
     t.model.updatedAt()
   },
@@ -36,7 +40,7 @@ export const UserQuery = extendType({
     //   },
     // })
     t.crud.users({ filtering: true, ordering: true, pagination: true })
-    t.field('users', {
+    t.field('myUsers', {
       type: objectType({
         name: 'userConnectionPayLoad',
         definition(t) {
@@ -51,6 +55,12 @@ export const UserQuery = extendType({
         where: 'UserWhereInput',
       }, //@ts-ignore
       async resolve(source, args, ctx) {
+        args.where = {
+          ...args.where,
+          builderDomain: { equals: ctx.builderDomain },
+          role: { equals: 'user' },
+        }
+
         return {
           //@ts-ignore
           count: await ctx.db.user.count({ where: args.where }),

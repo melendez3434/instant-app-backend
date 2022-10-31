@@ -333,6 +333,7 @@ type Mutation {
   updateApp(data: updateAppInput!, id: Int!): App
   updateAppAssets(data: updateAppAssetsInput!, id: Int!): AppAsset
   updateLink(data: updateLinkInput!, id: Int!): Link
+  updateMyBuilder(data: updateMyBuilderInput!): Builder
   updateMyProfile(data: updateMyProfileInput!): User
 }
 
@@ -443,6 +444,7 @@ type Query {
   links(appId: Int!, orderBy: LinkOrderByWithRelationInput, skip: Int, take: Int, where: LinkWhereInput): linkConnectionPayLoad
   me: User
   myBuilder: Builder
+  myUsers(orderBy: UserOrderByWithRelationInput, skip: Int, take: Int, where: UserWhereInput): userConnectionPayLoad
   users(cursor: UserWhereUniqueInput, orderBy: [UserOrderByWithRelationInput!], skip: Int, take: Int, where: UserWhereInput): [User!]!
 }
 
@@ -503,6 +505,7 @@ enum ThemeMode {
 }
 
 type User {
+  appsCount: Int
   createdAt: DateTime!
   email: String!
   id: Int!
@@ -604,6 +607,10 @@ input updateLinkInput {
   icon: String
   name: String
   type: LinkType
+}
+
+input updateMyBuilderInput {
+  logo: String!
 }
 
 input updateMyProfileInput {
