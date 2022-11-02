@@ -49,14 +49,20 @@ export const createContext = async ({
     res,
   })
   const user = await auth.authenticate()
-  const parser = new URL(req?.get('origin') || `https://demo.brand.com`)
+  const parser = req?.get('origin') && new URL(req?.get('origin'))
+  console.log('🚀 ~ file: createContext.ts ~ line 53 ~ parser', parser)
 
   const host =
-    // req?.get('builderDomain') ||
-    process.env.NODE_ENV == 'development' || parser.hostname == 'localhost'
+    req?.get('builderdomain') ||
+    process.env.NODE_ENV == 'development' ||
+    parser?.hostname == 'localhost'
       ? `demo.brand.com`
-      : parser.hostname
-  console.log('🚀 ~ file: createContext.ts ~ line 57 ~ host', host)
+      : parser?.hostname
+  console.log(
+    '🚀 ~ file: createContext.ts ~ line 57 ~ host',
+    req.headers.builderdomain,
+  )
+  console.log('🚀 ~ file: createContext.ts ~ line 56 ~ host', host)
 
   const ctx = {
     auth,
@@ -64,7 +70,7 @@ export const createContext = async ({
     db: prisma,
     prisma,
     req,
-    builderDomain: host || user?.builderDomain,
+    builderDomain: host,
   }
 
   return ctx
