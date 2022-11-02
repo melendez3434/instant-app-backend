@@ -49,15 +49,15 @@ export const createContext = async ({
     res,
   })
   const user = await auth.authenticate()
-  const parser = new URL(
-    req?.get('origin') || `https://demo.${process.env.DOMAIN}`,
-  )
+  const parser = new URL(req?.get('origin') || `https://demo.brand.com`)
 
   const host =
     // req?.get('builderDomain') ||
     process.env.NODE_ENV == 'development' || parser.hostname == 'localhost'
-      ? `demo.${process.env.DOMAIN}`
+      ? `demo.brand.com`
       : parser.hostname
+  console.log('🚀 ~ file: createContext.ts ~ line 57 ~ host', host)
+
   const ctx = {
     auth,
     user,

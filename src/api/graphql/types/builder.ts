@@ -7,6 +7,8 @@ export const Builder = objectType({
     t.model.name()
     t.model.logo()
     t.model.domain()
+    t.model.icon()
+    t.model.companyName()
     t.model.createdAt()
     t.model.updatedAt()
   },
@@ -43,7 +45,9 @@ export const Buildermutations = extendType({
           type: inputObjectType({
             name: 'updateMyBuilderInput',
             definition(t) {
-              t.nonNull.string('logo')
+              t.string('logo')
+              t.string('icon')
+              t.string('companyName')
             },
           }),
           required: true,
@@ -52,7 +56,11 @@ export const Buildermutations = extendType({
       async resolve(source, args, ctx) {
         return await ctx.db.builder.update({
           where: { domain: ctx.builderDomain },
-          data: { logo: args.data.logo },
+          data: {
+            logo: args.data.logo || undefined,
+            icon: args.data.icon || undefined,
+            companyName: args.data.companyName || undefined,
+          },
         })
       },
     })

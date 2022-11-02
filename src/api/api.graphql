@@ -126,8 +126,10 @@ input BoolFilter {
 }
 
 type Builder {
+  companyName: String
   createdAt: DateTime!
   domain: String!
+  icon: String
   id: Int!
   logo: String
   name: String!
@@ -135,8 +137,10 @@ type Builder {
 }
 
 input BuilderOrderByWithRelationInput {
+  companyName: SortOrder
   createdAt: SortOrder
   domain: SortOrder
+  icon: SortOrder
   id: SortOrder
   logo: SortOrder
   name: SortOrder
@@ -150,8 +154,10 @@ input BuilderWhereInput {
   AND: [BuilderWhereInput!]
   NOT: [BuilderWhereInput!]
   OR: [BuilderWhereInput!]
+  companyName: StringNullableFilter
   createdAt: DateTimeFilter
   domain: StringFilter
+  icon: StringNullableFilter
   id: IntFilter
   logo: StringNullableFilter
   name: StringFilter
@@ -329,7 +335,7 @@ type Mutation {
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signup(email: String!, password: String!): AuthPayLoad
-  signupSuperAdmin(email: String!, logo: String, name: String!, password: String!): AuthPayLoad
+  signupSuperAdmin(companyName: String, email: String!, icon: String, logo: String, name: String!, password: String!): AuthPayLoad
   updateApp(data: updateAppInput!, id: Int!): App
   updateAppAssets(data: updateAppAssetsInput!, id: Int!): AppAsset
   updateLink(data: updateLinkInput!, id: Int!): Link
@@ -610,7 +616,9 @@ input updateLinkInput {
 }
 
 input updateMyBuilderInput {
-  logo: String!
+  companyName: String
+  icon: String
+  logo: String
 }
 
 input updateMyProfileInput {

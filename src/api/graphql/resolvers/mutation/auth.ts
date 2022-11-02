@@ -10,6 +10,7 @@ import {
 } from 'nexus'
 
 import isEmail from 'validator/lib/isEmail'
+import makeSlug from 'slug-arabic'
 
 function randomString(length, chars) {
   var mask = ''
@@ -28,11 +29,25 @@ export const Mutation = mutationType({
         email: nonNull(stringArg()),
         name: nonNull(stringArg()),
         logo: stringArg(),
+        companyName: stringArg(),
+        icon: stringArg(),
         password: nonNull(stringArg()),
       },
       async resolve(_root, args, ctx) {
-        const { email, password, name, logo } = args
+        const { email, password, logo, companyName, icon } = args
+        const slugedName = makeSlug(args.name)
         console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
+        const isNameExist = await ctx.db.builder.findFirst({
+          where: {
+            name: { equals: slugedName, mode: 'insensitive' },
+          },
+        })
+
+        if (isNameExist) {
+          throw new Error(
+            'sorry but this name are already exist' + ' ' + args.name,
+          )
+        }
         // lowercase their email
         email.toLowerCase()
         if (password.length < 8)
@@ -60,9 +75,11 @@ export const Mutation = mutationType({
         })
         await ctx.db.builder.create({
           data: {
-            domain: name + '.' + process.env.DOMAIN,
-            name,
+            domain: slugedName + '.' + process.env.DOMAIN,
+            name: slugedName,
             logo,
+            companyName: companyName || slugedName,
+            icon: icon || logo,
             owner: {
               connect: {
                 id: admin.id,
