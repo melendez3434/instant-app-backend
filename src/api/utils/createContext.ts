@@ -53,11 +53,16 @@ export const createContext = async ({
   console.log('🚀 ~ file: createContext.ts ~ line 53 ~ parser', parser)
 
   const host =
-    req?.get('builderdomain') ||
+    req.headers?.builderdomain ||
     process.env.NODE_ENV == 'development' ||
     parser?.hostname == 'localhost'
       ? `demo.brand.com`
       : parser?.hostname
+  console.log(
+    '🚀 ~ file: createContext.ts ~ line 57 ~ host',
+    req?.get('builderDomain'),
+  )
+  console.log('🚀 ~ file: createContext.ts ~ line 57 ~ host', req.headers)
   console.log(
     '🚀 ~ file: createContext.ts ~ line 57 ~ host',
     req.headers.builderdomain,
