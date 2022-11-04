@@ -30,7 +30,7 @@ export const AppAsset = objectType({
     t.model.splashMode()
     t.model.color()
     t.model.textThemeMode()
-    t.model.disblayLogo()
+    t.model.displayLogo()
     t.model.tagLine()
     t.model.delay()
     t.model.backgroundImage()
@@ -50,6 +50,21 @@ export const AppDesign = objectType({
     t.model.pullToRefresh()
     t.model.themeColor()
     t.model.titleTheme()
+    t.model.AppDesignDrawer()
+  },
+})
+export const AppDesignDrawer = objectType({
+  name: 'AppDesignDrawer',
+  definition(t) {
+    t.model.id()
+    t.model.backgroundImage()
+    t.model.color()
+    t.model.displayLogo()
+    t.model.drawerMode()
+    t.model.logo()
+    t.model.subTitle()
+    t.model.textTheme()
+    t.model.title()
   },
 })
 export const Link = objectType({
@@ -136,8 +151,8 @@ export const Appmutations = extendType({
             website,
             lang: 'EN',
             appId: url.parse(website).hostname.split('.').reverse().join('.'),
-            assets: { create: { disblayLogo: true, color: '#000' } },
-            design: { create: {} },
+            assets: { create: { displayLogo: true, color: '#000' } },
+            design: { create: { AppDesignDrawer: { create: {} } } },
 
             owner: { connect: { id: ctx.user.id } },
           },
@@ -190,7 +205,7 @@ export const Appmutations = extendType({
               t.field('splashMode', { type: 'SplashMode' })
               t.field('textThemeMode', { type: 'ThemeMode' })
               t.string('color')
-              t.boolean('disblayLogo')
+              t.boolean('displayLogo')
               t.string('tagLine')
               t.float('delay')
               t.string('backgroundImage')
@@ -256,6 +271,57 @@ export const Appmutations = extendType({
             progressIndicatorColor:
               args.data.progressIndicatorColor || undefined,
             navigationActiveColor: args.data.navigationActiveColor || undefined,
+          },
+        })
+      },
+    })
+    t.field('updateAppDesignDrawer', {
+      type: 'AppDesignDrawer',
+      args: {
+        id: nonNull(intArg()),
+        data: arg({
+          type: inputObjectType({
+            name: 'updateAppDesignDrawerInput',
+            definition(t) {
+              t.string('backgroundImage')
+              t.string('color')
+              t.string('logo')
+              t.string('subTitle')
+              t.string('title')
+              t.boolean('displayLogo')
+              t.field('textTheme', { type: 'ThemeMode' })
+
+              t.field('drawerMode', { type: 'DrawerMode' })
+            },
+          }),
+          required: true,
+        }),
+      },
+
+      async resolve(_root, args, ctx) {
+        // const apps = await ctx.db.app.findMany()
+        // await Promise.all(
+        //   apps.map(async ({ id }) => {
+        //     await ctx.db.app.update({
+        //       where: { id },
+        //       //@ts-ignore
+        //       data: {
+        //         design: {
+        //           create: {
+        //             AppDesignDrawer: { create: {} },
+        //           },
+        //         },
+        //       },
+        //     })
+        //   }),
+        // )
+
+        // let { ...} = args.data
+        return await ctx.db.appDesignDrawer.update({
+          where: { appId: args.id },
+          //@ts-ignore
+          data: {
+            ...args.data,
           },
         })
       },

@@ -30,6 +30,13 @@ const appMutationsShield = {
     role: ['all'],
     permissions: isAppOwner,
   },
+  updateAppDesignDrawer: {
+    name: 'updateAppDesignDrawer',
+    slug: 'updateAppDesignDrawer',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
   deleteApp: {
     name: 'deleteApp',
     slug: 'deleteApp',

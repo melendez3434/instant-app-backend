@@ -65,6 +65,21 @@ model AppDesign {
   layoutTemplate         LayoutTemplate    @default(drawerBar)
   App                    App?              @relation(fields: [appId], references: [id])
   appId                  Int?              @unique
+  AppDesignDrawer        AppDesignDrawer?
+}
+
+model AppDesignDrawer {
+  id              Int        @id @default(autoincrement())
+  color           String     @default("#282942")
+  textTheme       ThemeMode  @default(light)
+  drawerMode      DrawerMode @default(notUsed)
+  displayLogo     Boolean    @default(true)
+  title           String?
+  subTitle        String?
+  backgroundImage String?
+  logo            String?
+  AppDesign       AppDesign  @relation(fields: [appId], references: [appId])
+  appId           Int        @unique
 }
 
 model Link {
@@ -85,7 +100,7 @@ model AppAsset {
   splashMode      SplashMode @default(color)
   color           String
   textThemeMode   ThemeMode  @default(light)
-  disblayLogo     Boolean
+  displayLogo     Boolean    @default(true)
   tagLine         String?
   delay           Float?
   backgroundImage String?
@@ -139,4 +154,10 @@ enum ProgressIndicator {
   notUsed
   linear
   circular
+}
+
+enum DrawerMode {
+  notUsed
+  image
+  color
 }

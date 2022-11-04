@@ -19,7 +19,7 @@ type AppAsset {
   color: String!
   createdAt: DateTime!
   delay: Float
-  disblayLogo: Boolean!
+  displayLogo: Boolean!
   id: Int!
   logo: String
   splashMode: SplashMode!
@@ -35,7 +35,7 @@ input AppAssetOrderByWithRelationInput {
   color: SortOrder
   createdAt: SortOrder
   delay: SortOrder
-  disblayLogo: SortOrder
+  displayLogo: SortOrder
   id: SortOrder
   logo: SortOrder
   splashMode: SortOrder
@@ -55,7 +55,7 @@ input AppAssetWhereInput {
   color: StringFilter
   createdAt: DateTimeFilter
   delay: FloatNullableFilter
-  disblayLogo: BoolFilter
+  displayLogo: BoolFilter
   id: IntFilter
   logo: StringNullableFilter
   splashMode: EnumSplashModeFilter
@@ -70,6 +70,7 @@ type AppConnectionPayLoad {
 }
 
 type AppDesign {
+  AppDesignDrawer: AppDesignDrawer
   activeTabColor: String!
   disblayPagetitle: Boolean!
   id: Int!
@@ -82,8 +83,52 @@ type AppDesign {
   titleTheme: ThemeMode!
 }
 
+type AppDesignDrawer {
+  backgroundImage: String
+  color: String!
+  displayLogo: Boolean!
+  drawerMode: DrawerMode!
+  id: Int!
+  logo: String
+  subTitle: String
+  textTheme: ThemeMode!
+  title: String
+}
+
+input AppDesignDrawerOrderByWithRelationInput {
+  AppDesign: AppDesignOrderByWithRelationInput
+  appId: SortOrder
+  backgroundImage: SortOrder
+  color: SortOrder
+  displayLogo: SortOrder
+  drawerMode: SortOrder
+  id: SortOrder
+  logo: SortOrder
+  subTitle: SortOrder
+  textTheme: SortOrder
+  title: SortOrder
+}
+
+input AppDesignDrawerWhereInput {
+  AND: [AppDesignDrawerWhereInput!]
+  AppDesign: AppDesignWhereInput
+  NOT: [AppDesignDrawerWhereInput!]
+  OR: [AppDesignDrawerWhereInput!]
+  appId: IntFilter
+  backgroundImage: StringNullableFilter
+  color: StringFilter
+  displayLogo: BoolFilter
+  drawerMode: EnumDrawerModeFilter
+  id: IntFilter
+  logo: StringNullableFilter
+  subTitle: StringNullableFilter
+  textTheme: EnumThemeModeFilter
+  title: StringNullableFilter
+}
+
 input AppDesignOrderByWithRelationInput {
   App: AppOrderByWithRelationInput
+  AppDesignDrawer: AppDesignDrawerOrderByWithRelationInput
   activeTabColor: SortOrder
   appId: SortOrder
   disblayPagetitle: SortOrder
@@ -100,6 +145,7 @@ input AppDesignOrderByWithRelationInput {
 input AppDesignWhereInput {
   AND: [AppDesignWhereInput!]
   App: AppWhereInput
+  AppDesignDrawer: AppDesignDrawerWhereInput
   NOT: [AppDesignWhereInput!]
   OR: [AppDesignWhereInput!]
   activeTabColor: StringFilter
@@ -230,6 +276,19 @@ input DateTimeFilter {
   lte: DateTime
   not: NestedDateTimeFilter
   notIn: [DateTime!]
+}
+
+enum DrawerMode {
+  color
+  image
+  notUsed
+}
+
+input EnumDrawerModeFilter {
+  equals: DrawerMode
+  in: [DrawerMode!]
+  not: NestedEnumDrawerModeFilter
+  notIn: [DrawerMode!]
 }
 
 input EnumLayoutTemplateFilter {
@@ -420,6 +479,7 @@ type Mutation {
   updateApp(data: updateAppInput!, id: Int!): App
   updateAppAssets(data: updateAppAssetsInput!, id: Int!): AppAsset
   updateAppDesign(data: updateAppDesignInput!, id: Int!): AppDesign
+  updateAppDesignDrawer(data: updateAppDesignDrawerInput!, id: Int!): AppDesignDrawer
   updateLink(data: updateLinkInput!, id: Int!): Link
   updateMyBuilder(data: updateMyBuilderInput!): Builder
   updateMyProfile(data: updateMyProfileInput!): User
@@ -439,6 +499,13 @@ input NestedDateTimeFilter {
   lte: DateTime
   not: NestedDateTimeFilter
   notIn: [DateTime!]
+}
+
+input NestedEnumDrawerModeFilter {
+  equals: DrawerMode
+  in: [DrawerMode!]
+  not: NestedEnumDrawerModeFilter
+  notIn: [DrawerMode!]
 }
 
 input NestedEnumLayoutTemplateFilter {
@@ -706,11 +773,22 @@ input updateAppAssetsInput {
   backgroundImage: String
   color: String
   delay: Float
-  disblayLogo: Boolean
+  displayLogo: Boolean
   logo: String
   splashMode: SplashMode
   tagLine: String
   textThemeMode: ThemeMode
+}
+
+input updateAppDesignDrawerInput {
+  backgroundImage: String
+  color: String
+  displayLogo: Boolean
+  drawerMode: DrawerMode
+  logo: String
+  subTitle: String
+  textTheme: ThemeMode
+  title: String
 }
 
 input updateAppDesignInput {
