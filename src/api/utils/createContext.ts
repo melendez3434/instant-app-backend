@@ -76,7 +76,7 @@ export const createContext = async ({
     db: prisma,
     prisma,
     req,
-    builderDomain: host,
+    builderDomain: host || null,
   }
 
   return ctx
