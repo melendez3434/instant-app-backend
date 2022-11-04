@@ -5,6 +5,7 @@
 type App {
   appId: String!
   assets: AppAsset
+  design: AppDesign
   id: Int!
   lang: String!
   name: String!
@@ -68,6 +69,52 @@ type AppConnectionPayLoad {
   nodes: [App]
 }
 
+type AppDesign {
+  activeTabColor: String!
+  disblayPagetitle: Boolean!
+  id: Int!
+  layoutTemplate: LayoutTemplate!
+  navigationActiveColor: String!
+  progressIndicator: ProgressIndicator!
+  progressIndicatorColor: String!
+  pullToRefresh: Boolean!
+  themeColor: String!
+  titleTheme: ThemeMode!
+}
+
+input AppDesignOrderByWithRelationInput {
+  App: AppOrderByWithRelationInput
+  activeTabColor: SortOrder
+  appId: SortOrder
+  disblayPagetitle: SortOrder
+  id: SortOrder
+  layoutTemplate: SortOrder
+  navigationActiveColor: SortOrder
+  progressIndicator: SortOrder
+  progressIndicatorColor: SortOrder
+  pullToRefresh: SortOrder
+  themeColor: SortOrder
+  titleTheme: SortOrder
+}
+
+input AppDesignWhereInput {
+  AND: [AppDesignWhereInput!]
+  App: AppWhereInput
+  NOT: [AppDesignWhereInput!]
+  OR: [AppDesignWhereInput!]
+  activeTabColor: StringFilter
+  appId: IntNullableFilter
+  disblayPagetitle: BoolFilter
+  id: IntFilter
+  layoutTemplate: EnumLayoutTemplateFilter
+  navigationActiveColor: StringFilter
+  progressIndicator: EnumProgressIndicatorFilter
+  progressIndicatorColor: StringFilter
+  pullToRefresh: BoolFilter
+  themeColor: StringFilter
+  titleTheme: EnumThemeModeFilter
+}
+
 input AppListRelationFilter {
   every: AppWhereInput
   none: AppWhereInput
@@ -82,6 +129,7 @@ input AppOrderByWithRelationInput {
   appId: SortOrder
   assets: AppAssetOrderByWithRelationInput
   createdAt: SortOrder
+  design: AppDesignOrderByWithRelationInput
   id: SortOrder
   lang: SortOrder
   name: SortOrder
@@ -100,6 +148,7 @@ input AppWhereInput {
   appId: StringFilter
   assets: AppAssetWhereInput
   createdAt: DateTimeFilter
+  design: AppDesignWhereInput
   id: IntFilter
   lang: StringFilter
   name: StringFilter
@@ -183,6 +232,13 @@ input DateTimeFilter {
   notIn: [DateTime!]
 }
 
+input EnumLayoutTemplateFilter {
+  equals: LayoutTemplate
+  in: [LayoutTemplate!]
+  not: NestedEnumLayoutTemplateFilter
+  notIn: [LayoutTemplate!]
+}
+
 input EnumLinkTypeFilter {
   equals: LinkType
   in: [LinkType!]
@@ -195,6 +251,13 @@ input EnumMenuTypeFilter {
   in: [MenuType!]
   not: NestedEnumMenuTypeFilter
   notIn: [MenuType!]
+}
+
+input EnumProgressIndicatorFilter {
+  equals: ProgressIndicator
+  in: [ProgressIndicator!]
+  not: NestedEnumProgressIndicatorFilter
+  notIn: [ProgressIndicator!]
 }
 
 input EnumRoleFilter {
@@ -240,6 +303,17 @@ input IntFilter {
   notIn: [Int!]
 }
 
+input IntNullableFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntNullableFilter
+  notIn: [Int!]
+}
+
 """
 The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -259,6 +333,13 @@ enum JsonNullValueFilter {
 input JsonNullableFilter {
   equals: JsonNullValueFilter
   not: JsonNullValueFilter
+}
+
+enum LayoutTemplate {
+  bar
+  blank
+  drawerBar
+  tabBar
 }
 
 type Link {
@@ -338,6 +419,7 @@ type Mutation {
   signupSuperAdmin(companyName: String, email: String!, icon: String, logo: String, name: String!, password: String!): AuthPayLoad
   updateApp(data: updateAppInput!, id: Int!): App
   updateAppAssets(data: updateAppAssetsInput!, id: Int!): AppAsset
+  updateAppDesign(data: updateAppDesignInput!, id: Int!): AppDesign
   updateLink(data: updateLinkInput!, id: Int!): Link
   updateMyBuilder(data: updateMyBuilderInput!): Builder
   updateMyProfile(data: updateMyProfileInput!): User
@@ -359,6 +441,13 @@ input NestedDateTimeFilter {
   notIn: [DateTime!]
 }
 
+input NestedEnumLayoutTemplateFilter {
+  equals: LayoutTemplate
+  in: [LayoutTemplate!]
+  not: NestedEnumLayoutTemplateFilter
+  notIn: [LayoutTemplate!]
+}
+
 input NestedEnumLinkTypeFilter {
   equals: LinkType
   in: [LinkType!]
@@ -371,6 +460,13 @@ input NestedEnumMenuTypeFilter {
   in: [MenuType!]
   not: NestedEnumMenuTypeFilter
   notIn: [MenuType!]
+}
+
+input NestedEnumProgressIndicatorFilter {
+  equals: ProgressIndicator
+  in: [ProgressIndicator!]
+  not: NestedEnumProgressIndicatorFilter
+  notIn: [ProgressIndicator!]
 }
 
 input NestedEnumRoleFilter {
@@ -416,6 +512,17 @@ input NestedIntFilter {
   notIn: [Int!]
 }
 
+input NestedIntNullableFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntNullableFilter
+  notIn: [Int!]
+}
+
 input NestedStringFilter {
   contains: String
   endsWith: String
@@ -442,6 +549,12 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
   notIn: [String!]
   startsWith: String
+}
+
+enum ProgressIndicator {
+  circular
+  linear
+  notUsed
 }
 
 type Query {
@@ -598,6 +711,18 @@ input updateAppAssetsInput {
   splashMode: SplashMode
   tagLine: String
   textThemeMode: ThemeMode
+}
+
+input updateAppDesignInput {
+  activeTabColor: String
+  disblayPagetitle: Boolean
+  layoutTemplate: LayoutTemplate
+  navigationActiveColor: String
+  progressIndicator: ProgressIndicator
+  progressIndicatorColor: String
+  pullToRefresh: Boolean
+  themeColor: String
+  titleTheme: ThemeMode
 }
 
 input updateAppInput {

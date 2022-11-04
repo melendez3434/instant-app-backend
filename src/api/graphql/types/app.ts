@@ -18,6 +18,7 @@ export const App = objectType({
     t.model.userAgent()
     t.model.lang()
     t.model.assets()
+    t.model.design()
   },
 })
 export const AppAsset = objectType({
@@ -34,6 +35,21 @@ export const AppAsset = objectType({
     t.model.delay()
     t.model.backgroundImage()
     t.model.createdAt()
+  },
+})
+export const AppDesign = objectType({
+  name: 'AppDesign',
+  definition(t) {
+    t.model.id()
+    t.model.activeTabColor()
+    t.model.disblayPagetitle()
+    t.model.layoutTemplate()
+    t.model.navigationActiveColor()
+    t.model.progressIndicator()
+    t.model.progressIndicatorColor()
+    t.model.pullToRefresh()
+    t.model.themeColor()
+    t.model.titleTheme()
   },
 })
 export const Link = objectType({
@@ -121,6 +137,8 @@ export const Appmutations = extendType({
             lang: 'EN',
             appId: url.parse(website).hostname.split('.').reverse().join('.'),
             assets: { create: { disblayLogo: true, color: '#000' } },
+            design: { create: {} },
+
             owner: { connect: { id: ctx.user.id } },
           },
         })
@@ -189,6 +207,55 @@ export const Appmutations = extendType({
           //@ts-ignore
           data: {
             ...args.data,
+          },
+        })
+      },
+    })
+    t.field('updateAppDesign', {
+      type: 'AppDesign',
+      args: {
+        id: nonNull(intArg()),
+        data: arg({
+          type: inputObjectType({
+            name: 'updateAppDesignInput',
+            definition(t) {
+              t.string('activeTabColor')
+              t.string('themeColor')
+              t.field('titleTheme', { type: 'ThemeMode' })
+              t.boolean('disblayPagetitle')
+              t.field('layoutTemplate', { type: 'LayoutTemplate' })
+              t.field('progressIndicator', { type: 'ProgressIndicator' })
+
+              t.boolean('pullToRefresh')
+
+              t.string('progressIndicatorColor')
+              t.string('navigationActiveColor')
+            },
+          }),
+          required: true,
+        }),
+      },
+
+      async resolve(_root, args, ctx) {
+        // let { ...} = args.data
+        return await ctx.db.appDesign.upsert({
+          where: { appId: args.id },
+          //@ts-ignore
+          create: {
+            ...args.data,
+            App: { connect: { id: args.id } },
+          },
+          update: {
+            activeTabColor: args.data.activeTabColor || undefined,
+            themeColor: args.data.themeColor || undefined,
+            titleTheme: args.data.titleTheme || undefined,
+            disblayPagetitle: args.data.disblayPagetitle || undefined,
+            layoutTemplate: args.data.layoutTemplate || undefined,
+            progressIndicator: args.data.progressIndicator || undefined,
+            pullToRefresh: args.data.pullToRefresh || undefined,
+            progressIndicatorColor:
+              args.data.progressIndicatorColor || undefined,
+            navigationActiveColor: args.data.navigationActiveColor || undefined,
           },
         })
       },
