@@ -188,11 +188,14 @@ const apolloServer = async () => {
   // apollo.installSubscriptionHandlers(app)
   express.set('port', process.env.PORT || 4000)
   const app = httpServer.listen(express.get('port'), async () => {
-    const users = await prisma.user.findMany()
-    console.log('🚀 ~ file: app.ts ~ line 192 ~ app ~ users', users)
+    // const users = await prisma.user.findMany()
+    // console.log('🚀 ~ file: app.ts ~ line 192 ~ app ~ users', users)
+
     console.log('server running at port ' + (process.env.PORT || 4000))
   })
 
   app.setTimeout(25 * 1000) // 10 * 60 seconds * 1000 msecs = 10 minutes
 }
 apolloServer()
+
+//*nix supports multiline commands

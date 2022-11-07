@@ -50,18 +50,33 @@ model App {
   ownerId    Int
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
+  appBuilds  AppBuild[]
+}
+
+model AppBuild {
+  id              Int              @id @default(autoincrement())
+  status          AppBuildStatus   @default(waiting)
+  url             String?
+  appBuildVersion Int?
+  appVersion      String?
+  platform        AppBuildPlatform @default(android)
+  data            Json?
+  App             App?             @relation(fields: [appId], references: [id])
+  appId           Int?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model AppDesign {
   id                     Int               @id @default(autoincrement())
-  themeColor             String            @default("#282942")
+  themeColor             String            @default("3F51B5")
   titleTheme             ThemeMode         @default(light)
   progressIndicator      ProgressIndicator @default(notUsed)
   disblayPagetitle       Boolean           @default(true)
-  progressIndicatorColor String            @default("#282942")
+  progressIndicatorColor String            @default("3F51B5")
   pullToRefresh          Boolean           @default(true)
-  activeTabColor         String            @default("#282942")
-  navigationActiveColor  String            @default("#282942")
+  activeTabColor         String            @default("3F51B5")
+  navigationActiveColor  String            @default("3F51B5")
   layoutTemplate         LayoutTemplate    @default(drawerBar)
   App                    App?              @relation(fields: [appId], references: [id])
   appId                  Int?              @unique
@@ -70,7 +85,7 @@ model AppDesign {
 
 model AppDesignDrawer {
   id              Int        @id @default(autoincrement())
-  color           String     @default("#282942")
+  color           String     @default("3F51B5")
   textTheme       ThemeMode  @default(light)
   drawerMode      DrawerMode @default(notUsed)
   displayLogo     Boolean    @default(true)
@@ -160,4 +175,15 @@ enum DrawerMode {
   notUsed
   image
   color
+}
+
+enum AppBuildStatus {
+  waiting
+  success
+  failed
+}
+
+enum AppBuildPlatform {
+  android
+  ios
 }

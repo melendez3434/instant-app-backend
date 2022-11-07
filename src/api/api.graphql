@@ -64,6 +64,79 @@ input AppAssetWhereInput {
   updatedAt: DateTimeFilter
 }
 
+type AppBuild {
+  appBuildVersion: Int
+  appVersion: String
+  createdAt: DateTime!
+  data: Json
+  id: Int!
+  platform: AppBuildPlatform!
+  status: AppBuildStatus!
+  updatedAt: DateTime!
+  url: String
+}
+
+input AppBuildListRelationFilter {
+  every: AppBuildWhereInput
+  none: AppBuildWhereInput
+  some: AppBuildWhereInput
+}
+
+input AppBuildOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input AppBuildOrderByWithRelationInput {
+  App: AppOrderByWithRelationInput
+  appBuildVersion: SortOrder
+  appId: SortOrder
+  appVersion: SortOrder
+  createdAt: SortOrder
+  data: SortOrder
+  id: SortOrder
+  platform: SortOrder
+  status: SortOrder
+  updatedAt: SortOrder
+  url: SortOrder
+}
+
+enum AppBuildPlatform {
+  android
+  ios
+}
+
+enum AppBuildStatus {
+  failed
+  success
+  waiting
+}
+
+input AppBuildWhereInput {
+  AND: [AppBuildWhereInput!]
+  App: AppWhereInput
+  NOT: [AppBuildWhereInput!]
+  OR: [AppBuildWhereInput!]
+  appBuildVersion: IntNullableFilter
+  appId: IntNullableFilter
+  appVersion: StringNullableFilter
+  createdAt: DateTimeFilter
+  data: JsonNullableFilter
+  id: IntFilter
+  platform: EnumAppBuildPlatformFilter
+  status: EnumAppBuildStatusFilter
+  updatedAt: DateTimeFilter
+  url: StringNullableFilter
+}
+
+input AppBuildWhereUniqueInput {
+  id: Int
+}
+
+type AppBuildsConnectionPayLoad {
+  count: Int
+  nodes: [AppBuild]
+}
+
 type AppConnectionPayLoad {
   count: Int
   nodes: [App]
@@ -172,6 +245,7 @@ input AppOrderByRelationAggregateInput {
 }
 
 input AppOrderByWithRelationInput {
+  appBuilds: AppBuildOrderByRelationAggregateInput
   appId: SortOrder
   assets: AppAssetOrderByWithRelationInput
   createdAt: SortOrder
@@ -191,6 +265,7 @@ input AppWhereInput {
   AND: [AppWhereInput!]
   NOT: [AppWhereInput!]
   OR: [AppWhereInput!]
+  appBuilds: AppBuildListRelationFilter
   appId: StringFilter
   assets: AppAssetWhereInput
   createdAt: DateTimeFilter
@@ -282,6 +357,20 @@ enum DrawerMode {
   color
   image
   notUsed
+}
+
+input EnumAppBuildPlatformFilter {
+  equals: AppBuildPlatform
+  in: [AppBuildPlatform!]
+  not: NestedEnumAppBuildPlatformFilter
+  notIn: [AppBuildPlatform!]
+}
+
+input EnumAppBuildStatusFilter {
+  equals: AppBuildStatus
+  in: [AppBuildStatus!]
+  not: NestedEnumAppBuildStatusFilter
+  notIn: [AppBuildStatus!]
 }
 
 input EnumDrawerModeFilter {
@@ -472,6 +561,7 @@ type Mutation {
   addLink(data: addLinkInput!): Link
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
+  generateBuild(id: Int!, platform: AppBuildPlatform!): AppBuild
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signup(email: String!, password: String!): AuthPayLoad
@@ -499,6 +589,20 @@ input NestedDateTimeFilter {
   lte: DateTime
   not: NestedDateTimeFilter
   notIn: [DateTime!]
+}
+
+input NestedEnumAppBuildPlatformFilter {
+  equals: AppBuildPlatform
+  in: [AppBuildPlatform!]
+  not: NestedEnumAppBuildPlatformFilter
+  notIn: [AppBuildPlatform!]
+}
+
+input NestedEnumAppBuildStatusFilter {
+  equals: AppBuildStatus
+  in: [AppBuildStatus!]
+  not: NestedEnumAppBuildStatusFilter
+  notIn: [AppBuildStatus!]
 }
 
 input NestedEnumDrawerModeFilter {
@@ -626,6 +730,7 @@ enum ProgressIndicator {
 
 type Query {
   app(id: Int!): App
+  appBuilds(orderBy: AppBuildOrderByWithRelationInput, skip: Int, take: Int, where: AppBuildWhereInput): AppBuildsConnectionPayLoad
   apps(orderBy: AppOrderByWithRelationInput, skip: Int, take: Int, where: AppWhereInput): AppConnectionPayLoad
   links(appId: Int!, orderBy: LinkOrderByWithRelationInput, skip: Int, take: Int, where: LinkWhereInput): linkConnectionPayLoad
   me: User

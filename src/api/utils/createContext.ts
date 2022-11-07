@@ -50,7 +50,6 @@ export const createContext = async ({
   })
   const user = await auth.authenticate()
   const parser = req?.get('origin') && new URL(req?.get('origin'))
-  console.log('🚀 ~ file: createContext.ts ~ line 53 ~ parser', parser)
 
   const host =
     req?.get('builderDomain') &&
@@ -59,16 +58,6 @@ export const createContext = async ({
       : process.env.NODE_ENV == 'development' || parser?.hostname == 'localhost'
       ? `demo.brand.com`
       : parser?.hostname
-  console.log(
-    '🚀 ~ file: createContext.ts ~ line 57 ~ host',
-    req?.get('builderDomain'),
-  )
-  console.log('🚀 ~ file: createContext.ts ~ line 57 ~ host', req.headers)
-  console.log(
-    '🚀 ~ file: createContext.ts ~ line 57 ~ host',
-    req.headers.builderdomain,
-  )
-  console.log('🚀 ~ file: createContext.ts ~ line 56 ~ host', host)
 
   const ctx = {
     auth,
