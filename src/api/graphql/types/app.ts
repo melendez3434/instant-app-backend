@@ -404,7 +404,7 @@ export const Appmutations = extendType({
             console.log('🚀 ~ file: app.ts ~ line 378 ~ authData', authData)
             cmd.run(
               `
-              cd ./src/api/app-builder
+              cd ./src/api/app-instant
               npx eas build --platform ${platform}  --json  --non-interactive
             
               `,

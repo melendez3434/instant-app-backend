@@ -23,6 +23,7 @@ import {
   ApolloServerPluginDrainHttpServer,
   ApolloServerPluginLandingPageLocalDefault,
 } from 'apollo-server-core'
+import { exec } from 'child_process'
 
 const schema = applyMiddleware(baseSchema, permissions)
 const express = createExpress()
@@ -197,5 +198,37 @@ const apolloServer = async () => {
   app.setTimeout(25 * 1000) // 10 * 60 seconds * 1000 msecs = 10 minutes
 }
 apolloServer()
+// var cmd = require('node-cmd')
 
-//*nix supports multiline commands
+// cmd.run(
+//   `
+//   cd ./src/api/
+//   sh ./buildApp.sh
+
+//   `,
+//   async function (err, data, stderr) {
+//     console.log('🚀 ~ file: app.ts ~ line 385 ~ stderr', stderr)
+//     console.log('🚀 ~ file: app.ts ~ line 385 ~ err', err)
+//     console.log('🚀 ~ file: app.ts ~ line 385 ~ data', data)
+//   },
+// )
+// var nexpect = require('nexpect')
+
+// nexpect
+//   .spawn(
+//     `
+//   npx  expo login -u instantappbuilder -p instantappbuilder
+
+//   npx eas credentials`,
+//   )
+//   .expect('>')
+//   .sendline("console.log('testing')")
+//   .expect('testing')
+//   .sendline('process.exit()')
+//   .run(function (err) {
+//     if (!err) {
+//       console.log('node process started, console logged, process exited')
+//     } else {
+//       console.log(err)
+//     }
+//   })
