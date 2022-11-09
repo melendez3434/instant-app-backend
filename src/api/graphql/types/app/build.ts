@@ -44,7 +44,6 @@ export const AppBuildQuery = extendType({
         appId: nonNull(intArg()),
       },
       async resolve(source, { appId, ...args }, ctx) {
-        console.log('🚀 ~ file: build.ts ~ line 47 ~ resolve ~ appId', appId)
         //@ts-ignore
         args.where = {
           //@ts-ignore
@@ -52,10 +51,7 @@ export const AppBuildQuery = extendType({
           appId: { equals: appId },
         } //@ts-ignore
         const count = await ctx.db.appBuild.count({ where: args.where })
-        console.log(
-          '🚀 ~ file: build.ts ~ line 52 ~ resolve ~ counts',
-          await ctx.db.appBuild.findMany({}),
-        )
+
         return {
           //@ts-ignore
           count,
