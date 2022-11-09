@@ -56,7 +56,7 @@ export const createContext = async ({
     !req?.get('builderDomain')?.includes('localhost')
       ? req?.get('builderDomain')
       : process.env.NODE_ENV == 'development' || parser?.hostname == 'localhost'
-      ? `demo.brand.com`
+      ? `take.instantappnow.com`
       : parser?.hostname
 
   const ctx = {

@@ -69,14 +69,14 @@ model AppBuild {
 
 model AppDesign {
   id                     Int               @id @default(autoincrement())
-  themeColor             String            @default("3F51B5")
+  themeColor             String            @default("#3F51B5")
   titleTheme             ThemeMode         @default(light)
   progressIndicator      ProgressIndicator @default(notUsed)
   disblayPagetitle       Boolean           @default(true)
-  progressIndicatorColor String            @default("3F51B5")
+  progressIndicatorColor String            @default("#3F51B5")
   pullToRefresh          Boolean           @default(true)
-  activeTabColor         String            @default("3F51B5")
-  navigationActiveColor  String            @default("3F51B5")
+  activeTabColor         String            @default("#3F51B5")
+  navigationActiveColor  String            @default("#3F51B5")
   layoutTemplate         LayoutTemplate    @default(drawerBar)
   App                    App?              @relation(fields: [appId], references: [id])
   appId                  Int?              @unique
@@ -85,7 +85,7 @@ model AppDesign {
 
 model AppDesignDrawer {
   id              Int        @id @default(autoincrement())
-  color           String     @default("3F51B5")
+  color           String     @default("#3F51B5")
   textTheme       ThemeMode  @default(light)
   drawerMode      DrawerMode @default(notUsed)
   displayLogo     Boolean    @default(true)
