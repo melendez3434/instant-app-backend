@@ -37,7 +37,13 @@ export const isAppOwner = rule({ cache: 'strict' })(
   async (parent, args, ctx: Context, info) => {
     if (
       await ctx.db.app.count({
-        where: { ownerId: ctx.user.id, id: args.id },
+        where: {
+          id: args.id,
+          OR: [
+            { owner: { builder: { ownerId: ctx.user.id } } },
+            { ownerId: ctx.user.id },
+          ],
+        },
       })
     ) {
       return true
@@ -51,7 +57,15 @@ export const isAppOwnerFromLink = rule({ cache: 'strict' })(
   async (parent, args, ctx: Context, info) => {
     if (
       await ctx.db.link.count({
-        where: { app: { ownerId: ctx.user.id }, id: args.id },
+        where: {
+          app: {
+            OR: [
+              { owner: { builder: { ownerId: ctx.user.id } } },
+              { ownerId: ctx.user.id },
+            ],
+          },
+          id: args.id,
+        },
       })
     ) {
       return true

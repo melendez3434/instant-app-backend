@@ -107,6 +107,55 @@ export const AppQuery = extendType({
         return await ctx.db.app.findUnique({ where: { id } })
       },
     })
+    t.crud.apps({ filtering: true, ordering: true, pagination: true })
+    t.field('apps', {
+      type: objectType({
+        name: 'AppConnectionPayLoad',
+        definition(t) {
+          t.int('count')
+          t.list.field('nodes', { type: 'App' })
+        },
+      }),
+      args: {
+        skip: intArg(),
+        take: intArg(),
+        orderBy: 'AppOrderByWithRelationInput',
+        where: 'AppWhereInput',
+      },
+      async resolve(source, args, ctx) {
+        args.where = { ...args.where, ownerId: { equals: ctx.user.id } }
+        return {
+          //@ts-ignore
+          count: await ctx.db.app.count({ where: args.where }),
+          //@ts-ignore
+
+          nodes: await ctx.db.app.findMany(args),
+        }
+      },
+    })
+    t.field('allApps', {
+      type: 'AppConnectionPayLoad',
+      args: {
+        skip: intArg(),
+        take: intArg(),
+        orderBy: 'AppOrderByWithRelationInput',
+        where: 'AppWhereInput',
+      },
+      async resolve(source, args, ctx) {
+        args.where = {
+          ...args.where,
+          owner: { builderDomain: { equals: ctx.builderDomain } },
+        }
+
+        return {
+          //@ts-ignore
+          count: await ctx.db.app.count({ where: args.where }),
+          //@ts-ignore
+
+          nodes: await ctx.db.app.findMany(args),
+        }
+      },
+    })
     t.crud.appBuilds({ filtering: true, ordering: true, pagination: true })
 
     t.field('appBuilds', {
@@ -135,33 +184,6 @@ export const AppQuery = extendType({
           //@ts-ignore
 
           nodes: await ctx.db.appBuild.findMany(args),
-        }
-      },
-    })
-
-    t.crud.apps({ filtering: true, ordering: true, pagination: true })
-    t.field('apps', {
-      type: objectType({
-        name: 'AppConnectionPayLoad',
-        definition(t) {
-          t.int('count')
-          t.list.field('nodes', { type: 'App' })
-        },
-      }),
-      args: {
-        skip: intArg(),
-        take: intArg(),
-        orderBy: 'AppOrderByWithRelationInput',
-        where: 'AppWhereInput',
-      },
-      async resolve(source, args, ctx) {
-        args.where = { ...args.where, ownerId: { equals: ctx.user.id } }
-        return {
-          //@ts-ignore
-          count: await ctx.db.app.count({ where: args.where }),
-          //@ts-ignore
-
-          nodes: await ctx.db.app.findMany(args),
         }
       },
     })
@@ -513,7 +535,13 @@ export const LinkQuery = extendType({
         const { appId, ...rest } = args
         if (
           !(await ctx.db.app.count({
-            where: { ownerId: ctx.user.id, id: appId },
+            where: {
+              OR: [
+                { owner: { builder: { ownerId: ctx.user.id } } },
+                { ownerId: ctx.user.id },
+              ],
+              id: appId,
+            },
           }))
         )
           throw new Error('must be the owner of the app')
@@ -556,7 +584,13 @@ export const Linkmutations = extendType({
         let { name, type, data, menuType, appId, icon } = args.data
         if (
           !(await ctx.db.app.count({
-            where: { ownerId: { equals: ctx.user.id }, id: appId },
+            where: {
+              OR: [
+                { owner: { builder: { ownerId: ctx.user.id } } },
+                { ownerId: ctx.user.id },
+              ],
+              id: appId,
+            },
           }))
         )
           throw new Error('must be the owner of the app')

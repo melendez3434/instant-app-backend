@@ -189,8 +189,8 @@ const apolloServer = async () => {
   // apollo.installSubscriptionHandlers(app)
   express.set('port', process.env.PORT || 4000)
   const app = httpServer.listen(express.get('port'), async () => {
-    // const users = await prisma.user.findMany()
-    // console.log('🚀 ~ file: app.ts ~ line 192 ~ app ~ users', users)
+    const users = await prisma.user.findMany()
+    console.log('🚀 ~ file: app.ts ~ line 192 ~ app ~ users', users)
 
     console.log('server running at port ' + (process.env.PORT || 4000))
   })

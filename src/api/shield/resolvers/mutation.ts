@@ -6,8 +6,8 @@ const appMutationsShield = {
     name: 'generateBuild',
     slug: 'generateBuild',
     desc: '',
-    role: ['all'],
-    permissions: allow,
+    role: ['superAdmin'],
+    permissions: isAuth,
   },
   addApp: {
     name: 'addApp',
