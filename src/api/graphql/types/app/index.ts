@@ -394,6 +394,8 @@ export const LinkQuery = extendType({
           }))
         )
           throw new Error('must be the owner of the app')
+        //@ts-ignore
+        rest.where = { ...args.where, appid: { equals: appId } }
 
         return {
           //@ts-ignore
