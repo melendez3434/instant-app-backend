@@ -731,7 +731,7 @@ enum ProgressIndicator {
 type Query {
   allApps(orderBy: AppOrderByWithRelationInput, skip: Int, take: Int, where: AppWhereInput): AppConnectionPayLoad
   app(id: Int!): App
-  appBuilds(orderBy: AppBuildOrderByWithRelationInput, skip: Int, take: Int, where: AppBuildWhereInput): AppBuildsConnectionPayLoad
+  appBuilds(appId: Int!, orderBy: AppBuildOrderByWithRelationInput, skip: Int, take: Int): AppBuildsConnectionPayLoad
   apps(orderBy: AppOrderByWithRelationInput, skip: Int, take: Int, where: AppWhereInput): AppConnectionPayLoad
   links(appId: Int!, orderBy: LinkOrderByWithRelationInput, skip: Int, take: Int, where: LinkWhereInput): linkConnectionPayLoad
   me: User
