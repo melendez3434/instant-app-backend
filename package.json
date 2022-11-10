@@ -64,6 +64,7 @@
     "shell": "^0.9.4",
     "shelljs": "^0.8.5",
     "slug-arabic": "^1.0.0",
+    "stripe": "^10.17.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2",
     "validator": "^13.7.0"

@@ -2,6 +2,20 @@ import { allow } from 'graphql-shield'
 import { isAppOwner, isAppOwnerFromLink, isAuth } from '../rules'
 
 const appMutationsShield = {
+  subscribe: {
+    name: 'subscribe',
+    slug: 'subscribe',
+    desc: '',
+    role: ['all'],
+    permissions: isAuth,
+  },
+  editMyPlan: {
+    name: 'editMyPlan',
+    slug: 'editMyPlan',
+    desc: '',
+    role: ['all'],
+    permissions: isAuth,
+  },
   generateBuild: {
     name: 'generateBuild',
     slug: 'generateBuild',

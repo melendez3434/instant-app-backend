@@ -561,11 +561,13 @@ type Mutation {
   addLink(data: addLinkInput!): Link
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
+  editMyPlan: String
   generateBuild(id: Int!, platform: AppBuildPlatform!): AppBuild
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signup(email: String!, password: String!): AuthPayLoad
   signupSuperAdmin(companyName: String, email: String!, icon: String, logo: String, name: String!, password: String!): AuthPayLoad
+  subscribe: String
   updateApp(data: updateAppInput!, id: Int!): App
   updateAppAssets(data: updateAppAssetsInput!, id: Int!): AppAsset
   updateAppDesign(data: updateAppDesignInput!, id: Int!): AppDesign
@@ -831,6 +833,7 @@ input UserOrderByWithRelationInput {
   id: SortOrder
   password: SortOrder
   role: SortOrder
+  stripeId: SortOrder
   updatedAt: SortOrder
 }
 
@@ -847,6 +850,7 @@ input UserWhereInput {
   id: IntFilter
   password: StringFilter
   role: EnumRoleFilter
+  stripeId: StringNullableFilter
   updatedAt: DateTimeFilter
 }
 
