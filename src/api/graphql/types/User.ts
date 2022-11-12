@@ -10,7 +10,8 @@ export const User = objectType({
     t.model.email()
 
     t.model.password()
-
+    t.model.planStatus()
+    t.model.nextBill()
     t.model.role()
     t.int('appsCount', {
       async resolve({ id }, args, ctx) {

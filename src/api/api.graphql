@@ -353,6 +353,17 @@ input DateTimeFilter {
   notIn: [DateTime!]
 }
 
+input DateTimeNullableFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeNullableFilter
+  notIn: [DateTime!]
+}
+
 enum DrawerMode {
   color
   image
@@ -399,6 +410,13 @@ input EnumMenuTypeFilter {
   in: [MenuType!]
   not: NestedEnumMenuTypeFilter
   notIn: [MenuType!]
+}
+
+input EnumPlanStatusFilter {
+  equals: PlanStatus
+  in: [PlanStatus!]
+  not: NestedEnumPlanStatusFilter
+  notIn: [PlanStatus!]
 }
 
 input EnumProgressIndicatorFilter {
@@ -561,7 +579,6 @@ type Mutation {
   addLink(data: addLinkInput!): Link
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
-  editMyPlan: String
   generateBuild(id: Int!, platform: AppBuildPlatform!): AppBuild
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
@@ -590,6 +607,17 @@ input NestedDateTimeFilter {
   lt: DateTime
   lte: DateTime
   not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input NestedDateTimeNullableFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeNullableFilter
   notIn: [DateTime!]
 }
 
@@ -633,6 +661,13 @@ input NestedEnumMenuTypeFilter {
   in: [MenuType!]
   not: NestedEnumMenuTypeFilter
   notIn: [MenuType!]
+}
+
+input NestedEnumPlanStatusFilter {
+  equals: PlanStatus
+  in: [PlanStatus!]
+  not: NestedEnumPlanStatusFilter
+  notIn: [PlanStatus!]
 }
 
 input NestedEnumProgressIndicatorFilter {
@@ -724,6 +759,12 @@ input NestedStringNullableFilter {
   startsWith: String
 }
 
+enum PlanStatus {
+  notSub
+  stopped
+  sub
+}
+
 enum ProgressIndicator {
   circular
   linear
@@ -803,7 +844,9 @@ type User {
   createdAt: DateTime!
   email: String!
   id: Int!
+  nextBill: DateTime
   password: String!
+  planStatus: PlanStatus!
   role: Role!
   updatedAt: DateTime!
 }
@@ -831,9 +874,12 @@ input UserOrderByWithRelationInput {
   createdAt: SortOrder
   email: SortOrder
   id: SortOrder
+  nextBill: SortOrder
   password: SortOrder
+  planStatus: SortOrder
   role: SortOrder
-  stripeId: SortOrder
+  stripeCustomerId: SortOrder
+  stripeSubId: SortOrder
   updatedAt: SortOrder
 }
 
@@ -848,15 +894,20 @@ input UserWhereInput {
   createdAt: DateTimeFilter
   email: StringFilter
   id: IntFilter
+  nextBill: DateTimeNullableFilter
   password: StringFilter
+  planStatus: EnumPlanStatusFilter
   role: EnumRoleFilter
-  stripeId: StringNullableFilter
+  stripeCustomerId: StringNullableFilter
+  stripeSubId: StringNullableFilter
   updatedAt: DateTimeFilter
 }
 
 input UserWhereUniqueInput {
   email_builderDomain: UserEmailBuilderDomainCompoundUniqueInput
   id: Int
+  stripeCustomerId: String
+  stripeSubId: String
 }
 
 input addAppInput {

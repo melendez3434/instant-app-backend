@@ -8,17 +8,20 @@ datasource db {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  role          Role     @default(user)
-  email         String
-  password      String
-  stripeId      String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  App           App[]
-  builderMine   Builder? @relation("builderToOwner")
-  builder       Builder? @relation("builderToUsers", fields: [builderDomain], references: [domain])
-  builderDomain String?
+  id               Int        @id @default(autoincrement())
+  role             Role       @default(user)
+  email            String
+  planStatus       PlanStatus @default(notSub)
+  password         String
+  nextBill         DateTime?
+  stripeSubId      String?    @unique
+  stripeCustomerId String?    @unique
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  App              App[]
+  builderMine      Builder?   @relation("builderToOwner")
+  builder          Builder?   @relation("builderToUsers", fields: [builderDomain], references: [domain])
+  builderDomain    String?
 
   @@unique([email, builderDomain])
 }
@@ -187,4 +190,10 @@ enum AppBuildStatus {
 enum AppBuildPlatform {
   android
   ios
+}
+
+enum PlanStatus {
+  notSub
+  stopped
+  sub
 }

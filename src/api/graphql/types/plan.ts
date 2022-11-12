@@ -12,15 +12,41 @@ export const PlanMutations = extendType({
       async resolve(source, args, ctx) {
         const YOUR_DOMAIN = 'http://' + ctx.builderDomain
 
-        const prices = await stripe.prices.list({
-          expand: ['data.product'],
+        // const prices = await stripe.prices.list({
+        //   expand: ['data.product'],
+
+        // })
+        // console.log('🚀 ~ file: plan.ts ~ line 18 ~ resolve ~ prices', prices)
+
+        // const price =prices.data.find(({id})=>id==process.env.STRIPE_PRODUCT_ID)
+        // console.log('🚀 ~ file: plan.ts ~ line 18 ~ resolve ~ price', price)
+
+        const user = await ctx.db.user.findUnique({
+          where: { id: ctx.user.id },
         })
-        console.log('🚀 ~ file: plan.ts ~ line 18 ~ resolve ~ prices', prices)
+        if (user?.stripeCustomerId) {
+          const returnUrl = YOUR_DOMAIN
+
+          const portalSession = await stripe.billingPortal.sessions.create({
+            customer: user?.stripeCustomerId,
+            return_url: returnUrl,
+          })
+
+          return portalSession.url
+        }
+
         const session = await stripe.checkout.sessions.create({
           billing_address_collection: 'auto',
+          client_reference_id: user?.id,
+          customer: user?.stripeCustomerId || undefined,
+          customer_email: user?.stripeCustomerId ? undefined : ctx.user.email,
+
+          metadata: { builderName: ctx.builderDomain.split('.')[0] },
           line_items: [
             {
-              price: prices.data[0].id,
+              // price: prices.data[0].id,
+              price: process.env.STRIPE_PRODUCT_ID,
+
               // For metered billing, do not pass quantity
               quantity: 1,
             },
@@ -34,30 +60,30 @@ export const PlanMutations = extendType({
         return session.url
       },
     })
-    t.field('editMyPlan', {
-      type: 'String',
+    // t.field('editMyPlan', {
+    //   type: 'String',
 
-      async resolve(source, args, ctx) {
-        const YOUR_DOMAIN = 'http://' + ctx.builderDomain
+    //   async resolve(source, args, ctx) {
+    //     const YOUR_DOMAIN = 'http://' + ctx.builderDomain
 
-        // For demonstration purposes, we're using the Checkout session to retrieve the customer ID.
-        // Typically this is stored alongside the authenticated user in your database.
-        const { stripeId } = ctx.user
-        const checkoutSession = await stripe.checkout.sessions.retrieve(
-          stripeId,
-        )
+    //     // For demonstration purposes, we're using the Checkout session to retrieve the customer ID.
+    //     // Typically this is stored alongside the authenticated user in your database.
+    //     const { stripeSubId } = ctx.user
+    //     const checkoutSession = await stripe.checkout.sessions.retrieve(
+    //       stripeId:stripeSubId,
+    //     )
 
-        // This is the url to which the customer will be redirected when they are done
-        // managing their billing with the portal.
-        const returnUrl = YOUR_DOMAIN
+    //     // This is the url to which the customer will be redirected when they are done
+    //     // managing their billing with the portal.
+    //     const returnUrl = YOUR_DOMAIN
 
-        const portalSession = await stripe.billingPortal.sessions.create({
-          customer: checkoutSession.customer,
-          return_url: returnUrl,
-        })
+    //     const portalSession = await stripe.billingPortal.sessions.create({
+    //       customer: checkoutSession.customer,
+    //       return_url: returnUrl,
+    //     })
 
-        return portalSession.url
-      },
-    })
+    //     return portalSession.url
+    //   },
+    // })
   },
 })
