@@ -1,4 +1,4 @@
-import { extendType } from 'nexus'
+import { extendType, intArg, nonNull } from 'nexus'
 
 // This is your test secret API key.
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
@@ -8,8 +8,8 @@ export const PlanMutations = extendType({
   definition(t) {
     t.field('subscribe', {
       type: 'String',
-
-      async resolve(source, args, ctx) {
+      args: { id: nonNull(intArg()) },
+      async resolve(source, { id }, ctx) {
         const YOUR_DOMAIN = 'http://' + ctx.builderDomain
 
         // const prices = await stripe.prices.list({
@@ -24,24 +24,32 @@ export const PlanMutations = extendType({
         const user = await ctx.db.user.findUnique({
           where: { id: ctx.user.id },
         })
-        if (user?.stripeCustomerId) {
+        const app = await ctx.db.app.findUnique({
+          where: { id },
+          select: { stripeSubId: true, id: true, name: true },
+        })
+        if (app?.stripeSubId) {
           const returnUrl = YOUR_DOMAIN
 
           const portalSession = await stripe.billingPortal.sessions.create({
             customer: user?.stripeCustomerId,
-            return_url: returnUrl,
+            return_url: returnUrl + `/app/${id}`,
           })
 
           return portalSession.url
         }
-
+        const metadata = {
+          builderName: ctx.builderDomain.split('.')[0],
+          userId: user?.id,
+          appId: app?.id,
+        }
         const session = await stripe.checkout.sessions.create({
           billing_address_collection: 'auto',
           client_reference_id: user?.id,
           customer: user?.stripeCustomerId || undefined,
           customer_email: user?.stripeCustomerId ? undefined : ctx.user.email,
 
-          metadata: { builderName: ctx.builderDomain.split('.')[0] },
+          metadata,
           line_items: [
             {
               // price: prices.data[0].id,
@@ -51,8 +59,15 @@ export const PlanMutations = extendType({
               quantity: 1,
             },
           ],
+          // payment_intent_data: {
+          //   metadata,
+          // },
+          subscription_data: {
+            metadata,
+            description: app?.name,
+          },
           mode: 'subscription',
-          success_url: `${YOUR_DOMAIN}/subscribe/?success=true&session_id={CHECKOUT_SESSION_ID}`,
+          success_url: `${YOUR_DOMAIN}/app/${id}/deploy?success=true&session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${YOUR_DOMAIN}/subscribe/?canceled=true`,
         })
         console.log('🚀 ~ file: plan.ts ~ line 31 ~ resolve ~ session', session)

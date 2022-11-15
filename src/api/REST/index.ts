@@ -50,13 +50,13 @@ const router = (express) => {
           )
           status = subscription.status
           if (status == 'complete' && subscription.payment_status == 'paid') {
-            await prisma.user.update({
+            await prisma.app.update({
               where: {
-                id: Number(subscription.client_reference_id),
+                id: Number(subscription.metadata.appId),
               },
               data: {
                 stripeSubId: subscription.subscription,
-                stripeCustomerId: subscription.customer,
+                owner: { update: { stripeCustomerId: subscription.customer } },
               },
             })
           }
@@ -94,16 +94,18 @@ const router = (express) => {
 
           console.log(`Subscription status is ${status}.`)
           if (status == 'active') {
-            await prisma.user.update({
-              where: { stripeCustomerId: subscription.customer },
+            await prisma.app.update({
+              where: {
+                id: Number(subscription.metadata.appId),
+              },
               data: {
                 planStatus: 'sub',
                 nextBill: moment.unix(subscription.current_period_end).toDate(),
               },
             })
           } else {
-            await prisma.user.update({
-              where: { stripeCustomerId: subscription.customer },
+            await prisma.app.update({
+              where: { id: Number(subscription.metadata.appId) },
               data: {
                 planStatus: 'stopped',
                 // nextBill: moment.unix(subscription.current_period_end).toDate(),
@@ -124,16 +126,18 @@ const router = (express) => {
           status = subscription.status
           console.log(`Subscription status is ${status}.`)
           if (status == 'active') {
-            await prisma.user.update({
-              where: { stripeCustomerId: subscription.customer },
+            await prisma.app.update({
+              where: {
+                id: Number(subscription.metadata.appId),
+              },
               data: {
                 planStatus: 'sub',
                 nextBill: moment.unix(subscription.current_period_end).toDate(),
               },
             })
           } else {
-            await prisma.user.update({
-              where: { stripeCustomerId: subscription.customer },
+            await prisma.app.update({
+              where: { id: Number(subscription.metadata.appId) },
               data: {
                 planStatus: 'stopped',
                 // nextBill: moment.unix(subscription.current_period_end).toDate(),

@@ -19,7 +19,9 @@ export const App = objectType({
     t.model.userAgent()
     t.model.lang()
     t.model.assets()
+    t.model.nextBill()
     t.model.design()
+    t.model.planStatus()
   },
 })
 

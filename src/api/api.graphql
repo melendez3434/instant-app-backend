@@ -9,6 +9,8 @@ type App {
   id: Int!
   lang: String!
   name: String!
+  nextBill: DateTime
+  planStatus: PlanStatus!
   userAgent: String
   website: String!
 }
@@ -254,8 +256,11 @@ input AppOrderByWithRelationInput {
   lang: SortOrder
   name: SortOrder
   navigation: LinkOrderByRelationAggregateInput
+  nextBill: SortOrder
   owner: UserOrderByWithRelationInput
   ownerId: SortOrder
+  planStatus: SortOrder
+  stripeSubId: SortOrder
   updatedAt: SortOrder
   userAgent: SortOrder
   website: SortOrder
@@ -274,8 +279,11 @@ input AppWhereInput {
   lang: StringFilter
   name: StringFilter
   navigation: LinkListRelationFilter
+  nextBill: DateTimeNullableFilter
   owner: UserWhereInput
   ownerId: IntFilter
+  planStatus: EnumPlanStatusFilter
+  stripeSubId: StringNullableFilter
   updatedAt: DateTimeFilter
   userAgent: StringNullableFilter
   website: StringFilter
@@ -283,6 +291,7 @@ input AppWhereInput {
 
 input AppWhereUniqueInput {
   id: Int
+  stripeSubId: String
 }
 
 type AuthPayLoad {
@@ -584,7 +593,7 @@ type Mutation {
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signup(email: String!, password: String!): AuthPayLoad
   signupSuperAdmin(companyName: String, email: String!, icon: String, logo: String, name: String!, password: String!): AuthPayLoad
-  subscribe: String
+  subscribe(id: Int!): String
   updateApp(data: updateAppInput!, id: Int!): App
   updateAppAssets(data: updateAppAssetsInput!, id: Int!): AppAsset
   updateAppDesign(data: updateAppDesignInput!, id: Int!): AppDesign
@@ -844,9 +853,7 @@ type User {
   createdAt: DateTime!
   email: String!
   id: Int!
-  nextBill: DateTime
   password: String!
-  planStatus: PlanStatus!
   role: Role!
   updatedAt: DateTime!
 }
@@ -874,12 +881,9 @@ input UserOrderByWithRelationInput {
   createdAt: SortOrder
   email: SortOrder
   id: SortOrder
-  nextBill: SortOrder
   password: SortOrder
-  planStatus: SortOrder
   role: SortOrder
   stripeCustomerId: SortOrder
-  stripeSubId: SortOrder
   updatedAt: SortOrder
 }
 
@@ -894,12 +898,9 @@ input UserWhereInput {
   createdAt: DateTimeFilter
   email: StringFilter
   id: IntFilter
-  nextBill: DateTimeNullableFilter
   password: StringFilter
-  planStatus: EnumPlanStatusFilter
   role: EnumRoleFilter
   stripeCustomerId: StringNullableFilter
-  stripeSubId: StringNullableFilter
   updatedAt: DateTimeFilter
 }
 
@@ -907,7 +908,6 @@ input UserWhereUniqueInput {
   email_builderDomain: UserEmailBuilderDomainCompoundUniqueInput
   id: Int
   stripeCustomerId: String
-  stripeSubId: String
 }
 
 input addAppInput {

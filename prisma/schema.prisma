@@ -8,19 +8,16 @@ datasource db {
 }
 
 model User {
-  id               Int        @id @default(autoincrement())
-  role             Role       @default(user)
+  id               Int      @id @default(autoincrement())
+  role             Role     @default(user)
   email            String
-  planStatus       PlanStatus @default(notSub)
   password         String
-  nextBill         DateTime?
-  stripeSubId      String?    @unique
-  stripeCustomerId String?    @unique
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  stripeCustomerId String?  @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
   App              App[]
-  builderMine      Builder?   @relation("builderToOwner")
-  builder          Builder?   @relation("builderToUsers", fields: [builderDomain], references: [domain])
+  builderMine      Builder? @relation("builderToOwner")
+  builder          Builder? @relation("builderToUsers", fields: [builderDomain], references: [domain])
   builderDomain    String?
 
   @@unique([email, builderDomain])
@@ -41,20 +38,23 @@ model Builder {
 }
 
 model App {
-  id         Int        @id @default(autoincrement())
-  name       String
-  website    String
-  appId      String
-  lang       String
-  userAgent  String?
-  assets     AppAsset?
-  design     AppDesign?
-  navigation Link[]     @relation("mainNavigationToLinks")
-  owner      User       @relation(fields: [ownerId], references: [id])
-  ownerId    Int
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  appBuilds  AppBuild[]
+  id          Int        @id @default(autoincrement())
+  name        String
+  website     String
+  appId       String
+  lang        String
+  userAgent   String?
+  nextBill    DateTime?
+  stripeSubId String?    @unique
+  planStatus  PlanStatus @default(notSub)
+  assets      AppAsset?
+  design      AppDesign?
+  navigation  Link[]     @relation("mainNavigationToLinks")
+  owner       User       @relation(fields: [ownerId], references: [id])
+  ownerId     Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  appBuilds   AppBuild[]
 }
 
 model AppBuild {
