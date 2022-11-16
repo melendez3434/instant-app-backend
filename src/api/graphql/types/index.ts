@@ -2,6 +2,8 @@ export * from './User'
 export * from './app'
 export * from './builder'
 export * from './app/build'
+export * from './app/deploymentProfile'
+
 export * from './plan'
 
 // export * from './Notification'

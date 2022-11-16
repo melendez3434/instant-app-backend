@@ -2,6 +2,58 @@
 ### Do not make changes to this file directly
 
 
+type AndroidProfile {
+  appStoreTitle: String!
+  googleDeveloperAccount: String!
+  id: Int!
+  isEnrolledToGoogle: Boolean!
+  keywords: String!
+  logo: String!
+  setupNewAccount: Boolean!
+  storeDescription: String!
+  willPublsihYourApp: Boolean!
+}
+
+input AndroidProfileOrderByWithRelationInput {
+  App: AppOrderByWithRelationInput
+  appId: SortOrder
+  appStoreTitle: SortOrder
+  createdAt: SortOrder
+  googleDeveloperAccount: SortOrder
+  id: SortOrder
+  isEnrolledToGoogle: SortOrder
+  keywords: SortOrder
+  logo: SortOrder
+  setupNewAccount: SortOrder
+  storeDescription: SortOrder
+  updatedAt: SortOrder
+  willPublsihYourApp: SortOrder
+}
+
+input AndroidProfileWhereInput {
+  AND: [AndroidProfileWhereInput!]
+  App: AppWhereInput
+  NOT: [AndroidProfileWhereInput!]
+  OR: [AndroidProfileWhereInput!]
+  appId: IntFilter
+  appStoreTitle: StringFilter
+  createdAt: DateTimeFilter
+  googleDeveloperAccount: StringFilter
+  id: IntFilter
+  isEnrolledToGoogle: BoolFilter
+  keywords: StringFilter
+  logo: StringFilter
+  setupNewAccount: BoolFilter
+  storeDescription: StringFilter
+  updatedAt: DateTimeFilter
+  willPublsihYourApp: BoolFilter
+}
+
+input AndroidProfileWhereUniqueInput {
+  appId: Int
+  id: Int
+}
+
 type App {
   appId: String!
   assets: AppAsset
@@ -247,12 +299,15 @@ input AppOrderByRelationAggregateInput {
 }
 
 input AppOrderByWithRelationInput {
+  AndroidProfile: AndroidProfileOrderByWithRelationInput
   appBuilds: AppBuildOrderByRelationAggregateInput
   appId: SortOrder
   assets: AppAssetOrderByWithRelationInput
   createdAt: SortOrder
+  deployRequests: DeployRequestOrderByRelationAggregateInput
   design: AppDesignOrderByWithRelationInput
   id: SortOrder
+  iosProfile: IosProfileOrderByWithRelationInput
   lang: SortOrder
   name: SortOrder
   navigation: LinkOrderByRelationAggregateInput
@@ -268,14 +323,17 @@ input AppOrderByWithRelationInput {
 
 input AppWhereInput {
   AND: [AppWhereInput!]
+  AndroidProfile: AndroidProfileWhereInput
   NOT: [AppWhereInput!]
   OR: [AppWhereInput!]
   appBuilds: AppBuildListRelationFilter
   appId: StringFilter
   assets: AppAssetWhereInput
   createdAt: DateTimeFilter
+  deployRequests: DeployRequestListRelationFilter
   design: AppDesignWhereInput
   id: IntFilter
+  iosProfile: IosProfileWhereInput
   lang: StringFilter
   name: StringFilter
   navigation: LinkListRelationFilter
@@ -371,6 +429,38 @@ input DateTimeNullableFilter {
   lte: DateTime
   not: NestedDateTimeNullableFilter
   notIn: [DateTime!]
+}
+
+type DeployRequest {
+  createdAt: DateTime!
+  id: Int!
+  platform: AppBuildPlatform!
+  reason: String
+  status: AppBuildStatus!
+}
+
+input DeployRequestListRelationFilter {
+  every: DeployRequestWhereInput
+  none: DeployRequestWhereInput
+  some: DeployRequestWhereInput
+}
+
+input DeployRequestOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input DeployRequestWhereInput {
+  AND: [DeployRequestWhereInput!]
+  App: AppWhereInput
+  NOT: [DeployRequestWhereInput!]
+  OR: [DeployRequestWhereInput!]
+  appId: IntFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  platform: EnumAppBuildPlatformFilter
+  reason: StringNullableFilter
+  status: EnumAppBuildStatusFilter
+  updatedAt: DateTimeFilter
 }
 
 enum DrawerMode {
@@ -489,6 +579,70 @@ input IntNullableFilter {
   notIn: [Int!]
 }
 
+type IosProfile {
+  accountHolder: String!
+  addAdminToApple: Boolean!
+  appStoreTitle: String!
+  developerName: String!
+  fullName: String!
+  id: Int!
+  isEnrolledToApple: Boolean!
+  keywords: String!
+  logo: String!
+  organizationName: String!
+  phoneNumber: String!
+  primaryEmail: String!
+  storeDescription: String!
+}
+
+input IosProfileOrderByWithRelationInput {
+  App: AppOrderByWithRelationInput
+  accountHolder: SortOrder
+  addAdminToApple: SortOrder
+  appId: SortOrder
+  appStoreTitle: SortOrder
+  createdAt: SortOrder
+  developerName: SortOrder
+  fullName: SortOrder
+  id: SortOrder
+  isEnrolledToApple: SortOrder
+  keywords: SortOrder
+  logo: SortOrder
+  organizationName: SortOrder
+  phoneNumber: SortOrder
+  primaryEmail: SortOrder
+  storeDescription: SortOrder
+  updatedAt: SortOrder
+}
+
+input IosProfileWhereInput {
+  AND: [IosProfileWhereInput!]
+  App: AppWhereInput
+  NOT: [IosProfileWhereInput!]
+  OR: [IosProfileWhereInput!]
+  accountHolder: StringFilter
+  addAdminToApple: BoolFilter
+  appId: IntFilter
+  appStoreTitle: StringFilter
+  createdAt: DateTimeFilter
+  developerName: StringFilter
+  fullName: StringFilter
+  id: IntFilter
+  isEnrolledToApple: BoolFilter
+  keywords: StringFilter
+  logo: StringFilter
+  organizationName: StringFilter
+  phoneNumber: StringFilter
+  primaryEmail: StringFilter
+  storeDescription: StringFilter
+  updatedAt: DateTimeFilter
+}
+
+input IosProfileWhereUniqueInput {
+  appId: Int
+  id: Int
+}
+
 """
 The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -585,6 +739,7 @@ enum MenuType {
 
 type Mutation {
   addApp(data: addAppInput!): App
+  addDeployRequest(data: updateDeployRequestInput!, id: Int!): DeployRequest
   addLink(data: addLinkInput!): Link
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
@@ -594,10 +749,12 @@ type Mutation {
   signup(email: String!, password: String!): AuthPayLoad
   signupSuperAdmin(companyName: String, email: String!, icon: String, logo: String, name: String!, password: String!): AuthPayLoad
   subscribe(id: Int!): String
+  updateAndroidProfile(data: updateAndroidProfileInput!, id: Int!): AndroidProfile
   updateApp(data: updateAppInput!, id: Int!): App
   updateAppAssets(data: updateAppAssetsInput!, id: Int!): AppAsset
   updateAppDesign(data: updateAppDesignInput!, id: Int!): AppDesign
   updateAppDesignDrawer(data: updateAppDesignDrawerInput!, id: Int!): AppDesignDrawer
+  updateIosProfile(data: updateIosProfileInput!, id: Int!): IosProfile
   updateLink(data: updateLinkInput!, id: Int!): Link
   updateMyBuilder(data: updateMyBuilderInput!): Builder
   updateMyProfile(data: updateMyProfileInput!): User
@@ -782,9 +939,11 @@ enum ProgressIndicator {
 
 type Query {
   allApps(orderBy: AppOrderByWithRelationInput, skip: Int, take: Int, where: AppWhereInput): AppConnectionPayLoad
+  androidProfile(id: Int!): AndroidProfile
   app(id: Int!): App
   appBuilds(appId: Int!, orderBy: AppBuildOrderByWithRelationInput, skip: Int, take: Int): AppBuildsConnectionPayLoad
   apps(orderBy: AppOrderByWithRelationInput, skip: Int, take: Int, where: AppWhereInput): AppConnectionPayLoad
+  iosProfile(id: Int!): IosProfile
   links(appId: Int!, orderBy: LinkOrderByWithRelationInput, skip: Int, take: Int, where: LinkWhereInput): linkConnectionPayLoad
   me: User
   myBuilder: Builder
@@ -929,6 +1088,17 @@ type linkConnectionPayLoad {
   nodes: [Link]
 }
 
+input updateAndroidProfileInput {
+  appStoreTitle: String!
+  googleDeveloperAccount: String!
+  isEnrolledToGoogle: Boolean!
+  keywords: String!
+  logo: String!
+  setupNewAccount: Boolean!
+  storeDescription: String!
+  willPublsihYourApp: Boolean!
+}
+
 input updateAppAssetsInput {
   appIcon: String
   backgroundImage: String
@@ -970,6 +1140,25 @@ input updateAppInput {
   name: String
   userAgent: String
   website: String
+}
+
+input updateDeployRequestInput {
+  platform: AppBuildPlatform!
+}
+
+input updateIosProfileInput {
+  accountHolder: String!
+  addAdminToApple: Boolean!
+  appStoreTitle: String!
+  developerName: String!
+  fullName: String!
+  isEnrolledToApple: Boolean!
+  keywords: String!
+  logo: String!
+  organizationName: String!
+  phoneNumber: String!
+  primaryEmail: String!
+  storeDescription: String!
 }
 
 input updateLinkInput {

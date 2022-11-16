@@ -23,6 +23,20 @@ export const queriesShield = {
     role: ['all'],
     permissions: isAppOwner,
   },
+  iosProfile: {
+    name: 'iosProfile',
+    slug: 'iosProfile',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
+  androidProfile: {
+    name: 'androidProfile',
+    slug: 'androidProfile',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
   apps: {
     name: 'apps',
     slug: 'apps',

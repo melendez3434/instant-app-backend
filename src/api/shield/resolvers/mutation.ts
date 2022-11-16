@@ -37,6 +37,27 @@ const appMutationsShield = {
     role: ['all'],
     permissions: isAppOwner,
   },
+  addDeployRequest: {
+    name: 'addDeployRequest',
+    slug: 'addDeployRequest',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
+  updateIosProfile: {
+    name: 'updateIosProfile',
+    slug: 'updateIosProfile',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
+  updateAndroidProfile: {
+    name: 'updateAndroidProfile',
+    slug: 'updateAndroidProfile',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
   updateAppAssets: {
     name: 'updateAppAssets',
     slug: 'updateAppAssets',

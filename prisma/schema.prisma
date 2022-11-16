@@ -38,23 +38,73 @@ model Builder {
 }
 
 model App {
-  id          Int        @id @default(autoincrement())
-  name        String
-  website     String
-  appId       String
-  lang        String
-  userAgent   String?
-  nextBill    DateTime?
-  stripeSubId String?    @unique
-  planStatus  PlanStatus @default(notSub)
-  assets      AppAsset?
-  design      AppDesign?
-  navigation  Link[]     @relation("mainNavigationToLinks")
-  owner       User       @relation(fields: [ownerId], references: [id])
-  ownerId     Int
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  appBuilds   AppBuild[]
+  id             Int             @id @default(autoincrement())
+  name           String
+  website        String
+  appId          String
+  lang           String
+  userAgent      String?
+  nextBill       DateTime?
+  stripeSubId    String?         @unique
+  planStatus     PlanStatus      @default(notSub)
+  assets         AppAsset?
+  design         AppDesign?
+  navigation     Link[]          @relation("mainNavigationToLinks")
+  owner          User            @relation(fields: [ownerId], references: [id])
+  ownerId        Int
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  appBuilds      AppBuild[]
+  iosProfile     IosProfile?
+  AndroidProfile AndroidProfile?
+  deployRequests DeployRequest[]
+}
+
+model IosProfile {
+  id                Int      @id @default(autoincrement())
+  isEnrolledToApple Boolean  @default(true)
+  addAdminToApple   Boolean  @default(true)
+  logo              String
+  organizationName  String
+  accountHolder     String
+  fullName          String
+  primaryEmail      String
+  developerName     String
+  phoneNumber       String
+  storeDescription  String
+  appStoreTitle     String
+  keywords          String
+  App               App      @relation(fields: [appId], references: [id])
+  appId             Int      @unique
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model AndroidProfile {
+  id                     Int      @id @default(autoincrement())
+  isEnrolledToGoogle     Boolean  @default(true)
+  willPublsihYourApp     Boolean  @default(true)
+  setupNewAccount        Boolean  @default(true)
+  googleDeveloperAccount String
+  logo                   String
+  storeDescription       String
+  appStoreTitle          String
+  keywords               String
+  App                    App      @relation(fields: [appId], references: [id])
+  appId                  Int      @unique
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model DeployRequest {
+  id        Int              @id @default(autoincrement())
+  platform  AppBuildPlatform @default(android)
+  status    AppBuildStatus   @default(waiting)
+  reason    String?
+  App       App              @relation(fields: [appId], references: [id])
+  appId     Int
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
 }
 
 model AppBuild {
