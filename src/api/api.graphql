@@ -62,6 +62,7 @@ type App {
   lang: String!
   name: String!
   nextBill: DateTime
+  owner: User!
   planStatus: PlanStatus!
   userAgent: String
   website: String!
@@ -432,11 +433,17 @@ input DateTimeNullableFilter {
 }
 
 type DeployRequest {
+  App: App!
   createdAt: DateTime!
   id: Int!
   platform: AppBuildPlatform!
   reason: String
   status: AppBuildStatus!
+}
+
+type DeployRequestConnectionPayLoad {
+  count: Int
+  nodes: [DeployRequest]
 }
 
 input DeployRequestListRelationFilter {
@@ -447,6 +454,17 @@ input DeployRequestListRelationFilter {
 
 input DeployRequestOrderByRelationAggregateInput {
   _count: SortOrder
+}
+
+input DeployRequestOrderByWithRelationInput {
+  App: AppOrderByWithRelationInput
+  appId: SortOrder
+  createdAt: SortOrder
+  id: SortOrder
+  platform: SortOrder
+  reason: SortOrder
+  status: SortOrder
+  updatedAt: SortOrder
 }
 
 input DeployRequestWhereInput {
@@ -461,6 +479,10 @@ input DeployRequestWhereInput {
   reason: StringNullableFilter
   status: EnumAppBuildStatusFilter
   updatedAt: DateTimeFilter
+}
+
+input DeployRequestWhereUniqueInput {
+  id: Int
 }
 
 enum DrawerMode {
@@ -739,7 +761,7 @@ enum MenuType {
 
 type Mutation {
   addApp(data: addAppInput!): App
-  addDeployRequest(data: updateDeployRequestInput!, id: Int!): DeployRequest
+  addDeployRequest(data: addDeployRequestInput!, id: Int!): DeployRequest
   addLink(data: addLinkInput!): Link
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
@@ -754,6 +776,7 @@ type Mutation {
   updateAppAssets(data: updateAppAssetsInput!, id: Int!): AppAsset
   updateAppDesign(data: updateAppDesignInput!, id: Int!): AppDesign
   updateAppDesignDrawer(data: updateAppDesignDrawerInput!, id: Int!): AppDesignDrawer
+  updateDeployRequest(data: updateDeployRequestInput!, id: Int!): DeployRequest
   updateIosProfile(data: updateIosProfileInput!, id: Int!): IosProfile
   updateLink(data: updateLinkInput!, id: Int!): Link
   updateMyBuilder(data: updateMyBuilderInput!): Builder
@@ -943,6 +966,7 @@ type Query {
   app(id: Int!): App
   appBuilds(appId: Int!, orderBy: AppBuildOrderByWithRelationInput, skip: Int, take: Int): AppBuildsConnectionPayLoad
   apps(orderBy: AppOrderByWithRelationInput, skip: Int, take: Int, where: AppWhereInput): AppConnectionPayLoad
+  deployRequests(orderBy: DeployRequestOrderByWithRelationInput, skip: Int, take: Int, where: DeployRequestWhereInput): DeployRequestConnectionPayLoad
   iosProfile(id: Int!): IosProfile
   links(appId: Int!, orderBy: LinkOrderByWithRelationInput, skip: Int, take: Int, where: LinkWhereInput): linkConnectionPayLoad
   me: User
@@ -1074,6 +1098,10 @@ input addAppInput {
   website: String!
 }
 
+input addDeployRequestInput {
+  platform: AppBuildPlatform!
+}
+
 input addLinkInput {
   appId: Int!
   data: Json
@@ -1143,7 +1171,8 @@ input updateAppInput {
 }
 
 input updateDeployRequestInput {
-  platform: AppBuildPlatform!
+  reason: String!
+  status: AppBuildStatus!
 }
 
 input updateIosProfileInput {

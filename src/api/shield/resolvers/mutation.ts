@@ -16,6 +16,13 @@ const appMutationsShield = {
   //   role: ['all'],
   //   permissions: isAuth,
   // },
+  updateDeployRequest: {
+    name: 'updateDeployRequest',
+    slug: 'updateDeployRequest',
+    desc: '',
+    role: ['superAdmin'],
+    permissions: isAuth,
+  },
   generateBuild: {
     name: 'generateBuild',
     slug: 'generateBuild',

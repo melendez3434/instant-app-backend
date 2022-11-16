@@ -49,6 +49,7 @@ export const DeployRequest = objectType({
     t.model.platform()
     t.model.reason()
     t.model.status()
+    t.model.App()
   },
 })
 export const DeploymentQuery = extendType({
@@ -75,6 +76,41 @@ export const DeploymentQuery = extendType({
       async resolve(source, args, ctx) {
         const { id } = args
         return await ctx.db.androidProfile.findUnique({ where: { appId: id } })
+      },
+    })
+    t.crud.deployRequests({ filtering: true, ordering: true, pagination: true })
+
+    t.field('deployRequests', {
+      type: objectType({
+        name: 'DeployRequestConnectionPayLoad',
+        definition(t) {
+          t.int('count')
+          t.list.field('nodes', { type: 'DeployRequest' })
+        },
+      }),
+      args: {
+        skip: intArg(),
+        take: intArg(),
+        orderBy: 'DeployRequestOrderByWithRelationInput',
+        where: 'DeployRequestWhereInput',
+      },
+      async resolve(source, args, ctx) {
+        args.where = {
+          ...args.where,
+          App: {
+            OR: [
+              { ownerId: { equals: ctx.user.id } },
+              { owner: { builder: { ownerId: { equals: ctx.user.id } } } },
+            ],
+          },
+        }
+        return {
+          //@ts-ignore
+          count: await ctx.db.deployRequest.count({ where: args.where }),
+          //@ts-ignore
+
+          nodes: await ctx.db.deployRequest.findMany(args),
+        }
       },
     })
   },
@@ -152,7 +188,7 @@ export const Deploymentmutations = extendType({
         id: nonNull(intArg()),
         data: arg({
           type: inputObjectType({
-            name: 'updateDeployRequestInput',
+            name: 'addDeployRequestInput',
             definition(t) {
               t.nonNull.field('platform', { type: 'AppBuildPlatform' })
             },
@@ -162,20 +198,24 @@ export const Deploymentmutations = extendType({
       },
 
       async resolve(_root, args, ctx) {
+        console.log(
+          '🚀 ~ file: deploymentProfile.ts ~ line 200 ~ resolve ~ args',
+          args,
+        )
         if (args.data.platform == 'android') {
           const isThereProfile = await ctx.db.androidProfile.count({
             where: {
               appId: args.id,
             },
           })
-          if (isThereProfile) throw new Error('Must finish the profile first')
+          if (!isThereProfile) throw new Error('Must finish the profile first')
         } else {
           const isThereProfile = await ctx.db.iosProfile.count({
             where: {
               appId: args.id,
             },
           })
-          if (isThereProfile) throw new Error('Must finish the profile first')
+          if (!isThereProfile) throw new Error('Must finish the profile first')
         }
         const isThereWaitingRequest = await ctx.db.deployRequest.count({
           where: {
@@ -194,6 +234,32 @@ export const Deploymentmutations = extendType({
             platform: args.data.platform,
 
             App: { connect: { id: args.id } },
+          },
+        })
+      },
+    })
+    t.field('updateDeployRequest', {
+      type: 'DeployRequest',
+      args: {
+        id: nonNull(intArg()),
+        data: arg({
+          type: inputObjectType({
+            name: 'updateDeployRequestInput',
+            definition(t) {
+              t.nonNull.string('reason')
+              t.nonNull.field('status', { type: 'AppBuildStatus' })
+            },
+          }),
+          required: true,
+        }),
+      },
+
+      async resolve(_root, { id, data }, ctx) {
+        return await ctx.db.deployRequest.update({
+          where: { id },
+          data: {
+            reason: data.reason,
+            status: data.status,
           },
         })
       },

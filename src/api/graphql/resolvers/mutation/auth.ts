@@ -85,6 +85,7 @@ export const Mutation = mutationType({
                 id: admin.id,
               },
             },
+            users: { connect: { id: admin.id } },
           },
         })
         const token = ctx.auth.signInWithJWT(admin)
@@ -171,6 +172,7 @@ export const Mutation = mutationType({
           const isEmailExist = await ctx.db.user.findFirst({
             where: {
               email: email ? { equals: email, mode: 'insensitive' } : undefined,
+              builderDomain: ctx.builderDomain,
             },
           })
 

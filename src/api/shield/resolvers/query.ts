@@ -44,6 +44,13 @@ export const queriesShield = {
     role: ['all'],
     permissions: isAuth,
   },
+  deployRequests: {
+    name: 'deployRequests',
+    slug: 'deployRequests',
+    desc: '',
+    role: ['all'],
+    permissions: isAuth,
+  },
   links: {
     name: 'links',
     slug: 'links',

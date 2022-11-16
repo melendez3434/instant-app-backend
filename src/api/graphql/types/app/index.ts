@@ -22,6 +22,7 @@ export const App = objectType({
     t.model.nextBill()
     t.model.design()
     t.model.planStatus()
+    t.model.owner()
   },
 })
 
