@@ -62,7 +62,7 @@ type App {
   lang: String!
   name: String!
   nextBill: DateTime
-  owner: User!
+  owner: User
   planStatus: PlanStatus!
   userAgent: String
   website: String!
@@ -317,6 +317,7 @@ input AppOrderByWithRelationInput {
   ownerId: SortOrder
   planStatus: SortOrder
   stripeSubId: SortOrder
+  tempOwner: SortOrder
   updatedAt: SortOrder
   userAgent: SortOrder
   website: SortOrder
@@ -340,9 +341,10 @@ input AppWhereInput {
   navigation: LinkListRelationFilter
   nextBill: DateTimeNullableFilter
   owner: UserWhereInput
-  ownerId: IntFilter
+  ownerId: IntNullableFilter
   planStatus: EnumPlanStatusFilter
   stripeSubId: StringNullableFilter
+  tempOwner: StringNullableFilter
   updatedAt: DateTimeFilter
   userAgent: StringNullableFilter
   website: StringFilter
@@ -765,6 +767,7 @@ type Mutation {
   addLink(data: addLinkInput!): Link
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
+  fastSignup(email: String!, website: String!): Boolean
   generateBuild(id: Int!, platform: AppBuildPlatform!): AppBuild
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad

@@ -7,7 +7,6 @@ import {
   objectType,
 } from 'nexus'
 var url = require('url')
-var cmd = require('node-cmd')
 
 export const App = objectType({
   name: 'App',

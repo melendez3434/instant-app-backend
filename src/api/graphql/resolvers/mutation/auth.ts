@@ -11,6 +11,7 @@ import {
 
 import isEmail from 'validator/lib/isEmail'
 import makeSlug from 'slug-arabic'
+var url = require('url')
 
 function randomString(length, chars) {
   var mask = ''
@@ -131,7 +132,59 @@ export const Mutation = mutationType({
           })
           const token = ctx.auth.signInWithJWT(admin)
 
+          const apps = await ctx.db.app.findMany({
+            where: { tempOwner: email },
+            select: { id: true },
+          })
+          Promise.all(
+            apps.map(async ({ id }) => {
+              await ctx.db.app.update({
+                where: { id },
+                data: {
+                  tempOwner: null,
+                  owner: { connect: { id: admin.id } },
+                },
+              })
+            }),
+          )
+
           return { user: admin, token }
+        },
+      }),
+      t.field('fastSignup', {
+        type: 'Boolean',
+        args: {
+          email: nonNull(stringArg()),
+          website: nonNull(stringArg()),
+        },
+        async resolve(_root, args, ctx) {
+          const { email, website } = args
+
+          email.toLowerCase()
+
+          const isEmailExist = await ctx.db.user.findFirst({
+            where: {
+              email: { equals: email, mode: 'insensitive' },
+              builderDomain: { equals: ctx.builderDomain },
+            },
+          })
+
+          if (isEmailExist) {
+            throw new Error('sorry but this email are already exist')
+          }
+
+          await ctx.db.app.create({
+            data: {
+              name: url.parse(website).hostname,
+              website,
+              lang: 'EN',
+              appId: url.parse(website).hostname.split('.').reverse().join('.'),
+              assets: { create: { displayLogo: true, color: '#000' } },
+              design: { create: { AppDesignDrawer: { create: {} } } },
+              tempOwner: email,
+            },
+          })
+          return true
         },
       }),
       t.field('signin', {

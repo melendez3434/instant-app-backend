@@ -44,14 +44,15 @@ model App {
   appId          String
   lang           String
   userAgent      String?
+  tempOwner      String?
   nextBill       DateTime?
   stripeSubId    String?         @unique
   planStatus     PlanStatus      @default(notSub)
   assets         AppAsset?
   design         AppDesign?
   navigation     Link[]          @relation("mainNavigationToLinks")
-  owner          User            @relation(fields: [ownerId], references: [id])
-  ownerId        Int
+  owner          User?           @relation(fields: [ownerId], references: [id])
+  ownerId        Int?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   appBuilds      AppBuild[]
