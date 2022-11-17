@@ -172,18 +172,28 @@ export const Mutation = mutationType({
           if (isEmailExist) {
             throw new Error('sorry but this email are already exist')
           }
-
-          await ctx.db.app.create({
-            data: {
-              name: url.parse(website).hostname,
+          const isAppExist = await ctx.db.app.count({
+            where: {
               website,
-              lang: 'EN',
-              appId: url.parse(website).hostname.split('.').reverse().join('.'),
-              assets: { create: { displayLogo: true, color: '#000' } },
-              design: { create: { AppDesignDrawer: { create: {} } } },
               tempOwner: email,
             },
           })
+          !isAppExist &&
+            (await ctx.db.app.create({
+              data: {
+                name: url.parse(website).hostname,
+                website,
+                lang: 'EN',
+                appId: url
+                  .parse(website)
+                  .hostname.split('.')
+                  .reverse()
+                  .join('.'),
+                assets: { create: { displayLogo: true, color: '#000' } },
+                design: { create: { AppDesignDrawer: { create: {} } } },
+                tempOwner: email,
+              },
+            }))
           return true
         },
       }),
