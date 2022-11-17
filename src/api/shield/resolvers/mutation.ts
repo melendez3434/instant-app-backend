@@ -130,6 +130,13 @@ const auth = {
     role: ['all'],
     permissions: allow,
   },
+  fastSignup: {
+    name: 'fastSignup',
+    slug: 'fastSignup',
+    desc: '',
+    role: ['all'],
+    permissions: allow,
+  },
   signin: {
     name: 'signin',
     slug: 'signin',
