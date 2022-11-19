@@ -25,6 +25,7 @@ export class Auth {
   isReady: boolean
   hasSignedIn: boolean
   accessTokenName: string
+  host: string
   req: any
   res: any
   payload: any
@@ -35,10 +36,11 @@ export class Auth {
     this.isReady = false
     this.hasSignedIn = false
     this.accessTokenName = host
+    this.host = host
   }
 
   async authenticate(): Promise<User | null> {
-    const { req, res } = this
+    const { req, res, host } = this
 
     if (!req.headers.authorization) {
       const cookie = req.cookies[this.accessTokenName]
@@ -48,7 +50,7 @@ export class Auth {
 
     const payload = await authenticate(req, res)
 
-    if (payload) {
+    if (payload && payload.builderDomain == this.host) {
       this.payload = payload
       this.hasSignedIn = true
       return payload

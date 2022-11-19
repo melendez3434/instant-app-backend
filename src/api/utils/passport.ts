@@ -46,6 +46,7 @@ const authenticate = (req: any, res: any): Promise<any | null> => {
             id: true,
             email: true,
             role: true,
+            builderDomain: true,
           },
         })
         const user = { ...payload, ...newUser }

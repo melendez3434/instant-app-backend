@@ -44,11 +44,6 @@ export const createContext = async ({
   }
 
   // if (adminDomains.includes(parser.hostname)){}
-  const auth = new Auth({
-    req,
-    res,
-  })
-  const user = await auth.authenticate()
   const parser = req?.get('origin') && new URL(req?.get('origin'))
 
   const host =
@@ -58,6 +53,13 @@ export const createContext = async ({
       : process.env.NODE_ENV == 'development' || parser?.hostname == 'localhost'
       ? `take.instantappnow.com`
       : parser?.hostname
+
+  const auth = new Auth({
+    req,
+    res,
+    host,
+  })
+  const user = await auth.authenticate()
 
   const ctx = {
     auth,
