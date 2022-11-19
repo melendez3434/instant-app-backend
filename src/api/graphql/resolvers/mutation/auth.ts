@@ -11,6 +11,7 @@ import {
 
 import isEmail from 'validator/lib/isEmail'
 import makeSlug from 'slug-arabic'
+import axios from 'axios'
 var url = require('url')
 
 function randomString(length, chars) {
@@ -147,7 +148,51 @@ export const Mutation = mutationType({
               })
             }),
           )
+          try {
+            const builder = await ctx.db.builder.findUnique({
+              where: { domain: ctx.builderDomain },
+              select: {
+                mailListId: true,
+                mailApiToken: true,
+              },
+            })
+            console.log(
+              '🚀 ~ file: auth.ts ~ line 158 ~ resolve ~ builder',
+              builder,
+            )
 
+            if (builder?.mailApiToken && builder.mailListId) {
+              const { data } = await axios(
+                'https://mail.husl.app/api/v1/subscribers?list_uid=' +
+                  builder.mailListId,
+                {
+                  method: 'post',
+
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    // Cookie:
+                    //   "XSRF-TOKEN=eyJpdiI6Im9sS3R5TGJHaXB4eVIzR3RzamVEOEE9PSIsInZhbHVlIjoiNnJEbmlGRUZJRTlmZUlGKzJMOUpSNjIwL3plRXFMR01sTG1JNmRWQTRxb1lDNUQyZ25xRnZ3MFI0RHdPZFg5UDJ6cm1PbTM1cThtTHZiUTh0NUptcXY5a0Z0UkI1aktsWmhtYzM0V0RSOGtEdy9oREpmSVY2ZVRudXowK3hLdWsiLCJtYWMiOiIxZTQ5ZTcyNGE0MzQwYjMzMWY3ZGJlYTg3Njk4N2Y5NTgwYzE3Zjk5Mjg0MmZiMDBmZDc1YWFiMDdjMjI4YzQ1IiwidGFnIjoiIn0%3D; acelle_mail_session=eyJpdiI6IllmT09HemtRVG5lemwwOHduR1ZYRXc9PSIsInZhbHVlIjoiNDVRdUJPL0FmNDk5bytLUTY5TnVGemFndHRHWXdoNzAvUWVoUTBLTHIzZUVFS1NET212QWJOM043aC9VbXEzZUF1WjZpY0RFS2dXclVaQzU2dVQ5MTV5TThXZTB2Qk1Nc0xPSnN1cHhNY2FlSTlVTmJDTC9Jc0t0ZGsyQkQ2aXYiLCJtYWMiOiI3NDQ4MjlkZjJlYWM0OTRjYTRiMGU0N2NhZmE3MGU4OGQzNzZlYzAwNDIyYWJhN2EyYjYyYzQzNmY4MDgwNGM0IiwidGFnIjoiIn0%3D",
+                  },
+                  data: JSON.stringify({
+                    api_token: builder?.mailApiToken,
+                    EMAIL: email,
+                    builderDomain: ctx.builderDomain,
+                  }),
+                },
+              )
+              console.log(
+                '🚀 ~ file: auth.ts ~ line 166 ~ resolve ~ data',
+                data.res.data,
+              )
+            }
+          } catch (error) {
+            console.log(
+              '🚀 ~ file: auth.ts ~ line 163 ~ resolve ~ error',
+              //@ts-ignore
+              error?.response?.data,
+            )
+          }
           return { user: admin, token }
         },
       }),

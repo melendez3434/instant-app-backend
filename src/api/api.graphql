@@ -372,6 +372,8 @@ type Builder {
   icon: String
   id: Int!
   logo: String
+  mailApiToken: String
+  mailListId: String
   name: String!
   updatedAt: DateTime!
 }
@@ -383,6 +385,8 @@ input BuilderOrderByWithRelationInput {
   icon: SortOrder
   id: SortOrder
   logo: SortOrder
+  mailApiToken: SortOrder
+  mailListId: SortOrder
   name: SortOrder
   owner: UserOrderByWithRelationInput
   ownerId: SortOrder
@@ -400,6 +404,8 @@ input BuilderWhereInput {
   icon: StringNullableFilter
   id: IntFilter
   logo: StringNullableFilter
+  mailApiToken: StringNullableFilter
+  mailListId: StringNullableFilter
   name: StringFilter
   owner: UserWhereInput
   ownerId: IntFilter
@@ -974,6 +980,7 @@ type Query {
   links(appId: Int!, orderBy: LinkOrderByWithRelationInput, skip: Int, take: Int, where: LinkWhereInput): linkConnectionPayLoad
   me: User
   myBuilder: Builder
+  myMailLists: JSONObject
   myUsers(orderBy: UserOrderByWithRelationInput, skip: Int, take: Int, where: UserWhereInput): userConnectionPayLoad
   users(cursor: UserWhereUniqueInput, orderBy: [UserOrderByWithRelationInput!], skip: Int, take: Int, where: UserWhereInput): [User!]!
 }
@@ -1204,6 +1211,8 @@ input updateMyBuilderInput {
   companyName: String
   icon: String
   logo: String
+  mailApiToken: String
+  mailListId: String
 }
 
 input updateMyProfileInput {

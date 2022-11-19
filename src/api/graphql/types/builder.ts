@@ -9,6 +9,9 @@ export const Builder = objectType({
     t.model.domain()
     t.model.icon()
     t.model.companyName()
+    t.model.mailListId()
+    t.model.mailApiToken()
+
     t.model.createdAt()
     t.model.updatedAt()
   },
@@ -48,6 +51,8 @@ export const Buildermutations = extendType({
               t.string('logo')
               t.string('icon')
               t.string('companyName')
+              t.string('mailListId')
+              t.string('mailApiToken')
             },
           }),
           required: true,
@@ -60,6 +65,8 @@ export const Buildermutations = extendType({
             logo: args.data.logo || undefined,
             icon: args.data.icon || undefined,
             companyName: args.data.companyName || undefined,
+            mailListId: args.data.mailListId || undefined,
+            mailApiToken: args.data.mailApiToken || undefined,
           },
         })
       },

@@ -34,6 +34,10 @@ export const permissions = shield(
 
       ...queries,
     },
+    Builder: {
+      mailApiToken: isSuperAdmin,
+      mailListId: isSuperAdmin,
+    },
   },
   { debug: true, allowExternalErrors: true },
 )
