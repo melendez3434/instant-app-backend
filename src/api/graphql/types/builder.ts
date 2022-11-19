@@ -62,11 +62,11 @@ export const Buildermutations = extendType({
         return await ctx.db.builder.update({
           where: { domain: ctx.builderDomain },
           data: {
-            logo: args.data.logo || undefined,
-            icon: args.data.icon || undefined,
-            companyName: args.data.companyName || undefined,
-            mailListId: args.data.mailListId || undefined,
-            mailApiToken: args.data.mailApiToken || undefined,
+            logo: args.data.logo ?? undefined,
+            icon: args.data.icon ?? undefined,
+            companyName: args.data.companyName ?? undefined,
+            mailListId: args.data.mailListId ?? undefined,
+            mailApiToken: args.data.mailApiToken ?? undefined,
           },
         })
       },
