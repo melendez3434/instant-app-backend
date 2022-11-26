@@ -21,6 +21,8 @@ export const AppBuild = objectType({
     t.model.status()
     t.model.createdAt()
     t.model.updatedAt()
+    t.model.buildType()
+
     t.model.url()
   },
 })

@@ -122,6 +122,7 @@ input AppAssetWhereInput {
 type AppBuild {
   appBuildVersion: Int
   appVersion: String
+  buildType: BuildType!
   createdAt: DateTime!
   data: Json
   id: Int!
