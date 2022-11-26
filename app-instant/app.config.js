@@ -19,7 +19,7 @@ module.exports = {
       supportsTablet: true,
     },
     android: {
-      package: process.env.APP_VERSION || 'com.b7r.appbuilder',
+      package: process.env.BUNDLE_ID || 'com.b7r.appbuilder',
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#FFFFFF',

@@ -49,10 +49,6 @@ export class Auth {
     }
 
     const payload = await authenticate(req, res)
-    console.log(
-      '🚀 ~ file: auth.ts ~ line 52 ~ Auth ~ authenticate ~ payload',
-      payload,
-    )
 
     if (payload && payload.builderDomain == host) {
       this.payload = payload

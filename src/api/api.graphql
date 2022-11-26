@@ -2,6 +2,11 @@
 ### Do not make changes to this file directly
 
 
+enum AndroidBuildType {
+  AAP
+  apk
+}
+
 type AndroidProfile {
   appStoreTitle: String!
   googleDeveloperAccount: String!
@@ -774,7 +779,7 @@ type Mutation {
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
   fastSignup(email: String!, website: String!): Boolean
-  generateBuild(id: Int!, platform: AppBuildPlatform!): AppBuild
+  generateBuild(buildType: AndroidBuildType = apk, id: Int!, platform: AppBuildPlatform!): AppBuild
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signup(email: String!, password: String!): AuthPayLoad

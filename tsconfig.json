@@ -11,6 +11,10 @@
     "strict": true,
     "outDir": "build",
     "rootDir": "./src",
-    "noImplicitAny": false
-  }
+    "noImplicitAny": false,
+  },
+  "include": ["src/**/*"],
+  "exclude": ["./app-instant"]
+
+
 }

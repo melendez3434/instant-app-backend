@@ -5,6 +5,7 @@ import {
   intArg,
   nonNull,
   objectType,
+  enumType,
 } from 'nexus'
 var url = require('url')
 var cmd = require('node-cmd')
@@ -71,9 +72,31 @@ export const AppBuildMutations = extendType({
       args: {
         id: nonNull(intArg()),
         platform: nonNull(arg({ type: 'AppBuildPlatform' })),
+        buildType: arg({
+          type: enumType({
+            members: ['apk', 'AAP'],
+            name: 'AndroidBuildType',
+          }),
+          default: 'apk',
+        }),
       },
 
-      async resolve(_root, { id, platform }, ctx) {
+      async resolve(_root, { id, platform, buildType }, ctx) {
+        const app = await ctx.db.app.findUnique({
+          where: { id },
+          select: {
+            name: true,
+            appId: true,
+            appBuilds: {
+              where: { platform, status: 'success' },
+              orderBy: { id: 'desc' },
+              select: {
+                appVersion: true,
+              },
+              take: 1,
+            },
+          },
+        })
         const AppBuild = await ctx.db.appBuild.create({
           data: {
             App: { connect: { id } },
@@ -87,11 +110,42 @@ export const AppBuildMutations = extendType({
             `,
           async function (err, authData, stderr) {
             console.log('🚀 ~ file: app.ts ~ line 378 ~ authData', authData)
+            const appVersion = app?.appBuilds[0]
+              ? app?.appBuilds[0]?.appVersion
+                  ?.split('.')
+                  .map((v, i) => (i ? v : Number(v) + 1))
+                  .join('.')
+              : '1.0.0'
+            console.log(
+              '🚀 ~ file: build.ts ~ line 105 ~ appVersion',
+              appVersion,
+            )
+            const fs = require('fs')
+            const path = require('path')
+
+            const fileName = path.resolve(
+              __dirname,
+              '../../../../../app-instant/eas.json',
+            )
+            const file = require(fileName)
+            console.log('🚀 ~ file: build.ts ~ line 118 ~ file', file)
+
+            file.build.preview.android.buildType = buildType
+
+            fs.writeFile(
+              fileName,
+              JSON.stringify(file, null, 2),
+              function writeJSON(err) {
+                if (err) return console.log(err)
+                console.log(JSON.stringify(file))
+                console.log('writing to ' + fileName)
+              },
+            )
             cmd.run(
               `
-                cd ./src/api/app-instant
-                npx eas build --platform ${platform}  --json  --non-interactive
-              
+                cd ./app-instant
+                APP_NAME=${app?.name} APP_VERSION=${appVersion} BUNDLE_ID=${app?.appId}   npx eas build --platform ${platform}  --json  --non-interactive
+
                 `,
               async function (err, data, stderr) {
                 console.log('🚀 ~ file: app.ts ~ line 385 ~ stderr', stderr)
