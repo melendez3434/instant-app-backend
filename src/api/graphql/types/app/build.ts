@@ -72,13 +72,15 @@ export const AppBuildMutations = extendType({
       args: {
         id: nonNull(intArg()),
         platform: nonNull(arg({ type: 'AppBuildPlatform' })),
-        buildType: arg({
-          type: enumType({
-            members: ['apk', 'AAP'],
-            name: 'AndroidBuildType',
-          }),
-          default: 'apk',
-        }),
+        buildType: nonNull(arg({ type: 'BuildType', default: 'apk' })),
+
+        // buildType: arg({
+        //   type: enumType({
+        //     members: ['apk', 'AAP'],
+        //     name: 'AndroidBuildType',
+        //   }),
+        //   default: 'apk',
+        // }),
       },
 
       async resolve(_root, { id, platform, buildType }, ctx) {
@@ -101,6 +103,7 @@ export const AppBuildMutations = extendType({
           data: {
             App: { connect: { id } },
             platform,
+            buildType: platform == 'android' ? buildType : undefined,
           },
         })
         cmd.run(

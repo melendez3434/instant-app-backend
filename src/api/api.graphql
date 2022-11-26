@@ -2,11 +2,6 @@
 ### Do not make changes to this file directly
 
 
-enum AndroidBuildType {
-  AAP
-  apk
-}
-
 type AndroidProfile {
   appStoreTitle: String!
   googleDeveloperAccount: String!
@@ -151,6 +146,7 @@ input AppBuildOrderByWithRelationInput {
   appBuildVersion: SortOrder
   appId: SortOrder
   appVersion: SortOrder
+  buildType: SortOrder
   createdAt: SortOrder
   data: SortOrder
   id: SortOrder
@@ -179,6 +175,7 @@ input AppBuildWhereInput {
   appBuildVersion: IntNullableFilter
   appId: IntNullableFilter
   appVersion: StringNullableFilter
+  buildType: EnumBuildTypeFilter
   createdAt: DateTimeFilter
   data: JsonNullableFilter
   id: IntFilter
@@ -370,6 +367,11 @@ input BoolFilter {
   not: NestedBoolFilter
 }
 
+enum BuildType {
+  AAP
+  apk
+}
+
 type Builder {
   companyName: String
   createdAt: DateTime!
@@ -516,6 +518,13 @@ input EnumAppBuildStatusFilter {
   in: [AppBuildStatus!]
   not: NestedEnumAppBuildStatusFilter
   notIn: [AppBuildStatus!]
+}
+
+input EnumBuildTypeFilter {
+  equals: BuildType
+  in: [BuildType!]
+  not: NestedEnumBuildTypeFilter
+  notIn: [BuildType!]
 }
 
 input EnumDrawerModeFilter {
@@ -779,7 +788,7 @@ type Mutation {
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
   fastSignup(email: String!, website: String!): Boolean
-  generateBuild(buildType: AndroidBuildType = apk, id: Int!, platform: AppBuildPlatform!): AppBuild
+  generateBuild(buildType: BuildType! = apk, id: Int!, platform: AppBuildPlatform!): AppBuild
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signup(email: String!, password: String!): AuthPayLoad
@@ -836,6 +845,13 @@ input NestedEnumAppBuildStatusFilter {
   in: [AppBuildStatus!]
   not: NestedEnumAppBuildStatusFilter
   notIn: [AppBuildStatus!]
+}
+
+input NestedEnumBuildTypeFilter {
+  equals: BuildType
+  in: [BuildType!]
+  not: NestedEnumBuildTypeFilter
+  notIn: [BuildType!]
 }
 
 input NestedEnumDrawerModeFilter {

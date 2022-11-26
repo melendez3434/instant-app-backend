@@ -113,6 +113,7 @@ model DeployRequest {
 model AppBuild {
   id              Int              @id @default(autoincrement())
   status          AppBuildStatus   @default(waiting)
+  buildType       BuildType        @default(apk)
   url             String?
   appBuildVersion Int?
   appVersion      String?
@@ -249,4 +250,9 @@ enum PlanStatus {
   notSub
   stopped
   sub
+}
+
+enum BuildType {
+  apk
+  AAP
 }
