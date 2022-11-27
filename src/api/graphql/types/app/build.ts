@@ -6,9 +6,15 @@ import {
   nonNull,
   objectType,
   enumType,
+  stringArg,
+  booleanArg,
 } from 'nexus'
 var url = require('url')
 var cmd = require('node-cmd')
+
+const http = require('http') // or 'https' for https:// URLs
+const fs = require('fs').promises
+const path = require('path')
 
 export const AppBuild = objectType({
   name: 'AppBuild',
@@ -75,7 +81,14 @@ export const AppBuildMutations = extendType({
         id: nonNull(intArg()),
         platform: nonNull(arg({ type: 'AppBuildPlatform' })),
         buildType: nonNull(arg({ type: 'BuildType', default: 'apk' })),
-
+        keystoreUrl: stringArg(),
+        keystorePassword: stringArg(),
+        keyAlias: stringArg(),
+        keyPassword: stringArg(),
+        androidCertAuto: booleanArg(),
+        provisioningProfilePath: stringArg(),
+        distributionCertificate: stringArg(),
+        distributionCertificatePassword: stringArg(),
         // buildType: arg({
         //   type: enumType({
         //     members: ['apk', 'AAP'],
@@ -85,7 +98,7 @@ export const AppBuildMutations = extendType({
         // }),
       },
 
-      async resolve(_root, { id, platform, buildType }, ctx) {
+      async resolve(_root, { id, platform, buildType, ...rest }, ctx) {
         const app = await ctx.db.app.findUnique({
           where: { id },
           select: {
@@ -108,6 +121,7 @@ export const AppBuildMutations = extendType({
             buildType: platform == 'android' ? buildType : undefined,
           },
         })
+
         cmd.run(
           `
             npx  expo logout
@@ -125,27 +139,29 @@ export const AppBuildMutations = extendType({
               '🚀 ~ file: build.ts ~ line 105 ~ appVersion',
               appVersion,
             )
-            const fs = require('fs')
-            const path = require('path')
 
-            const fileName = path.resolve(
-              __dirname,
-              '../../../../../app-instant/eas.json',
-            )
-            const file = require(fileName)
-            console.log('🚀 ~ file: build.ts ~ line 118 ~ file', file)
+            if (process.env.NODE_ENV !== 'development') {
+              const fileName = path.resolve(
+                __dirname,
+                '../../../../../app-instant/eas.json',
+              )
+              const file = require(fileName)
+              console.log('🚀 ~ file: build.ts ~ line 118 ~ file', file)
 
-            file.build.preview.android.buildType = buildType
+              file.build.preview.android.buildType = buildType
 
-            fs.writeFile(
-              fileName,
-              JSON.stringify(file, null, 2),
-              function writeJSON(err) {
-                if (err) return console.log(err)
-                console.log(JSON.stringify(file))
-                console.log('writing to ' + fileName)
-              },
-            )
+              await fs.writeFile(
+                fileName,
+                JSON.stringify(file, null, 2),
+                function writeJSON(err) {
+                  if (err) return console.log(err)
+                  console.log(JSON.stringify(file))
+                  console.log('writing to ' + fileName)
+                },
+              )
+            }
+            await changeCerts({ ...rest })
+
             cmd.run(
               `
                 cd ./app-instant
@@ -234,3 +250,84 @@ export const AppBuildMutations = extendType({
     })
   },
 })
+
+const downloadFileAndMoveItToAppCerts = (filename, url) => {
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(filename)
+    const request = http.get(url, function (response) {
+      response.pipe(file)
+
+      // after download completed close filestream
+      file.on('finish', () => {
+        file.close()
+        console.log('Download Completed')
+        fs.rename(filename, 'app-instant/certs/' + filename, () => {
+          resolve('done')
+        })
+      })
+    })
+  })
+}
+
+const changeCerts = async ({
+  keystoreUrl,
+  keystorePassword,
+  keyAlias,
+  keyPassword,
+  androidCertAuto,
+  provisioningProfilePath,
+  distributionCertificate,
+  distributionCertificatePassword,
+}: any) => {
+  if (process.env.NODE_ENV !== 'development') {
+    const fileName = path.resolve(
+      __dirname,
+      '../../../../../app-instant/credentials.json',
+    )
+    const file = require(fileName)
+
+    if (androidCertAuto) {
+      file.android = {
+        credentialsSource: 'remote',
+      }
+    } else {
+      await downloadFileAndMoveItToAppCerts('release.keystore', keystoreUrl)
+
+      file.android = {
+        keystore: {
+          keystorePath: 'certs/release.keystore',
+          keystorePassword: keystorePassword,
+          keyAlias: keyAlias,
+          keyPassword: keyPassword,
+        },
+      }
+    }
+
+    await downloadFileAndMoveItToAppCerts(
+      'profile.mobileprovision',
+      provisioningProfilePath,
+    )
+    await downloadFileAndMoveItToAppCerts(
+      'dist-cert.p12',
+      distributionCertificate,
+    )
+
+    file.ios = {
+      provisioningProfilePath: 'certs/profile.mobileprovision',
+      distributionCertificate: {
+        path: 'certs/dist-cert.p12',
+        password: distributionCertificatePassword,
+      },
+    }
+
+    await fs.writeFile(
+      fileName,
+      JSON.stringify(file, null, 2),
+      function writeJSON(err) {
+        if (err) return console.log(err)
+        console.log(JSON.stringify(file))
+        console.log('writing to ' + fileName)
+      },
+    )
+  }
+}

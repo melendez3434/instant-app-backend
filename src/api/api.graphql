@@ -789,7 +789,7 @@ type Mutation {
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
   fastSignup(email: String!, website: String!): Boolean
-  generateBuild(buildType: BuildType! = apk, id: Int!, platform: AppBuildPlatform!): AppBuild
+  generateBuild(androidCertAuto: Boolean, buildType: BuildType! = apk, distributionCertificate: String, distributionCertificatePassword: String, id: Int!, keyAlias: String, keyPassword: String, keystorePassword: String, keystoreUrl: String, platform: AppBuildPlatform!, provisioningProfilePath: String): AppBuild
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signup(email: String!, password: String!): AuthPayLoad

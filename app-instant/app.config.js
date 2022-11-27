@@ -16,8 +16,10 @@ module.exports = {
     },
     assetBundlePatterns: ['**/*'],
     ios: {
+      bundleIdentifier: process.env.BUNDLE_ID || 'com.b7r.appbuilder',
       supportsTablet: true,
     },
+
     android: {
       package: process.env.BUNDLE_ID || 'com.b7r.appbuilder',
       adaptiveIcon: {
