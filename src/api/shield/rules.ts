@@ -35,6 +35,8 @@ export const notBreakPagination = rule({ cache: 'strict' })(
 )
 export const isAppOwner = rule({ cache: 'strict' })(
   async (parent, args, ctx: Context, info) => {
+    if (!ctx.user?.id) return false
+
     if (
       await ctx.db.app.count({
         where: {

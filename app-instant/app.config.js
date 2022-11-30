@@ -4,12 +4,16 @@ module.exports = {
     slug: 'app-builder',
     version: process.env.APP_VERSION || '1.0.0',
     orientation: 'portrait',
-    icon: 'https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/AppStore/@PNG.png',
+    icon:
+      process.env.APP_ICON ||
+      'https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/AppStore/@PNG.png',
     userInterfaceStyle: 'light',
     splash: {
-      image: './assets/splash.png',
+      image:
+        process.env.SPLASH_IMAGE ||
+        'https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/AppStore/@PNG.png',
       resizeMode: 'contain',
-      backgroundColor: '#ffffff',
+      backgroundColor: process.env.SPLASH_BACKGROUND_COLOR || '#ffffff',
     },
     updates: {
       fallbackToCacheTimeout: 0,
@@ -31,6 +35,7 @@ module.exports = {
       favicon: './assets/favicon.png',
     },
     extra: {
+      appId: process.env.APP_ID || 1,
       eas: {
         projectId: 'f9e1b32d-44c4-4e8a-9996-f1b540ff6105',
       },

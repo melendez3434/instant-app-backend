@@ -46,7 +46,7 @@ export const PlanMutations = extendType({
         const session = await stripe.checkout.sessions.create({
           billing_address_collection: 'auto',
           client_reference_id: user?.id,
-          customer: user?.stripeCustomerId || undefined,
+          customer: user?.stripeCustomerId ?? undefined,
           customer_email: user?.stripeCustomerId ? undefined : ctx.user.email,
 
           metadata,

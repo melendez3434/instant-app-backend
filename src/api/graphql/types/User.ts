@@ -137,7 +137,7 @@ export const Usermutations = extendType({
           where: { id: ctx.user?.id },
           data: {
             ...rest,
-            email: email || undefined,
+            email: email ?? undefined,
           },
         })
         return user

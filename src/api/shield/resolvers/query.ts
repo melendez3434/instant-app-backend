@@ -28,7 +28,8 @@ export const queriesShield = {
     slug: 'app',
     desc: '',
     role: ['all'],
-    permissions: isAppOwner,
+    // permissions: isAppOwner,
+    permissions: allow,
   },
   iosProfile: {
     name: 'iosProfile',
@@ -63,6 +64,7 @@ export const queriesShield = {
     slug: 'links',
     desc: '',
     role: ['all'],
-    permissions: isAuth,
+    // permissions: isAuth,
+    permissions: allow,
   },
 }

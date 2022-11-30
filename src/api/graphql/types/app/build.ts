@@ -102,8 +102,18 @@ export const AppBuildMutations = extendType({
         const app = await ctx.db.app.findUnique({
           where: { id },
           select: {
+            id: true,
             name: true,
             appId: true,
+            assets: {
+              select: {
+                appIcon: true,
+                splashMode: true,
+                backgroundImage: true,
+                displayLogo: true,
+                color: true,
+              },
+            },
             appBuilds: {
               where: { platform, status: 'success' },
               orderBy: { id: 'desc' },
@@ -165,7 +175,17 @@ export const AppBuildMutations = extendType({
             cmd.run(
               `
                 cd ./app-instant
-                APP_NAME=${app?.name} APP_VERSION=${appVersion} BUNDLE_ID=${app?.appId}   npx eas build --platform ${platform}  --json  --non-interactive
+                APP_NAME=${app?.name} APP_VERSION=${appVersion} BUNDLE_ID=${
+                app?.appId
+              }  APP_ICON=${app?.assets?.appIcon} APP_ID=${
+                app?.id
+              } SPLASH_IMAGE=${
+                app?.assets?.splashMode == 'image'
+                  ? app?.assets?.backgroundImage
+                  : app?.assets?.displayLogo
+              } SPLASH_BACKGROUND_COLOR=${
+                app?.assets?.color
+              }  npx eas build --platform ${platform}  --json  --non-interactive
 
                 `,
               async function (err, data, stderr) {

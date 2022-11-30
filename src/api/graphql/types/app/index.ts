@@ -205,10 +205,10 @@ export const Appmutations = extendType({
         return await ctx.db.app.update({
           where: { id: args.id },
           data: {
-            name: name || undefined,
-            website: website || undefined,
-            appId: appId || undefined,
-            lang: lang || undefined,
+            name: name ?? undefined,
+            website: website ?? undefined,
+            appId: appId ?? undefined,
+            lang: lang ?? undefined,
             userAgent,
           },
         })
@@ -283,16 +283,16 @@ export const Appmutations = extendType({
             App: { connect: { id: args.id } },
           },
           update: {
-            activeTabColor: args.data.activeTabColor || undefined,
-            themeColor: args.data.themeColor || undefined,
-            titleTheme: args.data.titleTheme || undefined,
-            disblayPagetitle: args.data.disblayPagetitle || undefined,
-            layoutTemplate: args.data.layoutTemplate || undefined,
-            progressIndicator: args.data.progressIndicator || undefined,
-            pullToRefresh: args.data.pullToRefresh || undefined,
+            activeTabColor: args.data.activeTabColor ?? undefined,
+            themeColor: args.data.themeColor ?? undefined,
+            titleTheme: args.data.titleTheme ?? undefined,
+            disblayPagetitle: args.data.disblayPagetitle ?? undefined,
+            layoutTemplate: args.data.layoutTemplate ?? undefined,
+            progressIndicator: args.data.progressIndicator ?? undefined,
+            pullToRefresh: args.data.pullToRefresh ?? undefined,
             progressIndicatorColor:
-              args.data.progressIndicatorColor || undefined,
-            navigationActiveColor: args.data.navigationActiveColor || undefined,
+              args.data.progressIndicatorColor ?? undefined,
+            navigationActiveColor: args.data.navigationActiveColor ?? undefined,
           },
         })
       },
@@ -384,18 +384,18 @@ export const LinkQuery = extendType({
       },
       async resolve(source, args, ctx) {
         const { appId, ...rest } = args
-        if (
-          !(await ctx.db.app.count({
-            where: {
-              OR: [
-                { owner: { builder: { ownerId: ctx.user.id } } },
-                { ownerId: ctx.user.id },
-              ],
-              id: appId,
-            },
-          }))
-        )
-          throw new Error('must be the owner of the app')
+        // if (
+        //   !(await ctx.db.app.count({
+        //     where: {
+        //       OR: [
+        //         { owner: { builder: { ownerId: ctx.user.id } } },
+        //         { ownerId: ctx.user.id },
+        //       ],
+        //       id: appId,
+        //     },
+        //   }))
+        // )
+        //   throw new Error('must be the owner of the app')
         //@ts-ignore
         rest.where = { ...args.where, appid: { equals: appId } }
 
@@ -483,10 +483,10 @@ export const Linkmutations = extendType({
         return await ctx.db.link.update({
           where: { id: args.id },
           data: {
-            name: name || undefined,
+            name: name ?? undefined,
             data,
             icon,
-            type: type || undefined,
+            type: type ?? undefined,
           },
         })
       },
