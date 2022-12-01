@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   ImageBackground,
+  Share,
 } from 'react-native'
 import * as SplashScreen from 'expo-splash-screen'
 import Constants from 'expo-constants'
@@ -63,6 +64,13 @@ const doAction = async (type: LinkType, data: any, navigation) => {
       Linking.openURL('mailto:' + data.value)
       break
     case 'share':
+      Share.share({
+        message: data.value,
+      })
+        //after successful share return result
+        .then((result) => console.log(result))
+        //If any thing goes wrong it comes here
+        .catch((errorMsg) => console.log(errorMsg))
       // toast.error('will open share modal in the native version ')
       break
     default:
