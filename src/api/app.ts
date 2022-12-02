@@ -198,6 +198,13 @@ const apolloServer = async () => {
         email: true,
       },
     })
+    // await prisma.builder.updateMany({
+    //   where: { ownerId: 1 },
+    //   data: { domain: 'test.instantappnow.dev' },
+    // })
+    // await prisma.user.delete({
+    //   where: { id: 3 },
+    // })
     // Promise.allSettled(
     //   users.map(async ({ id, builderMine, email }) => {
     //     try {
