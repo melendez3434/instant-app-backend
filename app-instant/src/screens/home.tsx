@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import * as SplashScreen from 'expo-splash-screen'
 import Constants from 'expo-constants'
-import { useQuery, gql, makeVar, useReactiveVar } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { WebView } from 'react-native-webview'
 import { useNavigation } from '@react-navigation/native'
 import { APP_INFO, NAVIGATION_LINKS } from '../graphql/query'
@@ -28,9 +28,18 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import React from 'react'
 // import call from 'react-native-phone-call';
 import * as Linking from 'expo-linking'
-const varWebsiteUrl = makeVar('')
+import { DrawerContentScrollView } from '@react-navigation/drawer'
+import { StatusBar } from 'expo-status-bar'
+import { useWebsiteUrl } from '../root'
 
-const doAction = async (type: LinkType, data: any, navigation) => {
+// const varWebsiteUrl = makeVar('')
+
+const doAction = async (
+  type: LinkType,
+  data: any,
+  navigation,
+  varWebsiteUrl,
+) => {
   console.log('🚀 ~ file: home.tsx ~ line 37 ~ doAction ~ data', data)
   // window.document.getElementById('shareId')?.click()
   switch (type) {
@@ -93,11 +102,11 @@ export default function HomeScreen() {
   })
   // const [externalLink, setExternalLink] = useState(null)
   // const [websiteUrl, setWebsiteUrl] = useState(data.app?.website)
-  const websiteUrl = useReactiveVar(varWebsiteUrl) || data.app?.website
-  console.log(
-    '🚀 ~ file: home.tsx ~ line 75 ~ HomeScreen ~ websiteUrl',
-    websiteUrl,
-  )
+  const { varWebsiteUrl, websiteUrl } = useWebsiteUrl() || data.app?.website
+  // const websiteUrl = useReactiveVar(varWebsiteUrl) || data.app?.website
+
+  // const websiteUrl = useReactiveVar(varWebsiteUrl) || data.app?.website
+
   const [loading, setLoading] = useState(true)
   const { height, width } = useWindowDimensions()
 
@@ -207,6 +216,8 @@ const Bottomtabs = ({}) => {
   const [value, setValue] = React.useState(0)
   const insets = useSafeAreaInsets()
   const navigation = useNavigation()
+  const { varWebsiteUrl } = useWebsiteUrl()
+
   const { data, loading, error, refetch } = useQuery(NAVIGATION_LINKS, {
     variables: {
       appId: Number(Constants.manifest.extra.appId),
@@ -239,7 +250,7 @@ const Bottomtabs = ({}) => {
         onChange={(e) => {
           setValue(e)
           const item = data?.links?.nodes[e]
-          doAction(item.type, item.data, navigation)
+          doAction(item.type, item.data, navigation, varWebsiteUrl)
         }}
         indicatorStyle={{
           backgroundColor: activeTabColor,
@@ -252,7 +263,7 @@ const Bottomtabs = ({}) => {
           ({ id, name, type, data, icon }: any, i: number) => (
             <Tab.Item
               key={id}
-              onPress={() => doAction(type, data, navigation)}
+              onPress={() => doAction(type, data, navigation, varWebsiteUrl)}
               title={name}
               titleStyle={{
                 fontSize: 12,
@@ -274,12 +285,8 @@ const HeaderComp = ({ websiteUrl, pageTitle }) => {
   const { data } = useQuery(APP_INFO, {
     variables: { id: Number(Constants.manifest.extra.appId) },
   })
-  const { data: modalData } = useQuery(NAVIGATION_LINKS, {
-    variables: {
-      appId: Number(Constants.manifest.extra.appId),
-      where: { menuType: { equals: 'modal' } },
-    },
-  })
+  const { varWebsiteUrl } = useWebsiteUrl()
+
   const { data: barData } = useQuery(NAVIGATION_LINKS, {
     variables: {
       appId: Number(Constants.manifest.extra.appId),
@@ -333,7 +340,9 @@ const HeaderComp = ({ websiteUrl, pageTitle }) => {
             {barData?.links?.nodes.map(
               ({ id, name, type, data, icon }: any) => (
                 <TouchableOpacity
-                  onPress={() => doAction(type, data, navigation)}
+                  onPress={() =>
+                    doAction(type, data, navigation, varWebsiteUrl)
+                  }
                   key={id}
                   style={{ paddingEnd: 5 }}
                 >
@@ -361,12 +370,6 @@ const HeaderComp = ({ websiteUrl, pageTitle }) => {
     </>
   )
 }
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-} from '@react-navigation/drawer'
-import { StatusBar } from 'expo-status-bar'
-import { ScrollView } from 'react-native-gesture-handler'
 
 export const DrawerContent = ({ ...props }) => {
   console.log('🚀 ~ file: home.tsx ~ line 331 ~ DrawerContent ~ props', props)
@@ -381,6 +384,7 @@ export const DrawerContent = ({ ...props }) => {
       where: { menuType: { equals: 'modal' } },
     },
   })
+  const { varWebsiteUrl } = useWebsiteUrl()
 
   const navigation = useNavigation()
 
@@ -471,7 +475,7 @@ export const DrawerContent = ({ ...props }) => {
           key={id}
           onPress={() => {
             props.navigation.closeDrawer()
-            doAction(type, data, navigation)
+            doAction(type, data, navigation, varWebsiteUrl)
           }}
         >
           <Icon
