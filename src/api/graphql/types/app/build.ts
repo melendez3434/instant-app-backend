@@ -12,7 +12,7 @@ import {
 var url = require('url')
 var cmd = require('node-cmd')
 
-const http = require('http') // or 'https' for https:// URLs
+const https = require('https') // or 'https' for https:// URLs
 // const fs = require('fs').promises
 const path = require('path')
 import fs from 'fs'
@@ -290,7 +290,7 @@ export const AppBuildMutations = extendType({
 const downloadFileAndMoveItToAppCerts = (filename, url) => {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(filename)
-    const request = http.get(url, function (response) {
+    const request = https.get(url, function (response) {
       response.pipe(file)
 
       // after download completed close filestream
