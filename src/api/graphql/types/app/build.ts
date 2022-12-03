@@ -99,6 +99,8 @@ export const AppBuildMutations = extendType({
       },
 
       async resolve(_root, { id, platform, buildType, ...rest }, ctx) {
+        console.log('🚀 ~ file: build.ts:102 ~ resolve ~ buildType', buildType)
+        console.log('🚀 ~ file: build.ts:102 ~ resolve ~ platform', platform)
         const app = await ctx.db.app.findUnique({
           where: { id },
           select: {
@@ -148,6 +150,10 @@ export const AppBuildMutations = extendType({
             console.log(
               '🚀 ~ file: build.ts ~ line 105 ~ appVersion',
               appVersion,
+            )
+            console.log(
+              '🚀 ~ file: build.ts:156 ~ process.env.NODE_ENV',
+              process.env.NODE_ENV,
             )
 
             if (process.env.NODE_ENV !== 'development') {
