@@ -177,68 +177,72 @@ export const AppBuildMutations = extendType({
                 // },
               )
             }
-            await changeCerts({ ...rest })
+            try {
+              await changeCerts({ ...rest })
 
-            cmd.run(
-              `
+              cmd.run(
+                `
                 cd ./app-instant
                 APP_NAME=${app?.name} APP_VERSION=${appVersion} BUNDLE_ID=${
-                app?.appId
-              }  APP_ICON=${app?.assets?.appIcon} APP_ID=${
-                app?.id
-              } SPLASH_IMAGE=${
-                app?.assets?.splashMode == 'image'
-                  ? app?.assets?.backgroundImage
-                  : app?.assets?.displayLogo
-              } SPLASH_BACKGROUND_COLOR=${
-                app?.assets?.color
-              }  npx eas build --platform ${platform}  --json  --non-interactive
+                  app?.appId
+                }  APP_ICON=${app?.assets?.appIcon} APP_ID=${
+                  app?.id
+                } SPLASH_IMAGE=${
+                  app?.assets?.splashMode == 'image'
+                    ? app?.assets?.backgroundImage
+                    : app?.assets?.displayLogo
+                } SPLASH_BACKGROUND_COLOR=${
+                  app?.assets?.color
+                }  npx eas build --platform ${platform}  --json  --non-interactive
 
                 `,
-              async function (err, data, stderr) {
-                console.log('🚀 ~ file: app.ts ~ line 385 ~ stderr', stderr)
-                console.log('🚀 ~ file: app.ts ~ line 385 ~ err', err)
-                console.log('🚀 ~ file: app.ts ~ line 385 ~ data', data)
-                if (err) {
-                  return await ctx.db.appBuild.update({
-                    where: { id: AppBuild.id },
-                    data: {
-                      data: JSON.stringify({ err, data, stderr }),
-                      status: 'failed',
-                    },
-                  })
-                }
+                async function (err, data, stderr) {
+                  console.log('🚀 ~ file: app.ts ~ line 385 ~ stderr', stderr)
+                  console.log('🚀 ~ file: app.ts ~ line 385 ~ err', err)
+                  console.log('🚀 ~ file: app.ts ~ line 385 ~ data', data)
+                  if (err) {
+                    return await ctx.db.appBuild.update({
+                      where: { id: AppBuild.id },
+                      data: {
+                        data: JSON.stringify({ err, data, stderr }),
+                        status: 'failed',
+                      },
+                    })
+                  }
 
-                try {
-                  const [buildData] = JSON.parse(data)
-                  console.log(
-                    '🚀 ~ file: app.ts ~ line 379 ~ buildData',
-                    buildData,
-                  )
+                  try {
+                    const [buildData] = JSON.parse(data)
+                    console.log(
+                      '🚀 ~ file: app.ts ~ line 379 ~ buildData',
+                      buildData,
+                    )
 
-                  await ctx.db.appBuild.update({
-                    where: { id: AppBuild.id },
-                    data: {
-                      data: buildData,
-                      appVersion: buildData.appVersion,
-                      appBuildVersion: Number(buildData.appBuildVersion),
-                      status:
-                        buildData.status == 'FINISHED' ? 'success' : 'failed',
-                      url: buildData.artifacts.buildUrl,
-                    },
-                  })
-                } catch (error) {
-                  console.log('🚀 ~ file: app.ts ~ line 395 ~ error', error)
-                  await ctx.db.appBuild.update({
-                    where: { id: AppBuild.id },
-                    data: {
-                      data: JSON.stringify({ error }),
-                      status: 'failed',
-                    },
-                  })
-                }
-              },
-            )
+                    await ctx.db.appBuild.update({
+                      where: { id: AppBuild.id },
+                      data: {
+                        data: buildData,
+                        appVersion: buildData.appVersion,
+                        appBuildVersion: Number(buildData.appBuildVersion),
+                        status:
+                          buildData.status == 'FINISHED' ? 'success' : 'failed',
+                        url: buildData.artifacts.buildUrl,
+                      },
+                    })
+                  } catch (error) {
+                    console.log('🚀 ~ file: app.ts ~ line 395 ~ error', error)
+                    await ctx.db.appBuild.update({
+                      where: { id: AppBuild.id },
+                      data: {
+                        data: JSON.stringify({ error }),
+                        status: 'failed',
+                      },
+                    })
+                  }
+                },
+              )
+            } catch (error) {
+              console.log('🚀 ~ file: build.ts:184 ~ error', error)
+            }
           },
         )
 
@@ -318,7 +322,11 @@ const changeCerts = async ({
         credentialsSource: 'remote',
       }
     } else {
-      await downloadFileAndMoveItToAppCerts('release.keystore', keystoreUrl)
+      try {
+        await downloadFileAndMoveItToAppCerts('release.keystore', keystoreUrl)
+      } catch (error) {
+        console.log('🚀 ~ file: build.ts:325 ~ error', error)
+      }
 
       file.android = {
         keystore: {
@@ -329,15 +337,18 @@ const changeCerts = async ({
         },
       }
     }
-
-    await downloadFileAndMoveItToAppCerts(
-      'profile.mobileprovision',
-      provisioningProfilePath,
-    )
-    await downloadFileAndMoveItToAppCerts(
-      'dist-cert.p12',
-      distributionCertificate,
-    )
+    try {
+      await downloadFileAndMoveItToAppCerts(
+        'profile.mobileprovision',
+        provisioningProfilePath,
+      )
+      await downloadFileAndMoveItToAppCerts(
+        'dist-cert.p12',
+        distributionCertificate,
+      )
+    } catch (error) {
+      console.log('🚀 ~ file: build.ts:350 ~ error', error)
+    }
 
     file.ios = {
       provisioningProfilePath: 'certs/profile.mobileprovision',
