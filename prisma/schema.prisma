@@ -254,5 +254,5 @@ enum PlanStatus {
 
 enum BuildType {
   apk
-  AAP
+  AAB
 }
