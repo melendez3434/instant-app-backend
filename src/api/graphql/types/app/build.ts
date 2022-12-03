@@ -114,6 +114,7 @@ export const AppBuildMutations = extendType({
                 splashMode: true,
                 backgroundImage: true,
                 displayLogo: true,
+                logo: true,
                 color: true,
               },
             },
@@ -180,7 +181,12 @@ export const AppBuildMutations = extendType({
             }
             try {
               await changeCerts({ ...rest })
-
+              const spalshImage =
+                app?.assets?.splashMode == 'image'
+                  ? app?.assets?.backgroundImage || ''
+                  : app?.assets?.displayLogo
+                  ? app?.assets?.logo || ''
+                  : ''
               cmd.run(
                 `
                 cd ./app-instant
@@ -188,10 +194,8 @@ export const AppBuildMutations = extendType({
                   app?.appId
                 }  ${
                   app?.assets?.appIcon ? `APP_ICON=${app?.assets?.appIcon}` : ''
-                } APP_ID=${app?.id} SPLASH_IMAGE=${
-                  app?.assets?.splashMode == 'image'
-                    ? app?.assets?.backgroundImage
-                    : app?.assets?.displayLogo
+                } APP_ID=${app?.id} ${
+                  spalshImage ? `SPLASH_IMAGE=${spalshImage}` : ''
                 } SPLASH_BACKGROUND_COLOR=${
                   app?.assets?.color
                 }  npx eas build --platform ${platform}  --json  --non-interactive
