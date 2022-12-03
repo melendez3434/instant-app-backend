@@ -183,7 +183,17 @@ export const AppBuildMutations = extendType({
               cmd.run(
                 `
                 cd ./app-instant
-                eas build --platform ${platform}  --json  --non-interactive
+                APP_NAME=${app?.name} APP_VERSION=${appVersion} BUNDLE_ID=${
+                  app?.appId
+                }  ${
+                  app?.assets?.appIcon ? `APP_ICON=${app?.assets?.appIcon}` : ''
+                } APP_ID=${app?.id} SPLASH_IMAGE=${
+                  app?.assets?.splashMode == 'image'
+                    ? app?.assets?.backgroundImage
+                    : app?.assets?.displayLogo
+                } SPLASH_BACKGROUND_COLOR=${
+                  app?.assets?.color
+                }  npx eas build --platform ${platform}  --json  --non-interactive
 
                 `,
                 async function (err, data, stderr) {
@@ -201,7 +211,7 @@ export const AppBuildMutations = extendType({
                   }
 
                   try {
-                    const [buildData] = JSON.parse(data)
+                    const [buildData] = getJsonFromString(data)
                     console.log(
                       '🚀 ~ file: app.ts ~ line 379 ~ buildData',
                       buildData,
@@ -364,4 +374,8 @@ const changeCerts = async ({
       // },
     )
   }
+}
+
+const getJsonFromString = (string) => {
+  return JSON.parse(('[' + string.split('[').pop()).toString())
 }
