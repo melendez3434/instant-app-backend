@@ -183,17 +183,7 @@ export const AppBuildMutations = extendType({
               cmd.run(
                 `
                 cd ./app-instant
-                APP_NAME=${app?.name} APP_VERSION=${appVersion} BUNDLE_ID=${
-                  app?.appId
-                }  ${
-                  app?.assets?.appIcon ? `APP_ICON=${app?.assets?.appIcon}` : ''
-                } APP_ID=${app?.id} SPLASH_IMAGE=${
-                  app?.assets?.splashMode == 'image'
-                    ? app?.assets?.backgroundImage
-                    : app?.assets?.displayLogo
-                } SPLASH_BACKGROUND_COLOR=${
-                  app?.assets?.color
-                }  npx eas build --platform ${platform}  --json  --non-interactive
+                eas build --platform ${platform}  --json  --non-interactive
 
                 `,
                 async function (err, data, stderr) {
