@@ -166,6 +166,7 @@ export const AppBuildMutations = extendType({
               console.log('🚀 ~ file: build.ts ~ line 118 ~ file', file)
 
               file.build.preview.android.buildType = buildType
+              file.build.production.android.buildType = buildType
 
               await fs.promises.writeFile(
                 fileName,
