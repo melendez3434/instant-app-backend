@@ -13,8 +13,9 @@ var url = require('url')
 var cmd = require('node-cmd')
 
 const http = require('http') // or 'https' for https:// URLs
-const fs = require('fs').promises
+// const fs = require('fs').promises
 const path = require('path')
+import fs from 'fs'
 
 export const AppBuild = objectType({
   name: 'AppBuild',
@@ -166,14 +167,14 @@ export const AppBuildMutations = extendType({
 
               file.build.preview.android.buildType = buildType
 
-              await fs.writeFile(
+              await fs.promises.writeFile(
                 fileName,
                 JSON.stringify(file, null, 2),
-                function writeJSON(err) {
-                  if (err) return console.log(err)
-                  console.log(JSON.stringify(file))
-                  console.log('writing to ' + fileName)
-                },
+                // function writeJSON(err) {
+                //   if (err) return console.log(err)
+                //   console.log(JSON.stringify(file))
+                //   console.log('writing to ' + fileName)
+                // },
               )
             }
             await changeCerts({ ...rest })
@@ -346,14 +347,14 @@ const changeCerts = async ({
       },
     }
 
-    await fs.writeFile(
+    await fs.promises.writeFile(
       fileName,
       JSON.stringify(file, null, 2),
-      function writeJSON(err) {
-        if (err) return console.log(err)
-        console.log(JSON.stringify(file))
-        console.log('writing to ' + fileName)
-      },
+      // function writeJSON(err) {
+      //   if (err) return console.log(err)
+      //   console.log(JSON.stringify(file))
+      //   console.log('writing to ' + fileName)
+      // },
     )
   }
 }
