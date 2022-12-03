@@ -40,7 +40,7 @@
     "cloudinary": "^1.27.1",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
-    "eas": "^0.1.0",
+    "eas-cli": "^2.8.0",
     "expo-cli": "^6.0.8",
     "express": "^4.17.1",
     "express-rate-limit": "^5.5.1",
