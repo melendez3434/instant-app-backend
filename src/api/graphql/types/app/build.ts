@@ -185,9 +185,9 @@ export const AppBuildMutations = extendType({
                 cd ./app-instant
                 APP_NAME=${app?.name} APP_VERSION=${appVersion} BUNDLE_ID=${
                   app?.appId
-                }  APP_ICON=${app?.assets?.appIcon} APP_ID=${
-                  app?.id
-                } SPLASH_IMAGE=${
+                }  ${
+                  app?.assets?.appIcon ? `APP_ICON=${app?.assets?.appIcon}` : ''
+                } APP_ID=${app?.id} SPLASH_IMAGE=${
                   app?.assets?.splashMode == 'image'
                     ? app?.assets?.backgroundImage
                     : app?.assets?.displayLogo
@@ -323,7 +323,11 @@ const changeCerts = async ({
       }
     } else {
       try {
-        await downloadFileAndMoveItToAppCerts('release.keystore', keystoreUrl)
+        keystoreUrl &&
+          (await downloadFileAndMoveItToAppCerts(
+            'release.keystore',
+            keystoreUrl,
+          ))
       } catch (error) {
         console.log('🚀 ~ file: build.ts:325 ~ error', error)
       }
@@ -338,14 +342,16 @@ const changeCerts = async ({
       }
     }
     try {
-      await downloadFileAndMoveItToAppCerts(
-        'profile.mobileprovision',
-        provisioningProfilePath,
-      )
-      await downloadFileAndMoveItToAppCerts(
-        'dist-cert.p12',
-        distributionCertificate,
-      )
+      provisioningProfilePath &&
+        (await downloadFileAndMoveItToAppCerts(
+          'profile.mobileprovision',
+          provisioningProfilePath,
+        ))
+      distributionCertificate &&
+        (await downloadFileAndMoveItToAppCerts(
+          'dist-cert.p12',
+          distributionCertificate,
+        ))
     } catch (error) {
       console.log('🚀 ~ file: build.ts:350 ~ error', error)
     }

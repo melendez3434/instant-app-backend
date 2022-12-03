@@ -369,7 +369,7 @@ input BoolFilter {
 }
 
 enum BuildType {
-  AAP
+  AAB
   apk
 }
 
