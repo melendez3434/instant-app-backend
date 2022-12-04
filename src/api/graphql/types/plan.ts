@@ -43,11 +43,23 @@ export const PlanMutations = extendType({
           userId: user?.id,
           appId: app?.id,
         }
+        const customer = !user?.stripeCustomerId
+          ? await stripe.customers.create({
+              email: ctx.user.email,
+              metadata,
+            })
+          : { id: user?.stripeCustomerId }
+        console.log('🚀 ~ file: plan.ts:47 ~ resolve ~ customer', customer)
+        !user?.stripeCustomerId &&
+          (await ctx.db.user.update({
+            where: { id: ctx.user.id },
+            data: { stripeCustomerId: customer.id },
+          }))
         const session = await stripe.checkout.sessions.create({
           billing_address_collection: 'auto',
           client_reference_id: user?.id,
-          customer: user?.stripeCustomerId ?? undefined,
-          customer_email: user?.stripeCustomerId ? undefined : ctx.user.email,
+          customer: customer?.id ?? undefined,
+          customer_email: customer?.id ? undefined : ctx.user.email,
 
           metadata,
           line_items: [
