@@ -13,27 +13,8 @@ import RootNavigation from './navigation/root'
 import { ThemeProvider, createTheme, useThemeMode } from '@rneui/themed'
 import React from 'react'
 import { APP_INFO, NAVIGATION_LINKS } from './graphql/query'
-const WebsiteUrlContext = React.createContext({})
-const WebsiteUrlContextProvider = ({ children }) => {
-  const [websiteUrl, setWebsiteUrl] = useState('')
-  const varWebsiteUrl = (newVal?: any) => {
-    if (typeof newVal == 'undefined') {
-      return websiteUrl
-    } else {
-      setWebsiteUrl(newVal)
-    }
-  }
+import { WebsiteUrlContextProvider } from './modules'
 
-  return (
-    <WebsiteUrlContext.Provider value={{ varWebsiteUrl }}>
-      {children}
-    </WebsiteUrlContext.Provider>
-  )
-}
-
-export const useWebsiteUrl = () => {
-  return useContext(WebsiteUrlContext)
-}
 export default function MyRoot() {
   const { data, loading, error } = useQuery(APP_INFO, {
     variables: { id: Number(Constants.manifest?.extra?.appId) },

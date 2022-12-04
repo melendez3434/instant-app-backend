@@ -30,7 +30,7 @@ import React from 'react'
 import * as Linking from 'expo-linking'
 import { DrawerContentScrollView } from '@react-navigation/drawer'
 import { StatusBar } from 'expo-status-bar'
-import { useWebsiteUrl } from '../root'
+import { useWebsiteUrl } from '../modules'
 
 // const varWebsiteUrl = makeVar('')
 
@@ -102,7 +102,8 @@ export default function HomeScreen() {
   })
   // const [externalLink, setExternalLink] = useState(null)
   // const [websiteUrl, setWebsiteUrl] = useState(data.app?.website)
-  const { varWebsiteUrl, websiteUrl } = useWebsiteUrl() || data.app?.website
+  //@ts-ignore
+  const { varWebsiteUrl, websiteUrl = data.app?.website } = useWebsiteUrl()
   // const websiteUrl = useReactiveVar(varWebsiteUrl) || data.app?.website
 
   // const websiteUrl = useReactiveVar(varWebsiteUrl) || data.app?.website

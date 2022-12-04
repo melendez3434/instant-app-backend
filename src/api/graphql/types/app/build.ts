@@ -368,6 +368,7 @@ const changeCerts = async ({
         password: distributionCertificatePassword,
       },
     }
+    console.log('🚀 ~ file: build.ts:367 ~ file', file)
 
     await fs.promises.writeFile(
       fileName,
