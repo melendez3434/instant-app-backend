@@ -132,7 +132,7 @@ export const AppBuildMutations = extendType({
           data: {
             App: { connect: { id } },
             platform,
-            buildType: platform == 'android' ? buildType : undefined,
+            buildType: platform == 'android' ? buildType : 'IPA',
           },
         })
 
