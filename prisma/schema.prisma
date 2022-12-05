@@ -40,27 +40,30 @@ model Builder {
 }
 
 model App {
-  id             Int             @id @default(autoincrement())
-  name           String
-  website        String
-  appId          String
-  lang           String
-  userAgent      String?
-  tempOwner      String?
-  nextBill       DateTime?
-  stripeSubId    String?         @unique
-  planStatus     PlanStatus      @default(notSub)
-  assets         AppAsset?
-  design         AppDesign?
-  navigation     Link[]          @relation("mainNavigationToLinks")
-  owner          User?           @relation(fields: [ownerId], references: [id])
-  ownerId        Int?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  appBuilds      AppBuild[]
-  iosProfile     IosProfile?
-  AndroidProfile AndroidProfile?
-  deployRequests DeployRequest[]
+  id                 Int                 @id @default(autoincrement())
+  name               String
+  website            String
+  appId              String
+  lang               String
+  userAgent          String?
+  tempOwner          String?
+  nextBill           DateTime?
+  stripeSubId        String?             @unique
+  planStatus         PlanStatus          @default(notSub)
+  assets             AppAsset?
+  design             AppDesign?
+  navigation         Link[]              @relation("mainNavigationToLinks")
+  owner              User?               @relation(fields: [ownerId], references: [id])
+  ownerId            Int?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  appBuilds          AppBuild[]
+  iosProfile         IosProfile?
+  AndroidProfile     AndroidProfile?
+  deployRequests     DeployRequest[]
+  notifications      Notification[]
+  notificationData   NotificationData?
+  notificationTokens NotificationToken[]
 }
 
 model IosProfile {
@@ -185,6 +188,38 @@ model AppAsset {
   appid           Int        @unique
 }
 
+model Notification {
+  id        Int                @id @default(autoincrement())
+  title     String
+  body      String
+  status    NotificationStatus @default(waiting)
+  data      Json?
+  publishAt DateTime           @default(now())
+  serviceId String?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  App       App                @relation(fields: [appid], references: [id])
+  appid     Int
+}
+
+model NotificationData {
+  id                Int      @id @default(autoincrement())
+  googleServiceJson String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  App               App      @relation(fields: [appid], references: [id])
+  appid             Int      @unique
+}
+
+model NotificationToken {
+  id        Int      @id @default(autoincrement())
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  App       App      @relation(fields: [appid], references: [id])
+  appid     Int
+}
+
 enum Role {
   admin
   user
@@ -256,4 +291,10 @@ enum BuildType {
   apk
   AAB
   IPA
+}
+
+enum NotificationStatus {
+  waiting
+  success
+  failed
 }

@@ -3175,6 +3175,20 @@ create-require@^1.1.0:
   resolved "https://registry.npmjs.org/create-require/-/create-require-1.1.1.tgz"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
+cron-job-manager@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/cron-job-manager/-/cron-job-manager-2.3.1.tgz#1fce677f1651a20dba5c3f9e743a2347fb15a716"
+  integrity sha512-knVZbAhXRrkpF2XQO2NRmq8mk0wC4Y4LNrwkYLyDYsgrRddbyPisrP9+s7Gdd0tHmA3Q2uOv5DsSe0O/y9jrSw==
+  dependencies:
+    cron "1.8.2"
+
+cron@1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/cron/-/cron-1.8.2.tgz#4ac5e3c55ba8c163d84f3407bde94632da8370ce"
+  integrity sha512-Gk2c4y6xKEO8FSAUTklqtfSr7oTq0CiPQeLBG5Fl0qoXpZyMcj1SG59YL+hqq04bu6/IuEA7lMkYDAplQNKkyg==
+  dependencies:
+    moment-timezone "^0.5.x"
+
 cross-fetch@^3.0.6:
   version "3.1.5"
   resolved "https://registry.npmjs.org/cross-fetch/-/cross-fetch-3.1.5.tgz"
@@ -4310,6 +4324,15 @@ expo-pwa@0.0.124:
     chalk "^4.0.0"
     commander "2.20.0"
     update-check "1.5.3"
+
+expo-server-sdk@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/expo-server-sdk/-/expo-server-sdk-3.7.0.tgz#65249f8d4a7797507cc884d61222c3c5a3863127"
+  integrity sha512-SMZuBiIWejAdMMIOTjGQlprcwvSyLfeUQlooyGB5q6GvZ8zHjp+if8Q4k7xczUBTqIqTzs5IvTZnTiqA9Oe9WA==
+  dependencies:
+    node-fetch "^2.6.0"
+    promise-limit "^2.7.0"
+    promise-retry "^2.0.1"
 
 express-rate-limit@^5.5.1:
   version "5.5.1"
@@ -6889,7 +6912,14 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-1.0.4.tgz"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-moment@^2.29.4:
+moment-timezone@^0.5.x:
+  version "0.5.39"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.39.tgz#342625a3b98810f04c8f4ea917e448d3525e600b"
+  integrity sha512-hoB6suq4ISDj7BDgctiOy6zljBsdYT0++0ZzZm9rtxIvJhIbQ3nmbgSWe7dNFGurl6/7b1OUkHlmN9JWgXVz7w==
+  dependencies:
+    moment ">= 2.9.0"
+
+"moment@>= 2.9.0", moment@^2.29.4:
   version "2.29.4"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
@@ -8314,12 +8344,12 @@ promise-inflight@^1.0.1:
   resolved "https://registry.yarnpkg.com/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
   integrity sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==
 
-promise-limit@2.7.0:
+promise-limit@2.7.0, promise-limit@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/promise-limit/-/promise-limit-2.7.0.tgz#eb5737c33342a030eaeaecea9b3d3a93cb592b26"
   integrity sha512-7nJ6v5lnJsXwGprnGXga4wx6d1POjvi5Qmf1ivTRxTjH4Z/9Czja/UCMLVmB9N93GeWOU93XaFaEt6jbuoagNw==
 
-promise-retry@2.0.1:
+promise-retry@2.0.1, promise-retry@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/promise-retry/-/promise-retry-2.0.1.tgz#ff747a13620ab57ba688f5fc67855410c370da22"
   integrity sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==

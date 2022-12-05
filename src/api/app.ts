@@ -24,6 +24,7 @@ import {
   ApolloServerPluginLandingPageLocalDefault,
 } from 'apollo-server-core'
 import { exec } from 'child_process'
+import { startCron } from './utils/cron'
 
 const schema = applyMiddleware(baseSchema, permissions)
 const express = createExpress()
@@ -224,7 +225,7 @@ const apolloServer = async () => {
     //   }),
     // )
     console.log('🚀 ~ file: app.ts ~ line 192 ~ app ~ users', users)
-
+    startCron()
     console.log('server running at port ' + (process.env.PORT || 4000))
   })
 

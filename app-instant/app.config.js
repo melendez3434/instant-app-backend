@@ -26,6 +26,10 @@ module.exports = {
 
     android: {
       package: process.env.BUNDLE_ID || 'com.b7r.appbuilder',
+      googleServicesFile: process.env.ADD_NOTIFI
+        ? './google-services.json'
+        : undefined,
+
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#FFFFFF',

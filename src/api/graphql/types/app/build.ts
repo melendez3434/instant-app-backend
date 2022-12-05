@@ -16,6 +16,7 @@ const https = require('https') // or 'https' for https:// URLs
 // const fs = require('fs').promises
 const path = require('path')
 import fs from 'fs'
+import { Context } from '../../../utils/context'
 
 export const AppBuild = objectType({
   name: 'AppBuild',
@@ -187,12 +188,15 @@ export const AppBuildMutations = extendType({
                   : app?.assets?.displayLogo
                   ? app?.assets?.logo || ''
                   : ''
+
+              const isAddNotificationData = await addNotificationData(id, ctx)
+
               cmd.run(
                 `
                 cd ./app-instant
-                APP_NAME=${app?.name} APP_VERSION=${appVersion} BUNDLE_ID=${
-                  app?.appId
-                }  ${
+                APP_NAME=${app?.name} ${
+                  isAddNotificationData ? 'ADD_NOTIFI=true' : ''
+                } APP_VERSION=${appVersion} BUNDLE_ID=${app?.appId}  ${
                   app?.assets?.appIcon ? `APP_ICON=${app?.assets?.appIcon}` : ''
                 } APP_ID=${app?.id} ${
                   spalshImage ? `SPLASH_IMAGE=${spalshImage}` : ''
@@ -287,7 +291,7 @@ export const AppBuildMutations = extendType({
   },
 })
 
-const downloadFileAndMoveItToAppCerts = (filename, url) => {
+const downloadFileAndMoveItToAppCerts = (filename, url, path?) => {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(filename)
     const request = https.get(url, function (response) {
@@ -297,7 +301,7 @@ const downloadFileAndMoveItToAppCerts = (filename, url) => {
       file.on('finish', () => {
         file.close()
         console.log('Download Completed')
-        fs.rename(filename, 'app-instant/certs/' + filename, () => {
+        fs.rename(filename, (path || 'app-instant/certs/') + filename, () => {
           resolve('done')
         })
       })
@@ -380,6 +384,22 @@ const changeCerts = async ({
       // },
     )
   }
+}
+
+const addNotificationData = async (appId, { db }: Context) => {
+  const notificationData = await db.notificationData.findUnique({
+    where: { appid: appId },
+  })
+  if (notificationData?.googleServiceJson) {
+    await downloadFileAndMoveItToAppCerts(
+      'google-services.json',
+      notificationData?.googleServiceJson,
+      'app-instant/',
+    )
+
+    return true
+  }
+  return false
 }
 
 const getJsonFromString = (string) => {

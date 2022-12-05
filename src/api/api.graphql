@@ -316,6 +316,9 @@ input AppOrderByWithRelationInput {
   name: SortOrder
   navigation: LinkOrderByRelationAggregateInput
   nextBill: SortOrder
+  notificationData: NotificationDataOrderByWithRelationInput
+  notificationTokens: NotificationTokenOrderByRelationAggregateInput
+  notifications: NotificationOrderByRelationAggregateInput
   owner: UserOrderByWithRelationInput
   ownerId: SortOrder
   planStatus: SortOrder
@@ -343,6 +346,9 @@ input AppWhereInput {
   name: StringFilter
   navigation: LinkListRelationFilter
   nextBill: DateTimeNullableFilter
+  notificationData: NotificationDataWhereInput
+  notificationTokens: NotificationTokenListRelationFilter
+  notifications: NotificationListRelationFilter
   owner: UserWhereInput
   ownerId: IntNullableFilter
   planStatus: EnumPlanStatusFilter
@@ -555,6 +561,13 @@ input EnumMenuTypeFilter {
   in: [MenuType!]
   not: NestedEnumMenuTypeFilter
   notIn: [MenuType!]
+}
+
+input EnumNotificationStatusFilter {
+  equals: NotificationStatus
+  in: [NotificationStatus!]
+  not: NestedEnumNotificationStatusFilter
+  notIn: [NotificationStatus!]
 }
 
 input EnumPlanStatusFilter {
@@ -884,6 +897,13 @@ input NestedEnumMenuTypeFilter {
   notIn: [MenuType!]
 }
 
+input NestedEnumNotificationStatusFilter {
+  equals: NotificationStatus
+  in: [NotificationStatus!]
+  not: NestedEnumNotificationStatusFilter
+  notIn: [NotificationStatus!]
+}
+
 input NestedEnumPlanStatusFilter {
   equals: PlanStatus
   in: [PlanStatus!]
@@ -978,6 +998,82 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
   notIn: [String!]
   startsWith: String
+}
+
+input NotificationDataOrderByWithRelationInput {
+  App: AppOrderByWithRelationInput
+  appid: SortOrder
+  createdAt: SortOrder
+  googleServiceJson: SortOrder
+  id: SortOrder
+  updatedAt: SortOrder
+}
+
+input NotificationDataWhereInput {
+  AND: [NotificationDataWhereInput!]
+  App: AppWhereInput
+  NOT: [NotificationDataWhereInput!]
+  OR: [NotificationDataWhereInput!]
+  appid: IntFilter
+  createdAt: DateTimeFilter
+  googleServiceJson: StringNullableFilter
+  id: IntFilter
+  updatedAt: DateTimeFilter
+}
+
+input NotificationListRelationFilter {
+  every: NotificationWhereInput
+  none: NotificationWhereInput
+  some: NotificationWhereInput
+}
+
+input NotificationOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+enum NotificationStatus {
+  failed
+  success
+  waiting
+}
+
+input NotificationTokenListRelationFilter {
+  every: NotificationTokenWhereInput
+  none: NotificationTokenWhereInput
+  some: NotificationTokenWhereInput
+}
+
+input NotificationTokenOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input NotificationTokenWhereInput {
+  AND: [NotificationTokenWhereInput!]
+  App: AppWhereInput
+  NOT: [NotificationTokenWhereInput!]
+  OR: [NotificationTokenWhereInput!]
+  appid: IntFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  token: StringFilter
+  updatedAt: DateTimeFilter
+}
+
+input NotificationWhereInput {
+  AND: [NotificationWhereInput!]
+  App: AppWhereInput
+  NOT: [NotificationWhereInput!]
+  OR: [NotificationWhereInput!]
+  appid: IntFilter
+  body: StringFilter
+  createdAt: DateTimeFilter
+  data: JsonNullableFilter
+  id: IntFilter
+  publishAt: DateTimeFilter
+  serviceId: StringNullableFilter
+  status: EnumNotificationStatusFilter
+  title: StringFilter
+  updatedAt: DateTimeFilter
 }
 
 enum PlanStatus {

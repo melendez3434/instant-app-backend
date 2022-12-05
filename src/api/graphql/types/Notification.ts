@@ -1,7 +1,5 @@
-// @ts-nocheck
-
 import { arg, extendType, intArg, objectType, stringArg } from 'nexus'
-// import admin from '../../utils/notifiacation'
+import { sendNotifications } from '../../utils/notifications'
 
 export const NotifiMutation = extendType({
   type: 'Mutation',
@@ -9,37 +7,27 @@ export const NotifiMutation = extendType({
     t.field('pushNotification', {
       type: 'Json',
       args: {
-        notification: arg({
-          type: 'Json',
-          required: true,
-        }),
+        appId: intArg(),
+        title: stringArg(),
+        body: stringArg(),
+        publishAt: arg({ type: 'DateTime' }),
       },
 
-      async resolve(_root, { notification }, ctx) {
-        const users = await ctx.db.user.findMany({
-          where: { notificationToken: { not: { equals: null } } },
-          select: { notificationToken: true },
+      async resolve(_root, { appId, title, body, publishAt }, ctx) {
+        const notifiacation = await ctx.db.notification.create({
+          data: {
+            App: { connect: { id: appId } },
+            title,
+            body,
+            publishAt,
+          },
         })
-        console.log('resolve -> users', users)
-        // Create a list containing up to 500 registration tokens.
-        // These registration tokens come from the client FCM SDKs.
-
-        const message = {
-          notification,
-          tokens: users
-            .filter(({ registrationTokens }) => registrationTokens)
-            .map(({ registrationTokens }) => registrationTokens),
+        try {
+          await sendNotifications()
+        } catch (error) {
+          console.log('🚀 ~ file: Notification.ts:31 ~ resolve ~ error', error)
         }
-        console.log(
-          'resolve -> users.map(({ registrationTokens }) => registrationTokens)',
-          users
-            .filter(({ registrationTokens }) => registrationTokens)
-            .map(({ registrationTokens }) => registrationTokens),
-        )
-        // const response = await admin.messaging().sendMulticast(message)
-
-        // console.log(response.successCount + 'messages were sent successfully')
-        // return `${response.successCount} messages were sent successfully`
+        return notifiacation
       },
     })
   },
