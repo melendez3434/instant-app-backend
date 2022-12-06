@@ -800,10 +800,12 @@ type Mutation {
   addApp(data: addAppInput!): App
   addDeployRequest(data: addDeployRequestInput!, id: Int!): DeployRequest
   addLink(data: addLinkInput!): Link
+  addNotification(appId: Int!, body: String!, publishAt: DateTime, title: String!): Notification
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
   fastSignup(email: String!, website: String!): Boolean
   generateBuild(androidCertAuto: Boolean, buildType: BuildType! = apk, distributionCertificate: String, distributionCertificatePassword: String, id: Int!, keyAlias: String, keyPassword: String, keystorePassword: String, keystoreUrl: String, platform: AppBuildPlatform!, provisioningProfilePath: String): AppBuild
+  removeNotification(id: Int!): Notification
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signup(email: String!, password: String!): AuthPayLoad
@@ -819,6 +821,7 @@ type Mutation {
   updateLink(data: updateLinkInput!, id: Int!): Link
   updateMyBuilder(data: updateMyBuilderInput!): Builder
   updateMyProfile(data: updateMyProfileInput!): User
+  updateNotification(body: String!, id: Int!, publishAt: DateTime, title: String!): Notification
 }
 
 input NestedBoolFilter {
@@ -1000,6 +1003,16 @@ input NestedStringNullableFilter {
   startsWith: String
 }
 
+type Notification {
+  body: String!
+  createdAt: DateTime!
+  data: Json
+  id: Int!
+  publishAt: DateTime!
+  status: NotificationStatus!
+  title: String!
+}
+
 input NotificationDataOrderByWithRelationInput {
   App: AppOrderByWithRelationInput
   appid: SortOrder
@@ -1029,6 +1042,20 @@ input NotificationListRelationFilter {
 
 input NotificationOrderByRelationAggregateInput {
   _count: SortOrder
+}
+
+input NotificationOrderByWithRelationInput {
+  App: AppOrderByWithRelationInput
+  appid: SortOrder
+  body: SortOrder
+  createdAt: SortOrder
+  data: SortOrder
+  id: SortOrder
+  publishAt: SortOrder
+  serviceId: SortOrder
+  status: SortOrder
+  title: SortOrder
+  updatedAt: SortOrder
 }
 
 enum NotificationStatus {
@@ -1076,6 +1103,15 @@ input NotificationWhereInput {
   updatedAt: DateTimeFilter
 }
 
+input NotificationWhereUniqueInput {
+  id: Int
+}
+
+type NotificationsConnectionPayLoad {
+  count: Int
+  nodes: [Notification]
+}
+
 enum PlanStatus {
   notSub
   stopped
@@ -1101,6 +1137,7 @@ type Query {
   myBuilder: Builder
   myMailLists: JSONObject
   myUsers(orderBy: UserOrderByWithRelationInput, skip: Int, take: Int, where: UserWhereInput): userConnectionPayLoad
+  notifications(appId: Int!, orderBy: NotificationOrderByWithRelationInput, skip: Int, take: Int, where: NotificationWhereInput): NotificationsConnectionPayLoad
   users(cursor: UserWhereUniqueInput, orderBy: [UserOrderByWithRelationInput!], skip: Int, take: Int, where: UserWhereInput): [User!]!
 }
 

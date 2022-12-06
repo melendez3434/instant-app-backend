@@ -1,5 +1,10 @@
 import { allow } from 'graphql-shield'
-import { isAppOwner, isAppOwnerFromLink, isAuth } from '../rules'
+import {
+  isAppOwner,
+  isAppOwnerFromLink,
+  isAuth,
+  isNotificationOwner,
+} from '../rules'
 
 const appMutationsShield = {
   subscribe: {
@@ -113,6 +118,20 @@ const appMutationsShield = {
     desc: '',
     role: ['all'],
     permissions: isAppOwnerFromLink,
+  },
+  addNotification: {
+    name: 'addNotification',
+    slug: 'addNotification',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
+  updateNotification: {
+    name: 'updateNotification',
+    slug: 'updateNotification',
+    desc: '',
+    role: ['all'],
+    permissions: isNotificationOwner,
   },
 }
 const auth = {

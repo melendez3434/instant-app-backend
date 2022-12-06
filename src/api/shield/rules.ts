@@ -40,11 +40,34 @@ export const isAppOwner = rule({ cache: 'strict' })(
     if (
       await ctx.db.app.count({
         where: {
-          id: args.id,
+          id: args.appId || args.id,
           OR: [
             { owner: { builder: { ownerId: ctx.user.id } } },
             { ownerId: ctx.user.id },
           ],
+        },
+      })
+    ) {
+      return true
+    } else {
+      return false
+    }
+  },
+)
+export const isNotificationOwner = rule({ cache: 'strict' })(
+  async (parent, args, ctx: Context, info) => {
+    if (!ctx.user?.id) return false
+
+    if (
+      await ctx.db.notification.count({
+        where: {
+          id: args.id,
+          App: {
+            OR: [
+              { owner: { builder: { ownerId: ctx.user.id } } },
+              { ownerId: ctx.user.id },
+            ],
+          },
         },
       })
     ) {
