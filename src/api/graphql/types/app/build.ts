@@ -190,65 +190,63 @@ export const AppBuildMutations = extendType({
                   : ''
 
               const isAddNotificationData = await addNotificationData(id, ctx)
+              const command = `
+cd ./app-instant
+APP_NAME=${app?.name} ${
+                isAddNotificationData ? 'ADD_NOTIFI=true' : ''
+              } APP_VERSION=${appVersion} BUNDLE_ID=${app?.appId}  ${
+                app?.assets?.appIcon ? `APP_ICON=${app?.assets?.appIcon}` : ''
+              } APP_ID=${app?.id} ${
+                spalshImage ? `SPLASH_IMAGE=${spalshImage}` : ''
+              } SPLASH_BACKGROUND_COLOR=${
+                app?.assets?.color
+              }  npx eas build --platform ${platform}  --json  --non-interactive
 
-              cmd.run(
-                `
-                cd ./app-instant
-                APP_NAME=${app?.name} ${
-                  isAddNotificationData ? 'ADD_NOTIFI=true' : ''
-                } APP_VERSION=${appVersion} BUNDLE_ID=${app?.appId}  ${
-                  app?.assets?.appIcon ? `APP_ICON=${app?.assets?.appIcon}` : ''
-                } APP_ID=${app?.id} ${
-                  spalshImage ? `SPLASH_IMAGE=${spalshImage}` : ''
-                } SPLASH_BACKGROUND_COLOR=${
-                  app?.assets?.color
-                }  npx eas build --platform ${platform}  --json  --non-interactive
+`
+              console.log('🚀 ~ file: build.ts:206 ~ command', command)
+              cmd.run(command, async function (err, data, stderr) {
+                console.log('🚀 ~ file: app.ts ~ line 385 ~ stderr', stderr)
+                console.log('🚀 ~ file: app.ts ~ line 385 ~ err', err)
+                console.log('🚀 ~ file: app.ts ~ line 385 ~ data', data)
+                if (err) {
+                  return await ctx.db.appBuild.update({
+                    where: { id: AppBuild.id },
+                    data: {
+                      data: JSON.stringify({ err, data, stderr }),
+                      status: 'failed',
+                    },
+                  })
+                }
 
-                `,
-                async function (err, data, stderr) {
-                  console.log('🚀 ~ file: app.ts ~ line 385 ~ stderr', stderr)
-                  console.log('🚀 ~ file: app.ts ~ line 385 ~ err', err)
-                  console.log('🚀 ~ file: app.ts ~ line 385 ~ data', data)
-                  if (err) {
-                    return await ctx.db.appBuild.update({
-                      where: { id: AppBuild.id },
-                      data: {
-                        data: JSON.stringify({ err, data, stderr }),
-                        status: 'failed',
-                      },
-                    })
-                  }
+                try {
+                  const [buildData] = getJsonFromString(data)
+                  console.log(
+                    '🚀 ~ file: app.ts ~ line 379 ~ buildData',
+                    buildData,
+                  )
 
-                  try {
-                    const [buildData] = getJsonFromString(data)
-                    console.log(
-                      '🚀 ~ file: app.ts ~ line 379 ~ buildData',
-                      buildData,
-                    )
-
-                    await ctx.db.appBuild.update({
-                      where: { id: AppBuild.id },
-                      data: {
-                        data: buildData,
-                        appVersion: buildData.appVersion,
-                        appBuildVersion: Number(buildData.appBuildVersion),
-                        status:
-                          buildData.status == 'FINISHED' ? 'success' : 'failed',
-                        url: buildData.artifacts.buildUrl,
-                      },
-                    })
-                  } catch (error) {
-                    console.log('🚀 ~ file: app.ts ~ line 395 ~ error', error)
-                    await ctx.db.appBuild.update({
-                      where: { id: AppBuild.id },
-                      data: {
-                        data: JSON.stringify({ error }),
-                        status: 'failed',
-                      },
-                    })
-                  }
-                },
-              )
+                  await ctx.db.appBuild.update({
+                    where: { id: AppBuild.id },
+                    data: {
+                      data: buildData,
+                      appVersion: buildData.appVersion,
+                      appBuildVersion: Number(buildData.appBuildVersion),
+                      status:
+                        buildData.status == 'FINISHED' ? 'success' : 'failed',
+                      url: buildData.artifacts.buildUrl,
+                    },
+                  })
+                } catch (error) {
+                  console.log('🚀 ~ file: app.ts ~ line 395 ~ error', error)
+                  await ctx.db.appBuild.update({
+                    where: { id: AppBuild.id },
+                    data: {
+                      data: JSON.stringify({ error }),
+                      status: 'failed',
+                    },
+                  })
+                }
+              })
             } catch (error) {
               console.log('🚀 ~ file: build.ts:184 ~ error', error)
             }
