@@ -6,6 +6,21 @@ export const sendNotifications = async () => {
   if (isRunning) return
   isRunning = true
   try {
+    await prisma.notification.updateMany({
+      where: {
+        status: 'waiting',
+        publishAt: { lte: new Date() },
+        OR: [
+          {
+            App: { notificationData: { googleServiceJson: { equals: null } } },
+          },
+          {
+            App: { notificationData: null },
+          },
+        ],
+      },
+      data: { status: 'failed' },
+    })
     const notifications = await prisma.notification.findMany({
       where: { status: 'waiting', publishAt: { lte: new Date() } },
       select: { title: true, body: true, appid: true, id: true },

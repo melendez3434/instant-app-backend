@@ -1,4 +1,12 @@
-import { arg, extendType, intArg, nonNull, objectType, stringArg } from 'nexus'
+import {
+  arg,
+  extendType,
+  inputObjectType,
+  intArg,
+  nonNull,
+  objectType,
+  stringArg,
+} from 'nexus'
 import { sendNotifications } from '../../utils/notifications'
 
 export const Notification = objectType({
@@ -11,6 +19,13 @@ export const Notification = objectType({
     t.model.createdAt()
     t.model.publishAt()
     t.model.status()
+  },
+})
+export const NotificationData = objectType({
+  name: 'NotificationData',
+  definition(t) {
+    t.model.id()
+    t.model.googleServiceJson()
   },
 })
 export const NotificationsQuery = extendType({
@@ -51,6 +66,17 @@ export const NotificationsQuery = extendType({
         }
       },
     })
+    t.field('notificationData', {
+      type: 'NotificationData',
+      args: {
+        id: nonNull(intArg()),
+      },
+      async resolve(source, { id }, ctx) {
+        return await ctx.db.notificationData.findUnique({
+          where: { appid: id },
+        })
+      },
+    })
   },
 })
 export const NotifiMutation = extendType({
@@ -75,7 +101,9 @@ export const NotifiMutation = extendType({
           },
         })
         try {
-          await sendNotifications()
+          sendNotifications().catch((e) => {
+            console.log('🚀 ~ file: Notification.ts:106 ~ resolve ~ e', e)
+          })
         } catch (error) {
           console.log('🚀 ~ file: Notification.ts:31 ~ resolve ~ error', error)
         }
@@ -107,7 +135,9 @@ export const NotifiMutation = extendType({
           },
         })
         try {
-          await sendNotifications()
+          sendNotifications().catch((e) => {
+            console.log('🚀 ~ file: Notification.ts:106 ~ resolve ~ e', e)
+          })
         } catch (error) {
           console.log('🚀 ~ file: Notification.ts:31 ~ resolve ~ error', error)
         }
@@ -135,6 +165,38 @@ export const NotifiMutation = extendType({
           console.log('🚀 ~ file: Notification.ts:31 ~ resolve ~ error', error)
         }
         return notifiacation
+      },
+    })
+
+    t.field('updateNotificationData', {
+      type: 'NotificationData',
+      args: {
+        id: nonNull(intArg()),
+        data: nonNull(
+          arg({
+            type: inputObjectType({
+              name: 'updateNotificationDataInput',
+              definition(t) {
+                t.nonNull.string('googleServiceJson')
+              },
+            }),
+          }),
+        ),
+      },
+
+      async resolve(_root, { id, data }, ctx) {
+        const notificationData = await ctx.db.notificationData.upsert({
+          where: { appid: id },
+          create: {
+            App: { connect: { id } },
+            ...data,
+          },
+          update: {
+            ...data,
+          },
+        })
+
+        return notificationData
       },
     })
   },

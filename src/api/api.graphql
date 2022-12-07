@@ -822,6 +822,7 @@ type Mutation {
   updateMyBuilder(data: updateMyBuilderInput!): Builder
   updateMyProfile(data: updateMyProfileInput!): User
   updateNotification(body: String!, id: Int!, publishAt: DateTime, title: String!): Notification
+  updateNotificationData(data: updateNotificationDataInput!, id: Int!): NotificationData
 }
 
 input NestedBoolFilter {
@@ -1013,6 +1014,11 @@ type Notification {
   title: String!
 }
 
+type NotificationData {
+  googleServiceJson: String
+  id: Int!
+}
+
 input NotificationDataOrderByWithRelationInput {
   App: AppOrderByWithRelationInput
   appid: SortOrder
@@ -1137,6 +1143,7 @@ type Query {
   myBuilder: Builder
   myMailLists: JSONObject
   myUsers(orderBy: UserOrderByWithRelationInput, skip: Int, take: Int, where: UserWhereInput): userConnectionPayLoad
+  notificationData(id: Int!): NotificationData
   notifications(appId: Int!, orderBy: NotificationOrderByWithRelationInput, skip: Int, take: Int, where: NotificationWhereInput): NotificationsConnectionPayLoad
   users(cursor: UserWhereUniqueInput, orderBy: [UserOrderByWithRelationInput!], skip: Int, take: Int, where: UserWhereInput): [User!]!
 }
@@ -1375,6 +1382,10 @@ input updateMyProfileInput {
   email: String
   newPass: String
   pass: String
+}
+
+input updateNotificationDataInput {
+  googleServiceJson: String!
 }
 
 type userConnectionPayLoad {

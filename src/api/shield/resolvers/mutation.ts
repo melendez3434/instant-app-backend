@@ -126,6 +126,13 @@ const appMutationsShield = {
     role: ['all'],
     permissions: isAppOwner,
   },
+  updateNotificationData: {
+    name: 'updateNotificationData',
+    slug: 'updateNotificationData',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
   updateNotification: {
     name: 'updateNotification',
     slug: 'updateNotification',

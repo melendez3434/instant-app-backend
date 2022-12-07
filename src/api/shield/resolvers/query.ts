@@ -45,6 +45,13 @@ export const queriesShield = {
     role: ['all'],
     permissions: isAppOwner,
   },
+  notificationData: {
+    name: 'notificationData',
+    slug: 'notificationData',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
   apps: {
     name: 'apps',
     slug: 'apps',
