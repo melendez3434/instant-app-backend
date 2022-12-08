@@ -393,9 +393,9 @@ const changeCerts = async ({
       file.android = {
         keystore: {
           keystorePath: 'certs/release.keystore',
-          keystorePassword: keystorePassword,
-          keyAlias: keyAlias,
-          keyPassword: keyPassword,
+          keystorePassword: keystorePassword || 'keystorePassword',
+          keyAlias: keyAlias || 'keyAlias',
+          keyPassword: keyPassword || 'keyPassword',
         },
       }
     }
