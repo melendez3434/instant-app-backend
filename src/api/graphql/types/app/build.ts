@@ -200,7 +200,6 @@ export const AppBuildMutations = extendType({
                   '../../../../../app-instant/app.json',
                 )
                 const appFile = require(appFileName)
-                console.log('🚀 ~ file: build.ts:204 ~ appFile', appFile)
                 appFile.expo.name = app?.name
                 appFile.expo.version = appVersion
                 appFile.expo.icon =
@@ -215,6 +214,7 @@ export const AppBuildMutations = extendType({
                   isAddNotificationData ? './google-services.json' : undefined),
                   (appFile.expo.extra.appId = app?.id)
                 appFile.expo.extra.isDev = Boolean(process.env.IS_DEV)
+                console.log('🚀 ~ file: build.ts:204 ~ appFile', appFile)
 
                 await fs.promises.writeFile(
                   appFileName,
@@ -366,9 +366,7 @@ const changeCerts = async ({
     const file = require(fileName)
 
     if (androidCertAuto) {
-      file.android = {
-        credentialsSource: 'remote',
-      }
+      file.android.credentialsSource = 'remote'
 
       // const easFileName = path.resolve(
       //   __dirname,
