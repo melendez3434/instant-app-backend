@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "test",
+    "slug": "app-builder",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/AppStore/@PNG.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/AppStore/@PNG.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "bundleIdentifier": "com.b7r.appbuilder",
+      "supportsTablet": true
+    },
+
+    "android": {
+      "package": "com.b7r.appbuilder",
+      "googleServicesFile": "./google-services.json",
+
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "appId": 1,
+      "isDev": true,
+      "eas": {
+        "projectId": "f9e1b32d-44c4-4e8a-9996-f1b540ff6105"
+      }
+    }
+  }
+}

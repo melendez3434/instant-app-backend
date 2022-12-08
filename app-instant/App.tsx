@@ -8,9 +8,7 @@ import React, { useEffect, useRef } from 'react'
 import Constants from 'expo-constants'
 import Toast from 'react-native-toast-message'
 
-const endpointDev = Constants.manifest?.extra.isDev
-  ? 'https://instantappnow-dev.herokuapp.com/graphql'
-  : 'https://instantappnow.herokuapp.com/graphql'
+const endpointDev = 'https://instantappnow-dev.herokuapp.com/graphql'
 // const endpointDev = 'http://localhost:4000/graphql'
 console.log('🚀 ~ file: App.tsx:11 ~ endpointDev', endpointDev)
 

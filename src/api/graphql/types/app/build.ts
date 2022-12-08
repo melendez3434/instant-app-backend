@@ -193,17 +193,55 @@ export const AppBuildMutations = extendType({
                   : ''
 
               const isAddNotificationData = await addNotificationData(id, ctx)
+
+              if (process.env.NODE_ENV !== 'development') {
+                const appFileName = path.resolve(
+                  __dirname,
+                  '../../../../../app-instant/app.json',
+                )
+                const appFile = require(appFileName)
+                console.log('🚀 ~ file: build.ts:204 ~ appFile', appFile)
+                appFile.expo.name = app?.name
+                appFile.expo.version = appVersion
+                appFile.expo.icon =
+                  app?.assets?.appIcon ||
+                  'https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/AppStore/@PNG.png'
+                appFile.expo.splash.image = spalshImage || undefined
+                appFile.expo.splash.backgroundColor =
+                  app?.assets?.color || '#ffffff'
+                appFile.expo.ios.bundleIdentifier = app?.appId
+                appFile.expo.android.package = app?.appId
+                ;(appFile.expo.android.googleServicesFile =
+                  isAddNotificationData ? './google-services.json' : undefined),
+                  (appFile.expo.extra.appId = app?.id)
+                appFile.expo.extra.isDev = Boolean(process.env.IS_DEV)
+
+                await fs.promises.writeFile(
+                  appFileName,
+                  JSON.stringify(appFile, null, 2),
+                  // function writeJSON(err) {
+                  //   if (err) return console.log(err)
+                  //   console.log(JSON.stringify(file))
+                  //   console.log('writing to ' + fileName)
+                  // },
+                )
+              }
+              //               const command = `
+              // cd ./app-instant
+              // APP_NAME=${app?.name} ${
+              //                 isAddNotificationData ? 'ADD_NOTIFI=true' : ''
+              //               } APP_VERSION=${appVersion} BUNDLE_ID=${app?.appId}  ${
+              //                 app?.assets?.appIcon ? `APP_ICON=${app?.assets?.appIcon}` : ''
+              //               } APP_ID=${app?.id} IS_DEV=${Boolean(process.env.IS_DEV)} ${
+              //                 spalshImage ? `SPLASH_IMAGE=${spalshImage}` : ''
+              //               } SPLASH_BACKGROUND_COLOR=${
+              //                 app?.assets?.color
+              //               }  npx eas build --platform ${platform}  --json  --non-interactive
+
+              // `
               const command = `
 cd ./app-instant
-APP_NAME=${app?.name} ${
-                isAddNotificationData ? 'ADD_NOTIFI=true' : ''
-              } APP_VERSION=${appVersion} BUNDLE_ID=${app?.appId}  ${
-                app?.assets?.appIcon ? `APP_ICON=${app?.assets?.appIcon}` : ''
-              } APP_ID=${app?.id} IS_DEV=${Boolean(process.env.IS_DEV)} ${
-                spalshImage ? `SPLASH_IMAGE=${spalshImage}` : ''
-              } SPLASH_BACKGROUND_COLOR=${
-                app?.assets?.color
-              }  npx eas build --platform ${platform}  --json  --non-interactive
+npx eas build --platform ${platform}  --json  --non-interactive
 
 `
               console.log('🚀 ~ file: build.ts:206 ~ command', command)
