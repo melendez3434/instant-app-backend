@@ -399,6 +399,11 @@ const changeCerts = async ({
         },
       }
     }
+    console.log(
+      '🚀 ~ file: build.ts:416 ~ provisioningProfilePath',
+      provisioningProfilePath,
+    )
+
     try {
       provisioningProfilePath &&
         (await downloadFileAndMoveItToAppCerts(
@@ -434,7 +439,18 @@ const changeCerts = async ({
     )
   }
 }
-
+// changeCerts({
+//   distributionCertificate:
+//     'https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/AppStore/@PNG.png',
+//   provisioningProfilePath:
+//     'https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/AppStore/@PNG.png',
+// })
+//   .then(() => {
+//     console.log('🚀 ~ file: build.ts:448 ~ done')
+//   })
+//   .catch((eee) => {
+//     console.log('🚀 ~ file: build.ts:448 ~ eee', eee)
+//   })
 const addNotificationData = async (appId, { db }: Context) => {
   const notificationData = await db.notificationData.findUnique({
     where: { appid: appId },
