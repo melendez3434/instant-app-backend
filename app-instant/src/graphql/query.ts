@@ -64,6 +64,6 @@ export const NAVIGATION_LINKS = gql`
 `
 export const ADD_NOTIFICATION_TOKEN = gql`
   mutation ADD_NOTIFICATION_TOKEN($id: Int!, $token: String!) {
-    links(id: $id, token: $token)
+    addNotificationToken(id: $id, token: $token)
   }
 `

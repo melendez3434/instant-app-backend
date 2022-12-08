@@ -21,6 +21,7 @@ import {
 } from './graphql/query'
 import { WebsiteUrlContextProvider } from './modules'
 import * as Device from 'expo-device'
+import Toast from 'react-native-toast-message'
 
 import * as Notifications from 'expo-notifications'
 
@@ -57,7 +58,13 @@ const registerForPushNotificationsAsync = async () => {
   }
 }
 export default function MyRoot() {
-  const [setExpoPushToken] = useMutation(ADD_NOTIFICATION_TOKEN)
+  const [setExpoPushToken, { error: tokenError }] = useMutation(
+    ADD_NOTIFICATION_TOKEN,
+  )
+  console.log(
+    '🚀 ~ file: root.tsx:61 ~ MyRoot ~ tokenError',
+    tokenError?.networkError,
+  )
 
   const { data, loading, error } = useQuery(APP_INFO, {
     variables: { id: Number(Constants.manifest?.extra?.appId) },
@@ -82,6 +89,11 @@ export default function MyRoot() {
   })
   const finalLoading =
     mainLinksLoading || loading || madalLinksLoading || barLinksLoading
+  console.log(
+    '🚀 ~ file: root.tsx:82 ~ MyRoot ~  Number(Constants.manifest.extra.appId)',
+    Number(Constants.manifest.extra.appId),
+  )
+
   console.log('🚀 ~ file: root.tsx ~ line 65 ~ MyRoot ~ error', error)
   console.log('🚀 ~ file: root.tsx ~ line 65 ~ MyRoot ~ data', data)
   const { setMode } = useThemeMode()
@@ -107,16 +119,25 @@ export default function MyRoot() {
     )
 
     // This listener is fired whenever a notification is received while the app is foregrounded
+    //@ts-ignore
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
+        Toast.show({
+          type: 'success',
+          text1: notification?.request.content.title || 'notification',
+          text2: notification?.request.content.body || 'notification body',
+        })
+
         console.log(
           '🚀 ~ file: root.tsx:108 ~ Notifications.addNotificationReceivedListener ~ notification',
-          notification,
+          JSON.stringify(notification, undefined, 2),
         )
+
         // setNotification(notification)
       })
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+    //@ts-ignore
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(

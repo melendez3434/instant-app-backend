@@ -196,7 +196,7 @@ APP_NAME=${app?.name} ${
                 isAddNotificationData ? 'ADD_NOTIFI=true' : ''
               } APP_VERSION=${appVersion} BUNDLE_ID=${app?.appId}  ${
                 app?.assets?.appIcon ? `APP_ICON=${app?.assets?.appIcon}` : ''
-              } APP_ID=${app?.id} ${
+              } APP_ID=${app?.id} IS_DEV=${Boolean(process.env.IS_DEV)} ${
                 spalshImage ? `SPLASH_IMAGE=${spalshImage}` : ''
               } SPLASH_BACKGROUND_COLOR=${
                 app?.assets?.color
