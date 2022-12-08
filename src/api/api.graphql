@@ -803,6 +803,7 @@ type Mutation {
   addNotification(appId: Int!, body: String!, publishAt: DateTime, title: String!): Notification
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
+  deleteUser(id: Int!): User
   fastSignup(email: String!, website: String!): Boolean
   generateBuild(androidCertAuto: Boolean, buildType: BuildType! = apk, distributionCertificate: String, distributionCertificatePassword: String, id: Int!, keyAlias: String, keyPassword: String, keystorePassword: String, keystoreUrl: String, platform: AppBuildPlatform!, provisioningProfilePath: String): AppBuild
   removeNotification(id: Int!): Notification

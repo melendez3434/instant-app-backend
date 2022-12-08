@@ -17,7 +17,7 @@ model User {
   updatedAt        DateTime @updatedAt
   App              App[]
   builderMine      Builder? @relation("builderToOwner")
-  builder          Builder? @relation("builderToUsers", fields: [builderDomain], references: [domain])
+  builder          Builder? @relation("builderToUsers", fields: [builderDomain], references: [domain], onDelete: Cascade)
   builderDomain    String?
 
   @@unique([email, builderDomain])
@@ -34,7 +34,7 @@ model Builder {
   logo         String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  owner        User     @relation("builderToOwner", fields: [ownerId], references: [id])
+  owner        User     @relation("builderToOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId      Int      @unique
   users        User[]   @relation("builderToUsers")
 }
@@ -53,7 +53,7 @@ model App {
   assets             AppAsset?
   design             AppDesign?
   navigation         Link[]              @relation("mainNavigationToLinks")
-  owner              User?               @relation(fields: [ownerId], references: [id])
+  owner              User?               @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId            Int?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -80,7 +80,7 @@ model IosProfile {
   storeDescription  String
   appStoreTitle     String
   keywords          String
-  App               App      @relation(fields: [appId], references: [id])
+  App               App      @relation(fields: [appId], references: [id], onDelete: Cascade)
   appId             Int      @unique
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -96,7 +96,7 @@ model AndroidProfile {
   storeDescription       String
   appStoreTitle          String
   keywords               String
-  App                    App      @relation(fields: [appId], references: [id])
+  App                    App      @relation(fields: [appId], references: [id], onDelete: Cascade)
   appId                  Int      @unique
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
@@ -107,7 +107,7 @@ model DeployRequest {
   platform  AppBuildPlatform @default(android)
   status    AppBuildStatus   @default(waiting)
   reason    String?
-  App       App              @relation(fields: [appId], references: [id])
+  App       App              @relation(fields: [appId], references: [id], onDelete: Cascade)
   appId     Int
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
@@ -122,7 +122,7 @@ model AppBuild {
   appVersion      String?
   platform        AppBuildPlatform @default(android)
   data            Json?
-  App             App?             @relation(fields: [appId], references: [id])
+  App             App?             @relation(fields: [appId], references: [id], onDelete: Cascade)
   appId           Int?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
@@ -139,7 +139,7 @@ model AppDesign {
   activeTabColor         String            @default("#3F51B5")
   navigationActiveColor  String            @default("#3F51B5")
   layoutTemplate         LayoutTemplate    @default(bar)
-  App                    App?              @relation(fields: [appId], references: [id])
+  App                    App?              @relation(fields: [appId], references: [id], onDelete: Cascade)
   appId                  Int?              @unique
   AppDesignDrawer        AppDesignDrawer?
 }
@@ -154,7 +154,7 @@ model AppDesignDrawer {
   subTitle        String?
   backgroundImage String?
   logo            String?
-  AppDesign       AppDesign  @relation(fields: [appId], references: [appId])
+  AppDesign       AppDesign  @relation(fields: [appId], references: [appId], onDelete: Cascade)
   appId           Int        @unique
 }
 
@@ -164,7 +164,7 @@ model Link {
   icon      String?
   data      Json?
   type      LinkType @default(link)
-  app       App      @relation("mainNavigationToLinks", fields: [appid], references: [id])
+  app       App      @relation("mainNavigationToLinks", fields: [appid], references: [id], onDelete: Cascade)
   appid     Int
   menuType  MenuType @default(main)
   createdAt DateTime @default(now())
@@ -184,7 +184,7 @@ model AppAsset {
   appIcon         String?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
-  App             App        @relation(fields: [appid], references: [id])
+  App             App        @relation(fields: [appid], references: [id], onDelete: Cascade)
   appid           Int        @unique
 }
 
@@ -198,7 +198,7 @@ model Notification {
   serviceId String?
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
-  App       App                @relation(fields: [appid], references: [id])
+  App       App                @relation(fields: [appid], references: [id], onDelete: Cascade)
   appid     Int
 }
 
@@ -207,7 +207,7 @@ model NotificationData {
   googleServiceJson String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-  App               App      @relation(fields: [appid], references: [id])
+  App               App      @relation(fields: [appid], references: [id], onDelete: Cascade)
   appid             Int      @unique
 }
 
@@ -216,7 +216,7 @@ model NotificationToken {
   token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  App       App      @relation(fields: [appid], references: [id])
+  App       App      @relation(fields: [appid], references: [id], onDelete: Cascade)
   appid     Int
 }
 

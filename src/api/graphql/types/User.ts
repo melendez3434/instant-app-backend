@@ -1,4 +1,11 @@
-import { arg, extendType, inputObjectType, intArg, objectType } from 'nexus'
+import {
+  arg,
+  extendType,
+  inputObjectType,
+  intArg,
+  nonNull,
+  objectType,
+} from 'nexus'
 import hashPassword from '../../utils/hashPassword'
 import * as bcrypt from 'bcryptjs'
 import isEmail from 'validator/lib/isEmail'
@@ -141,6 +148,18 @@ export const Usermutations = extendType({
           },
         })
         return user
+      },
+    })
+    t.field('deleteUser', {
+      type: 'User',
+      args: {
+        id: nonNull(intArg()),
+      },
+
+      async resolve(_root, args, ctx) {
+        return await ctx.db.user.delete({
+          where: { id: args.id },
+        })
       },
     })
   },

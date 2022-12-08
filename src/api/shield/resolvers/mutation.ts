@@ -28,6 +28,13 @@ const appMutationsShield = {
     role: ['superAdmin'],
     permissions: isAuth,
   },
+  deleteUser: {
+    name: 'deleteUser',
+    slug: 'deleteUser',
+    desc: '',
+    role: ['superAdmin'],
+    permissions: isAuth,
+  },
   generateBuild: {
     name: 'generateBuild',
     slug: 'generateBuild',
