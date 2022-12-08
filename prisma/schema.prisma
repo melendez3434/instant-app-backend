@@ -218,6 +218,8 @@ model NotificationToken {
   updatedAt DateTime @updatedAt
   App       App      @relation(fields: [appid], references: [id], onDelete: Cascade)
   appid     Int
+
+  @@unique([appid, token])
 }
 
 enum Role {

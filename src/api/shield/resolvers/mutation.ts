@@ -191,6 +191,13 @@ const auth = {
     role: ['all'],
     permissions: isAuth,
   },
+  addNotificationToken: {
+    name: 'addNotificationToken',
+    slug: 'addNotificationToken',
+    desc: '',
+    role: ['all'],
+    permissions: allow,
+  },
 }
 export const mutationsShield = {
   ...auth,

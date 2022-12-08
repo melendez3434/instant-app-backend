@@ -199,5 +199,30 @@ export const NotifiMutation = extendType({
         return notificationData
       },
     })
+    t.field('addNotificationToken', {
+      type: 'Boolean',
+      args: {
+        id: nonNull(intArg()),
+        token: nonNull(stringArg()),
+      },
+
+      async resolve(_root, { id, token }, ctx) {
+        try {
+          await ctx.db.notificationToken.upsert({
+            where: { appid_token: { appid: id, token } },
+            create: {
+              App: { connect: { id } },
+              token,
+            },
+            update: {
+              token,
+            },
+          })
+        } catch (error) {
+          console.log('🚀 ~ file: Notification.ts:31 ~ resolve ~ error', error)
+        }
+        return true
+      },
+    })
   },
 })

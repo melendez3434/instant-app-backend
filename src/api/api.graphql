@@ -801,6 +801,7 @@ type Mutation {
   addDeployRequest(data: addDeployRequestInput!, id: Int!): DeployRequest
   addLink(data: addLinkInput!): Link
   addNotification(appId: Int!, body: String!, publishAt: DateTime, title: String!): Notification
+  addNotificationToken(id: Int!, token: String!): Boolean
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
   deleteUser(id: Int!): User
