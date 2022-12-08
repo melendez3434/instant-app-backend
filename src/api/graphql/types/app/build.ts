@@ -169,7 +169,10 @@ export const AppBuildMutations = extendType({
 
               file.build.preview.android.buildType = buildType
               file.build.production.android.buildType = buildType
-
+              file.build.preview.android.credentialsSource =
+                rest.androidCertAuto ? 'remote' : 'local'
+              file.build.production.android.credentialsSource =
+                rest.androidCertAuto ? 'remote' : 'local'
               await fs.promises.writeFile(
                 fileName,
                 JSON.stringify(file, null, 2),
@@ -328,6 +331,18 @@ const changeCerts = async ({
       file.android = {
         credentialsSource: 'remote',
       }
+
+      // const easFileName = path.resolve(
+      //   __dirname,
+      //   '../../../../../app-instant/eas.json',
+      // )
+      // const easFile = require(easFileName)
+      // easFile.build.production.android.credentialsSource
+      // await fs.promises.writeFile(
+      //   easFileName,
+      //   JSON.stringify(easFile, null, 2),
+
+      // )
     } else {
       try {
         keystoreUrl &&
