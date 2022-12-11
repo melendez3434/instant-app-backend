@@ -193,6 +193,10 @@ export const AppBuildMutations = extendType({
                   : ''
 
               const isAddNotificationData = await addNotificationData(id, ctx)
+              console.log(
+                '🚀 ~ file: build.ts:196 ~ isAddNotificationData',
+                isAddNotificationData,
+              )
 
               if (process.env.NODE_ENV !== 'development') {
                 const appFileName = path.resolve(
@@ -239,6 +243,22 @@ export const AppBuildMutations = extendType({
               //               }  npx eas build --platform ${platform}  --json  --non-interactive
 
               // `
+
+              cmd.run(
+                `
+              cd ./app-instant
+              ls
+              
+              `,
+                async function (err, data, stderr) {
+                  console.log(
+                    '🚀 ~ file: build.ts:258 ~ err, data, stderr',
+                    err,
+                    data,
+                    stderr,
+                  )
+                },
+              )
               const command = `
 cd ./app-instant
 npx eas build --platform ${platform}  --json  --non-interactive
@@ -455,6 +475,11 @@ const addNotificationData = async (appId, { db }: Context) => {
   const notificationData = await db.notificationData.findUnique({
     where: { appid: appId },
   })
+  console.log(
+    '🚀 ~ file: build.ts:459 ~ addNotificationData ~ notificationData?.googleServiceJson',
+    notificationData?.googleServiceJson,
+  )
+
   if (notificationData?.googleServiceJson) {
     await downloadFileAndMoveItToAppCerts(
       'google-services.json',

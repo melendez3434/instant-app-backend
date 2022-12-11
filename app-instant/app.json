@@ -16,13 +16,12 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "bundleIdentifier": "com.b7r.appbuilder",
+      "bundleIdentifier": "store.b7r.www",
       "supportsTablet": true
     },
 
     "android": {
-      "package": "com.b7r.appbuilder",
-      "googleServicesFile": "./google-services.json",
+      "package": "store.b7r.www",
 
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
