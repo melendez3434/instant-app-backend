@@ -207,6 +207,11 @@ export const NotifiMutation = extendType({
       },
 
       async resolve(_root, { id, token }, ctx) {
+        console.log(
+          '🚀 ~ file: Notification.ts:210 ~ resolve ~ id, token',
+          id,
+          token,
+        )
         try {
           await ctx.db.notificationToken.upsert({
             where: { appid_token: { appid: id, token } },
