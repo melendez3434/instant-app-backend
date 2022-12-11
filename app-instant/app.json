@@ -21,12 +21,7 @@
     },
 
     "android": {
-      "package": "store.b7r.www",
-
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+      "package": "store.b7r.www"
     },
     "web": {
       "favicon": "./assets/favicon.png"
