@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import React, { useEffect, useRef } from 'react'
 import Constants from 'expo-constants'
 import Toast from 'react-native-toast-message'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 const endpointDev = Constants.manifest?.extra.isDev
   ? 'https://instantappnow-dev.herokuapp.com/graphql'
@@ -23,14 +24,16 @@ const client = new ApolloClient({
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <ApolloProvider client={client}>
-        <MyRoot />
-        <Toast />
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <ApolloProvider client={client}>
+          <MyRoot />
+          <Toast />
 
-        <StatusBar style="auto" />
-      </ApolloProvider>
-    </NavigationContainer>
+          <StatusBar style="auto" />
+        </ApolloProvider>
+      </NavigationContainer>
+    </SafeAreaProvider>
   )
 }
 
