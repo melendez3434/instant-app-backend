@@ -4,10 +4,10 @@
     "slug": "app-builder",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/AppStore/@PNG.png",
+    "icon": "https://res.cloudinary.com/dtkb6bsxf/image/upload/v1670681420/zeb8srxikyrz2orzapyn.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/AppStore/@PNG.png",
+      "image": "https://res.cloudinary.com/dtkb6bsxf/image/upload/v1670681420/zeb8srxikyrz2orzapyn.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
