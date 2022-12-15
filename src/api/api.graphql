@@ -810,7 +810,7 @@ type Mutation {
   removeNotification(id: Int!): Notification
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
-  signup(email: String!, password: String!): AuthPayLoad
+  signup(email: String!, password: String!, registerFrom: String): AuthPayLoad
   signupSuperAdmin(companyName: String, email: String!, icon: String, logo: String, name: String!, password: String!): AuthPayLoad
   subscribe(id: Int!): String
   updateAndroidProfile(data: updateAndroidProfileInput!, id: Int!): AndroidProfile
@@ -1212,6 +1212,7 @@ type User {
   email: String!
   id: Int!
   password: String!
+  registerFrom: String
   role: Role!
   updatedAt: DateTime!
 }
@@ -1240,6 +1241,7 @@ input UserOrderByWithRelationInput {
   email: SortOrder
   id: SortOrder
   password: SortOrder
+  registerFrom: SortOrder
   role: SortOrder
   stripeCustomerId: SortOrder
   updatedAt: SortOrder
@@ -1257,6 +1259,7 @@ input UserWhereInput {
   email: StringFilter
   id: IntFilter
   password: StringFilter
+  registerFrom: StringNullableFilter
   role: EnumRoleFilter
   stripeCustomerId: StringNullableFilter
   updatedAt: DateTimeFilter

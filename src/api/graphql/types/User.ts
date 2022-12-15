@@ -18,6 +18,8 @@ export const User = objectType({
 
     t.model.password()
     t.model.role()
+    t.model.registerFrom()
+
     t.int('appsCount', {
       async resolve({ id }, args, ctx) {
         return await ctx.db.app.count({ where: { ownerId: id } })

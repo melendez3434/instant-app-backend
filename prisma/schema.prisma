@@ -19,6 +19,7 @@ model User {
   builderMine      Builder? @relation("builderToOwner")
   builder          Builder? @relation("builderToUsers", fields: [builderDomain], references: [domain], onDelete: Cascade)
   builderDomain    String?
+  registerFrom     String?
 
   @@unique([email, builderDomain])
 }

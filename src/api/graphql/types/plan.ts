@@ -42,6 +42,7 @@ export const PlanMutations = extendType({
           builderName: ctx.builderDomain.split('.')[0],
           userId: user?.id,
           appId: app?.id,
+          utm: user?.registerFrom,
         }
         const customer = !user?.stripeCustomerId
           ? await stripe.customers.create({

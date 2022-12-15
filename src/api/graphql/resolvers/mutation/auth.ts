@@ -99,10 +99,11 @@ export const Mutation = mutationType({
         type: 'AuthPayLoad',
         args: {
           email: nonNull(stringArg()),
+          registerFrom: stringArg(),
           password: nonNull(stringArg()),
         },
         async resolve(_root, args, ctx) {
-          const { email, password } = args
+          const { email, password, registerFrom } = args
           console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
           // lowercase their email
           email.toLowerCase()
@@ -129,6 +130,7 @@ export const Mutation = mutationType({
               password: hash,
               builder: { connect: { domain: ctx.builderDomain } },
               role: 'user',
+              registerFrom,
             },
           })
           const token = ctx.auth.signInWithJWT(admin)
