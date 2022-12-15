@@ -23,9 +23,12 @@ const router = (express) => {
       // at https://dashboard.stripe.com/webhooks
       // Only verify the event if you have an endpoint secret defined.
       // Otherwise use the basic event deserialized with JSON.parse
+      console.log('🚀 ~ file: index.ts:27 ~ endpointSecret', endpointSecret)
+
       if (endpointSecret) {
         // Get the signature sent by Stripe
         const signature = request.headers['stripe-signature']
+        console.log('🚀 ~ file: index.ts:30 ~ signature', signature)
         try {
           event = stripe.webhooks.constructEvent(
             request.body,
