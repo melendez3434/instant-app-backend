@@ -1,3 +1,4 @@
+import moment from 'moment'
 import {
   arg,
   extendType,
@@ -21,7 +22,14 @@ export const App = objectType({
     t.model.nextBill()
     t.model.design()
     t.model.planStatus()
+    t.model.createdAt()
     t.model.owner()
+    t.field('daysLeftInTrial', {
+      type: 'Int',
+      async resolve({ createdAt }, args, ctx) {
+        return moment(createdAt).add(15, 'day').diff(moment(), 'days')
+      },
+    })
   },
 })
 

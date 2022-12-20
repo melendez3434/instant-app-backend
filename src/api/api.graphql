@@ -57,6 +57,8 @@ input AndroidProfileWhereUniqueInput {
 type App {
   appId: String!
   assets: AppAsset
+  createdAt: DateTime!
+  daysLeftInTrial: Int
   design: AppDesign
   id: Int!
   lang: String!
@@ -1121,6 +1123,7 @@ type NotificationsConnectionPayLoad {
 }
 
 enum PlanStatus {
+  inTrial
   notSub
   stopped
   sub

@@ -110,7 +110,7 @@ const router = (express) => {
             await prisma.app.update({
               where: { id: Number(subscription.metadata.appId) },
               data: {
-                planStatus: 'stopped',
+                planStatus: 'notSub',
                 // nextBill: moment.unix(subscription.current_period_end).toDate(),
               },
             })
@@ -142,7 +142,7 @@ const router = (express) => {
             await prisma.app.update({
               where: { id: Number(subscription.metadata.appId) },
               data: {
-                planStatus: 'stopped',
+                planStatus: 'notSub',
                 // nextBill: moment.unix(subscription.current_period_end).toDate(),
               },
             })

@@ -50,7 +50,7 @@ model App {
   tempOwner          String?
   nextBill           DateTime?
   stripeSubId        String?             @unique
-  planStatus         PlanStatus          @default(notSub)
+  planStatus         PlanStatus          @default(inTrial)
   assets             AppAsset?
   design             AppDesign?
   navigation         Link[]              @relation("mainNavigationToLinks")
@@ -286,6 +286,7 @@ enum AppBuildPlatform {
 
 enum PlanStatus {
   notSub
+  inTrial
   stopped
   sub
 }

@@ -1,5 +1,7 @@
 // const prisma = new PrismaClient()
 
+import moment from 'moment'
+import { prisma } from './createContext'
 import { sendNotifications } from './notifications'
 
 var CronJobManager = require('cron-job-manager')
@@ -11,6 +13,25 @@ const options = {
   timeZone: 'UTC',
 }
 
+const stopTheTrial = async () => {
+  // const apps = await prisma.app.findMany({
+  //   where: {
+  //     planStatus: 'inTrial',
+  //     createdAt: { lt: moment().subtract(14, 'day').toDate() },
+  //   },
+  // })
+  // Promise.all(
+  //   apps.map(async ({ id }) => {
+  //     await prisma.app.update({
+  //       where: {
+  //         id,
+  //       },
+  //       data: { planStatus: 'notSub' },
+  //     })
+  //   }),
+  // )
+}
+
 export const startCron = async () => {
   cronManager.add(
     'checkWaitingHugeTasks',
@@ -18,4 +39,5 @@ export const startCron = async () => {
     sendNotifications,
     options,
   )
+  cronManager.add('checkWaitingHugeTasks', '0 * * * *', stopTheTrial, options)
 }
