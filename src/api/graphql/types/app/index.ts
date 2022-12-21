@@ -24,10 +24,13 @@ export const App = objectType({
     t.model.planStatus()
     t.model.createdAt()
     t.model.owner()
+    t.model.isTrialEnd()
+
     t.field('daysLeftInTrial', {
       type: 'Int',
       async resolve({ createdAt }, args, ctx) {
-        return moment(createdAt).add(15, 'day').diff(moment(), 'days')
+        const daysLeft = moment(createdAt).add(15, 'day').diff(moment(), 'days')
+        return daysLeft > 0 ? daysLeft : 0
       },
     })
   },

@@ -46,6 +46,7 @@ model App {
   website            String
   appId              String
   lang               String
+  isTrialEnd         Boolean             @default(false)
   userAgent          String?
   tempOwner          String?
   nextBill           DateTime?

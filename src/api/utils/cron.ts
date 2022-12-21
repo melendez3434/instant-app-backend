@@ -14,22 +14,23 @@ const options = {
 }
 
 const stopTheTrial = async () => {
-  // const apps = await prisma.app.findMany({
-  //   where: {
-  //     planStatus: 'inTrial',
-  //     createdAt: { lt: moment().subtract(14, 'day').toDate() },
-  //   },
-  // })
-  // Promise.all(
-  //   apps.map(async ({ id }) => {
-  //     await prisma.app.update({
-  //       where: {
-  //         id,
-  //       },
-  //       data: { planStatus: 'notSub' },
-  //     })
-  //   }),
-  // )
+  const apps = await prisma.app.findMany({
+    where: {
+      planStatus: 'inTrial',
+      isTrialEnd: false,
+      createdAt: { lt: moment().subtract(14, 'day').toDate() },
+    },
+  })
+  Promise.all(
+    apps.map(async ({ id }) => {
+      await prisma.app.update({
+        where: {
+          id,
+        },
+        data: { isTrialEnd: true },
+      })
+    }),
+  )
 }
 
 export const startCron = async () => {
