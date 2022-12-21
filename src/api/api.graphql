@@ -61,6 +61,7 @@ type App {
   daysLeftInTrial: Int
   design: AppDesign
   id: Int!
+  isTrialEnd: Boolean!
   lang: String!
   name: String!
   nextBill: DateTime
@@ -314,6 +315,7 @@ input AppOrderByWithRelationInput {
   design: AppDesignOrderByWithRelationInput
   id: SortOrder
   iosProfile: IosProfileOrderByWithRelationInput
+  isTrialEnd: SortOrder
   lang: SortOrder
   name: SortOrder
   navigation: LinkOrderByRelationAggregateInput
@@ -344,6 +346,7 @@ input AppWhereInput {
   design: AppDesignWhereInput
   id: IntFilter
   iosProfile: IosProfileWhereInput
+  isTrialEnd: BoolFilter
   lang: StringFilter
   name: StringFilter
   navigation: LinkListRelationFilter

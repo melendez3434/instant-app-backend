@@ -1,5 +1,6 @@
 // const prisma = new PrismaClient()
 
+import axios from 'axios'
 import moment from 'moment'
 import { prisma } from './createContext'
 import { sendNotifications } from './notifications'
@@ -20,9 +21,32 @@ const stopTheTrial = async () => {
       isTrialEnd: false,
       createdAt: { lt: moment().subtract(14, 'day').toDate() },
     },
+    select: {
+      name: true,
+      id: true,
+      owner: { select: { email: true, builderDomain: true } },
+    },
   })
   Promise.all(
-    apps.map(async ({ id }) => {
+    apps.map(async ({ id, name, owner }) => {
+      try {
+        await axios.post(
+          'https://hooks.zapier.com/hooks/catch/14011457/b7hilg9/',
+          {
+            appName: name,
+            email: owner?.email,
+            url: 'https://' + owner?.builderDomain,
+          },
+          {
+            //@ts-ignore
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        )
+      } catch (error) {
+        console.log('🚀 ~ file: cron.ts:43 ~ apps.map ~ error', error)
+      }
+
       await prisma.app.update({
         where: {
           id,
