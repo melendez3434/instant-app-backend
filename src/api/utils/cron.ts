@@ -66,3 +66,23 @@ export const startCron = async () => {
   )
   cronManager.add('checkWaitingHugeTasks', '0 * * * *', stopTheTrial, options)
 }
+// axios
+//   .post(
+//     'https://hooks.zapier.com/hooks/catch/14011457/b7hilg9/',
+//     {
+//       appName: 'name',
+//       email: 'ahmedmagdyb7r@gmail.com',
+//       url: 'https://' + 'owner?.builderDomain',
+//     },
+//     {
+//       //@ts-ignore
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//     },
+//   )
+//   .then((d) => {
+//     console.log('🚀 ~ file: cron.ts:82 ~ ).then ~ d', d)
+//   })
+//   .catch((err) => {
+//     console.log('🚀 ~ file: cron.ts:82 ~ ).then ~ d', err)
+//   })
