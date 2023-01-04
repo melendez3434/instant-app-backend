@@ -294,7 +294,10 @@ npx eas build --platform ${platform}  --json  --non-interactive
                       appBuildVersion: Number(buildData.appBuildVersion),
                       status:
                         buildData.status == 'FINISHED' ? 'success' : 'failed',
-                      url: buildData.artifacts.buildUrl,
+                      url:
+                        buildData.status !== 'FINISHED'
+                          ? `https://expo.dev/accounts/instantappbuilder/projects/app-builder/builds/${buildData.id}`
+                          : buildData.artifacts.buildUrl,
                     },
                   })
                 } catch (error) {
