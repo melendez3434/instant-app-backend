@@ -28,8 +28,9 @@ export const App = objectType({
 
     t.field('daysLeftInTrial', {
       type: 'Int',
-      async resolve({ createdAt }, args, ctx) {
+      async resolve({ createdAt, planStatus }, args, ctx) {
         const daysLeft = moment(createdAt).add(15, 'day').diff(moment(), 'days')
+
         return daysLeft > 0 ? daysLeft : 0
       },
     })
