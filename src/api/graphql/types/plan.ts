@@ -91,6 +91,27 @@ export const PlanMutations = extendType({
         return session.url
       },
     })
+    t.field('endMyTrial', {
+      type: 'Boolean',
+      args: { id: nonNull(intArg()) },
+      async resolve(source, { id }, ctx) {
+        const app = await ctx.db.app.findUnique({
+          where: { id },
+          select: { stripeSubId: true, id: true, name: true },
+        })
+
+        const subscription = await stripe.subscriptions.update(
+          app?.stripeSubId,
+          { trial_end: 'now' },
+        )
+        // await ctx.db.app.update({
+        //   where: { id },
+        //   data: { trialEndDate: new Date(), isTrialEnd: true },
+        // })
+        return true
+      },
+    })
+
     // t.field('editMyPlan', {
     //   type: 'String',
 

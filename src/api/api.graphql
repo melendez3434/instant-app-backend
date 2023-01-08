@@ -812,6 +812,7 @@ type Mutation {
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
   deleteUser(id: Int!): User
+  endMyTrial(id: Int!): Boolean
   fastSignup(email: String!, website: String!): Boolean
   generateBuild(androidCertAuto: Boolean, buildType: BuildType! = apk, distributionCertificate: String, distributionCertificatePassword: String, id: Int!, keyAlias: String, keyPassword: String, keystorePassword: String, keystoreUrl: String, platform: AppBuildPlatform!, provisioningProfilePath: String): AppBuild
   removeNotification(id: Int!): Notification

@@ -46,9 +46,9 @@ const router = (express) => {
   })
 
   // This is your Stripe CLI webhook secret for testing your endpoint locally.
-  // const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET
-  const endpointSecret =
-    'whsec_1d971589026671771d308dd2b4e2b2ca8697ac55d41edbbd700eeef1c107b13e'
+  const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET
+  // const endpointSecret =
+  //   'whsec_1d971589026671771d308dd2b4e2b2ca8697ac55d41edbbd700eeef1c107b13e'
 
   express.post(
     '/rest/stripe/webhook',
@@ -112,6 +112,13 @@ const router = (express) => {
           // Then define and call a method to handle the subscription trial ending.
           // handleSubscriptionTrialEnding(subscription);
           await handleSubscription(event.data.object)
+          await prisma.app.update({
+            where: { id: Number(subscription.metadata.appId) },
+            data: {
+              trialEndDate: new Date(),
+              isTrialEnd: true,
+            },
+          })
 
           break
         case 'customer.subscription.deleted':

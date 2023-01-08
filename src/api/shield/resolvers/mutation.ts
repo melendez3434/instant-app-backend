@@ -14,6 +14,13 @@ const appMutationsShield = {
     role: ['all'],
     permissions: isAuth,
   },
+  endMyTrial: {
+    name: 'endMyTrial',
+    slug: 'endMyTrial',
+    desc: '',
+    role: ['all'],
+    permissions: isAuth,
+  },
   // editMyPlan: {
   //   name: 'editMyPlan',
   //   slug: 'editMyPlan',
