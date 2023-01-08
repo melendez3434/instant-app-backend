@@ -328,6 +328,7 @@ input AppOrderByWithRelationInput {
   planStatus: SortOrder
   stripeSubId: SortOrder
   tempOwner: SortOrder
+  trialEndDate: SortOrder
   updatedAt: SortOrder
   userAgent: SortOrder
   website: SortOrder
@@ -359,6 +360,7 @@ input AppWhereInput {
   planStatus: EnumPlanStatusFilter
   stripeSubId: StringNullableFilter
   tempOwner: StringNullableFilter
+  trialEndDate: DateTimeNullableFilter
   updatedAt: DateTimeFilter
   userAgent: StringNullableFilter
   website: StringFilter
@@ -1214,6 +1216,7 @@ enum ThemeMode {
 
 type User {
   appsCount: Int
+  builderDomain: String
   createdAt: DateTime!
   email: String!
   id: Int!

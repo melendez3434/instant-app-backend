@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { extendType, intArg, nonNull } from 'nexus'
 
 // This is your test secret API key.
@@ -78,6 +79,8 @@ export const PlanMutations = extendType({
           subscription_data: {
             metadata,
             description: app?.name,
+            // trial_end: moment().add(3, 'day').unix(),
+            trial_period_days: 14,
           },
           mode: 'subscription',
           success_url: `${YOUR_DOMAIN}/app/${id}/deploy?success=true&session_id={CHECKOUT_SESSION_ID}`,

@@ -51,7 +51,8 @@ model App {
   tempOwner          String?
   nextBill           DateTime?
   stripeSubId        String?             @unique
-  planStatus         PlanStatus          @default(inTrial)
+  trialEndDate       DateTime?
+  planStatus         PlanStatus          @default(notSub)
   assets             AppAsset?
   design             AppDesign?
   navigation         Link[]              @relation("mainNavigationToLinks")
