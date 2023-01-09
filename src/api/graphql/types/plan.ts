@@ -9,8 +9,12 @@ export const PlanMutations = extendType({
   definition(t) {
     t.field('subscribe', {
       type: 'String',
-      args: { id: nonNull(intArg()) },
-      async resolve(source, { id }, ctx) {
+      args: {
+        id: nonNull(intArg()),
+        trial: intArg(),
+      },
+      async resolve(source, { id, trial }, ctx) {
+        const trialNumber = !trial ? 0 : trial > 60 ? 60 : trial
         const YOUR_DOMAIN = 'http://' + ctx.builderDomain
 
         // const prices = await stripe.prices.list({
@@ -51,7 +55,6 @@ export const PlanMutations = extendType({
               metadata,
             })
           : { id: user?.stripeCustomerId }
-        console.log('🚀 ~ file: plan.ts:47 ~ resolve ~ customer', customer)
         !user?.stripeCustomerId &&
           (await ctx.db.user.update({
             where: { id: ctx.user.id },
@@ -80,7 +83,7 @@ export const PlanMutations = extendType({
             metadata,
             description: app?.name,
             // trial_end: moment().add(3, 'day').unix(),
-            trial_period_days: 14,
+            trial_period_days: trialNumber || undefined,
           },
           mode: 'subscription',
           success_url: `${YOUR_DOMAIN}/app/${id}/deploy?success=true&session_id={CHECKOUT_SESSION_ID}`,

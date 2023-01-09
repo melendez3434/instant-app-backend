@@ -92,7 +92,12 @@ export const Mutation = mutationType({
         })
         const token = ctx.auth.signInWithJWT(admin)
 
-        return { user: admin, token }
+        return {
+          user: await ctx.db.user.findUnique({
+            where: { id: admin.id },
+          }),
+          token,
+        }
       },
     }),
       t.field('signup', {

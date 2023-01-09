@@ -190,15 +190,15 @@ const apolloServer = async () => {
   // apollo.installSubscriptionHandlers(app)
   express.set('port', process.env.PORT || 4000)
   const app = httpServer.listen(express.get('port'), async () => {
-    const users = await prisma.user.findMany({
-      where: { role: 'superAdmin' },
-      select: {
-        id: true,
-        builderMine: { select: { domain: true } },
-        builderDomain: true,
-        email: true,
-      },
-    })
+    // const users = await prisma.user.findMany({
+    //   where: { role: 'superAdmin' },
+    //   select: {
+    //     id: true,
+    //     builderMine: { select: { domain: true } },
+    //     builderDomain: true,
+    //     email: true,
+    //   },
+    // })
     // await prisma.builder.updateMany({
     //   where: { ownerId: 1 },
     //   data: { domain: 'test.instantappnow.dev' },
@@ -224,7 +224,7 @@ const apolloServer = async () => {
     //     })
     //   }),
     // )
-    console.log('🚀 ~ file: app.ts ~ line 192 ~ app ~ users', users)
+    // console.log('🚀 ~ file: app.ts ~ line 192 ~ app ~ users', users)
     startCron()
     console.log('server running at port ' + (process.env.PORT || 4000))
   })

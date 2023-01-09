@@ -16,6 +16,8 @@ const handleSubscription = async (subscription) => {
       data: {
         planStatus: 'sub',
         nextBill: moment.unix(subscription.current_period_end).toDate(),
+        // trialEndDate: new Date(),
+        isTrialEnd: true,
       },
     })
   } else if (status == 'trialing') {
