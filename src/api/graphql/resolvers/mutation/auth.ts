@@ -101,14 +101,22 @@ export const Mutation = mutationType({
       },
     }),
       t.field('signup', {
-        type: 'AuthPayLoad',
+        type: objectType({
+          name: 'AuthPayLoadWithApp',
+          definition(t) {
+            t.field('user', { type: 'User' })
+            t.field('app', { type: 'App' })
+            t.string('token')
+          },
+        }),
         args: {
           email: nonNull(stringArg()),
           registerFrom: stringArg(),
           password: nonNull(stringArg()),
+          addAppInput: arg({ type: 'addAppInput' }),
         },
         async resolve(_root, args, ctx) {
-          const { email, password, registerFrom } = args
+          const { email, password, registerFrom, addAppInput, ...rest } = args
           console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
           // lowercase their email
           email.toLowerCase()
@@ -131,7 +139,8 @@ export const Mutation = mutationType({
           // create the user in the database
           const admin = await ctx.db.user.create({
             data: {
-              ...args,
+              ...rest,
+              email,
               password: hash,
               builder: { connect: { domain: ctx.builderDomain } },
               role: 'user',
@@ -200,7 +209,28 @@ export const Mutation = mutationType({
               error?.response?.data,
             )
           }
-          return { user: admin, token }
+
+          const app = addAppInput
+            ? await ctx.db.app.create({
+                data: {
+                  name: addAppInput?.name,
+                  website: addAppInput?.website,
+                  lang: 'EN',
+                  appId: url
+                    .parse(addAppInput?.website)
+                    .hostname.split('.')
+                    .reverse()
+                    .join('.'),
+                  assets: { create: { displayLogo: true, color: '#000' } },
+                  design: { create: { AppDesignDrawer: { create: {} } } },
+
+                  owner: { connect: { id: admin.id } },
+                },
+              })
+            : null
+          console.log('🚀 ~ file: auth.ts:213 ~ resolve ~ app', app)
+
+          return { user: admin, token, app }
         },
       }),
       t.field('fastSignup', {
