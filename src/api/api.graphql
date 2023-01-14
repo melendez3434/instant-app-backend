@@ -67,6 +67,7 @@ type App {
   nextBill: DateTime
   owner: User
   planStatus: PlanStatus!
+  trialLong: Int!
   userAgent: String
   website: String!
 }
@@ -329,6 +330,7 @@ input AppOrderByWithRelationInput {
   stripeSubId: SortOrder
   tempOwner: SortOrder
   trialEndDate: SortOrder
+  trialLong: SortOrder
   updatedAt: SortOrder
   userAgent: SortOrder
   website: SortOrder
@@ -361,6 +363,7 @@ input AppWhereInput {
   stripeSubId: StringNullableFilter
   tempOwner: StringNullableFilter
   trialEndDate: DateTimeNullableFilter
+  trialLong: IntFilter
   updatedAt: DateTimeFilter
   userAgent: StringNullableFilter
   website: StringFilter
@@ -824,9 +827,9 @@ type Mutation {
   removeNotification(id: Int!): Notification
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
-  signup(addAppInput: addAppInput, email: String!, password: String!, registerFrom: String): AuthPayLoadWithApp
+  signup(addAppInput: addAppInput, email: String!, password: String!, registerFrom: String, trialLong: Int): AuthPayLoadWithApp
   signupSuperAdmin(companyName: String, email: String!, icon: String, logo: String, name: String!, password: String!): AuthPayLoad
-  subscribe(id: Int!, trial: Int): String
+  subscribe(id: Int!): String
   updateAndroidProfile(data: updateAndroidProfileInput!, id: Int!): AndroidProfile
   updateApp(data: updateAppInput!, id: Int!): App
   updateAppAssets(data: updateAppAssetsInput!, id: Int!): AppAsset

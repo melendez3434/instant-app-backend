@@ -11,10 +11,9 @@ export const PlanMutations = extendType({
       type: 'String',
       args: {
         id: nonNull(intArg()),
-        trial: intArg(),
+        // trial: intArg(),
       },
-      async resolve(source, { id, trial }, ctx) {
-        const trialNumber = !trial ? 0 : trial > 60 ? 60 : trial
+      async resolve(source, { id }, ctx) {
         const YOUR_DOMAIN = 'http://' + ctx.builderDomain
 
         // const prices = await stripe.prices.list({
@@ -31,8 +30,10 @@ export const PlanMutations = extendType({
         })
         const app = await ctx.db.app.findUnique({
           where: { id },
-          select: { stripeSubId: true, id: true, name: true },
+          select: { stripeSubId: true, id: true, name: true, trialLong: true },
         })
+        const trialNumber = app?.trialLong
+
         if (app?.stripeSubId) {
           const returnUrl = YOUR_DOMAIN
 

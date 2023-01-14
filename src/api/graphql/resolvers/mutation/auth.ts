@@ -3,6 +3,7 @@ import hashPassword from '../../../utils/hashPassword'
 import {
   arg,
   enumType,
+  intArg,
   mutationType,
   nonNull,
   objectType,
@@ -114,9 +115,17 @@ export const Mutation = mutationType({
           registerFrom: stringArg(),
           password: nonNull(stringArg()),
           addAppInput: arg({ type: 'addAppInput' }),
+          trialLong: intArg(),
         },
         async resolve(_root, args, ctx) {
-          const { email, password, registerFrom, addAppInput, ...rest } = args
+          const {
+            email,
+            password,
+            registerFrom,
+            addAppInput,
+            trialLong,
+            ...rest
+          } = args
           console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
           // lowercase their email
           email.toLowerCase()
@@ -209,6 +218,7 @@ export const Mutation = mutationType({
               error?.response?.data,
             )
           }
+          const trialNumber = !trialLong ? 0 : trialLong > 60 ? 60 : trialLong
 
           const app = addAppInput
             ? await ctx.db.app.create({
@@ -223,7 +233,7 @@ export const Mutation = mutationType({
                     .join('.'),
                   assets: { create: { displayLogo: true, color: '#000' } },
                   design: { create: { AppDesignDrawer: { create: {} } } },
-
+                  trialLong: trialNumber,
                   owner: { connect: { id: admin.id } },
                 },
               })

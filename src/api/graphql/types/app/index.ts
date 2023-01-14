@@ -25,6 +25,7 @@ export const App = objectType({
     t.model.createdAt()
     t.model.owner()
     t.model.isTrialEnd()
+    t.model.trialLong()
 
     t.field('daysLeftInTrial', {
       type: 'Int',
