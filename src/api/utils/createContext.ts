@@ -68,7 +68,7 @@ export const createContext = async ({
     prisma,
     req,
     builderDomain: host || 'noDomain',
-    appId: req?.get('appId'),
+    appId: req?.get('appId') ? Number(req?.get('appId')) : undefined,
   }
 
   return ctx
