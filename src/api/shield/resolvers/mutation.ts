@@ -155,7 +155,22 @@ const appMutationsShield = {
     permissions: isNotificationOwner,
   },
 }
+
 const auth = {
+  signupInApp: {
+    name: 'signupInApp',
+    slug: 'signupInApp',
+    desc: '',
+    role: ['all'],
+    permissions: allow,
+  },
+  signinInApp: {
+    name: 'signinInApp',
+    slug: 'signinInApp',
+    desc: '',
+    role: ['all'],
+    permissions: allow,
+  },
   signupSuperAdmin: {
     name: 'signupSuperAdmin',
     slug: 'signupSuperAdmin',

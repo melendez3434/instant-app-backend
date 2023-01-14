@@ -23,7 +23,7 @@ import Container from '../../components/common/container'
 
 const LOGIN = gql`
   mutation LOGIN($data: LoginInput!) {
-    signUpInApp(data: $data) {
+    signinInApp(data: $data) {
       token
       user {
         id

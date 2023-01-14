@@ -24,7 +24,7 @@ import Container from '../../components/common/container'
 
 const SIGN_UP = gql`
   mutation SignUp($data: SignUpInput!) {
-    signUpInApp(data: $data) {
+    signupInApp(data: $data) {
       token
       user {
         id
@@ -43,6 +43,8 @@ export default function SignUp() {
   const [name, setName] = useState('')
 
   const [password, setPassword] = useState('')
+  const [errors, setErrors]: any = useState({})
+
   const {
     backgroundImage,
     color,
@@ -53,6 +55,41 @@ export default function SignUp() {
     textTheme,
     title,
   } = data?.app?.design?.AppDesignDrawer || {}
+  const onFinished = () => {
+    console.log('onFinished')
+    let newErrors: any = null
+    if (!email) {
+      newErrors = { ...newErrors, email: 'Email is required' }
+    }
+    if (!password) {
+      newErrors = { ...newErrors, password: 'Password is required' }
+    }
+    if (!name) {
+      newErrors = { ...newErrors, name: 'Name is required' }
+    }
+    setErrors(newErrors || {})
+
+    if (email && password && name) {
+      signUp({
+        variables: {
+          data: {
+            email,
+            password,
+            name,
+          },
+        },
+      })
+        .then((res) => {
+          console.log(res)
+          //@ts-ignore
+          navigate('Home')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
+  }
+
   return (
     <Container style={styles.container}>
       {/* <HeaderComp centerComponent={'Sign Up'} loading={loading} /> */}
@@ -76,6 +113,7 @@ export default function SignUp() {
           setName(text)
         }}
         value={name}
+        errorMessage={errors.name}
       />
       <Input
         placeholder="Email"
@@ -84,6 +122,7 @@ export default function SignUp() {
           setEmail(text)
         }}
         value={email}
+        errorMessage={errors.email}
       />
       <Input
         placeholder="Password"
@@ -92,10 +131,12 @@ export default function SignUp() {
           console.log(text)
           setPassword(text)
         }}
+        errorMessage={errors.password}
         value={password}
       />
       <Button
         title="Signup"
+        onPress={onFinished}
         buttonStyle={{ width: '100%' }}
         containerStyle={{ width: '100%', paddingHorizontal: 10 }}
       />
