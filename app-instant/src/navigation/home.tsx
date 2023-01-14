@@ -2,7 +2,8 @@
 
 import * as React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import HomeScreen, { DrawerContent } from '../screens/home'
+import HomeScreen from '../screens/home'
+import { DrawerContent } from '../components/layout/drawer'
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 const Drawer = createDrawerNavigator()

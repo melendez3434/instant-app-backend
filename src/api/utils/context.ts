@@ -10,4 +10,5 @@ export type Context = {
   prisma: PrismaClient
   req: Request
   builderDomain: string
+  appId: number
 }

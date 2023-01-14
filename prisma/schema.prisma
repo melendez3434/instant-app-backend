@@ -20,6 +20,8 @@ model User {
   builder          Builder? @relation("builderToUsers", fields: [builderDomain], references: [domain], onDelete: Cascade)
   builderDomain    String?
   registerFrom     String?
+  inApp            App?     @relation("AppToUsers", fields: [appId], references: [id], onDelete: Cascade)
+  appId            Int?
 
   @@unique([email, builderDomain])
 }
@@ -68,6 +70,7 @@ model App {
   notifications      Notification[]
   notificationData   NotificationData?
   notificationTokens NotificationToken[]
+  users              User[]              @relation("AppToUsers")
 }
 
 model IosProfile {
@@ -230,6 +233,7 @@ enum Role {
   admin
   user
   superAdmin
+  appUser
 }
 
 enum SplashMode {

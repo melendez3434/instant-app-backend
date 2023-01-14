@@ -333,6 +333,7 @@ input AppOrderByWithRelationInput {
   trialLong: SortOrder
   updatedAt: SortOrder
   userAgent: SortOrder
+  users: UserOrderByRelationAggregateInput
   website: SortOrder
 }
 
@@ -366,6 +367,7 @@ input AppWhereInput {
   trialLong: IntFilter
   updatedAt: DateTimeFilter
   userAgent: StringNullableFilter
+  users: UserListRelationFilter
   website: StringFilter
 }
 
@@ -806,6 +808,11 @@ input LinkWhereUniqueInput {
   id: Int
 }
 
+input LoginInput {
+  email: String!
+  password: String!
+}
+
 enum MenuType {
   bar
   main
@@ -827,7 +834,9 @@ type Mutation {
   removeNotification(id: Int!): Notification
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
+  signinInApp(data: LoginInput!): AuthPayLoad
   signup(addAppInput: addAppInput, email: String!, password: String!, registerFrom: String, trialLong: Int): AuthPayLoadWithApp
+  signupInApp(data: SignUpInput!): AuthPayLoad
   signupSuperAdmin(companyName: String, email: String!, icon: String, logo: String, name: String!, password: String!): AuthPayLoad
   subscribe(id: Int!): String
   updateAndroidProfile(data: updateAndroidProfileInput!, id: Int!): AndroidProfile
@@ -1175,8 +1184,15 @@ enum QueryMode {
 
 enum Role {
   admin
+  appUser
   superAdmin
   user
+}
+
+input SignUpInput {
+  email: String!
+  name: String!
+  password: String!
 }
 
 enum SortOrder {
@@ -1253,12 +1269,14 @@ input UserOrderByRelationAggregateInput {
 
 input UserOrderByWithRelationInput {
   App: AppOrderByRelationAggregateInput
+  appId: SortOrder
   builder: BuilderOrderByWithRelationInput
   builderDomain: SortOrder
   builderMine: BuilderOrderByWithRelationInput
   createdAt: SortOrder
   email: SortOrder
   id: SortOrder
+  inApp: AppOrderByWithRelationInput
   password: SortOrder
   registerFrom: SortOrder
   role: SortOrder
@@ -1271,12 +1289,14 @@ input UserWhereInput {
   App: AppListRelationFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+  appId: IntNullableFilter
   builder: BuilderWhereInput
   builderDomain: StringNullableFilter
   builderMine: BuilderWhereInput
   createdAt: DateTimeFilter
   email: StringFilter
   id: IntFilter
+  inApp: AppWhereInput
   password: StringFilter
   registerFrom: StringNullableFilter
   role: EnumRoleFilter

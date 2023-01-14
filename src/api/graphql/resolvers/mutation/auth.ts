@@ -3,6 +3,7 @@ import hashPassword from '../../../utils/hashPassword'
 import {
   arg,
   enumType,
+  inputObjectType,
   intArg,
   mutationType,
   nonNull,
@@ -353,6 +354,109 @@ export const Mutation = mutationType({
           ctx.auth.logout()
 
           return 'Goodbye!'
+        },
+      })
+
+    t.field('signupInApp', {
+      type: 'AuthPayLoad',
+      args: {
+        data: nonNull(
+          arg({
+            type: inputObjectType({
+              name: 'SignUpInput',
+              definition(t) {
+                t.nonNull.string('name')
+                t.nonNull.string('email')
+                t.nonNull.string('password')
+              },
+            }),
+          }),
+        ),
+      },
+      async resolve(_root, args, ctx) {
+        const {
+          email,
+          password,
+
+          ...rest
+        } = args.data
+        console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
+        // lowercase their email
+        email.toLowerCase()
+
+        if (password.length < 8)
+          throw new Error('password must be more than 8 characters')
+
+        const isEmailExist = await ctx.db.user.findFirst({
+          where: {
+            email: { equals: email, mode: 'insensitive' },
+            appId: { equals: ctx.appId },
+          },
+        })
+
+        if (isEmailExist) {
+          throw new Error('Sorry but this email already exists')
+        }
+        // hash their password
+        const hash = await hashPassword(password)
+        // create the user in the database
+        const user = await ctx.db.user.create({
+          data: {
+            ...rest,
+            email,
+            password: hash,
+            role: 'appUser',
+            inApp: { connect: { id: ctx.appId } },
+          },
+        })
+        const token = ctx.auth.signInWithJWT(user)
+
+        return { user, token }
+      },
+    }),
+      t.field('signinInApp', {
+        type: 'AuthPayLoad',
+        args: {
+          data: nonNull(
+            arg({
+              type: inputObjectType({
+                name: 'LoginInput',
+                definition(t) {
+                  t.nonNull.string('email')
+                  t.nonNull.string('password')
+                },
+              }),
+            }),
+          ),
+        },
+        async resolve(_root, args, ctx) {
+          const {
+            email,
+            password,
+            //  type
+          } = args.data
+
+          const isEmailExist = await ctx.db.user.findFirst({
+            where: {
+              email: email ? { equals: email, mode: 'insensitive' } : undefined,
+              appId: ctx.appId,
+            },
+          })
+
+          if (!isEmailExist) {
+            throw new Error('sorry but you are not exist')
+          }
+          const valid = await bcrypt.compare(password, isEmailExist.password)
+          if (!valid) {
+            throw new Error('Invalid Password!')
+          }
+          const token = ctx.auth.signInWithJWT(
+            isEmailExist,
+            // isEmailExist.shopDomain,
+            // ctx.host == 'www.b7r.store' ? 'admin.myb7r.store' : null,
+          )
+
+          return { user: isEmailExist, token }
         },
       })
     //   t.field('requestReset', {
