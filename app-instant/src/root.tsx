@@ -61,15 +61,10 @@ export default function MyRoot() {
   const [setExpoPushToken, { error: tokenError }] = useMutation(
     ADD_NOTIFICATION_TOKEN,
   )
-  console.log(
-    '🚀 ~ file: root.tsx:61 ~ MyRoot ~ tokenError',
-    tokenError?.networkError,
-  )
 
-  const { data, loading, error } = useQuery(APP_INFO, {
+  const { data, loading } = useQuery(APP_INFO, {
     variables: { id: Number(Constants.manifest?.extra?.appId) },
   })
-  console.log('🚀 ~ file: root.tsx:72 ~ MyRoot ~ error', error)
   const { loading: mainLinksLoading } = useQuery(NAVIGATION_LINKS, {
     variables: {
       appId: Number(Constants.manifest?.extra?.appId),
@@ -95,8 +90,6 @@ export default function MyRoot() {
     Number(Constants.manifest.extra.appId),
   )
 
-  console.log('🚀 ~ file: root.tsx ~ line 65 ~ MyRoot ~ error', error)
-  console.log('🚀 ~ file: root.tsx ~ line 65 ~ MyRoot ~ data', data)
   const { setMode } = useThemeMode()
   useEffect(() => {
     if (data?.app) {

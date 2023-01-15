@@ -26,6 +26,7 @@ export const App = objectType({
     t.model.owner()
     t.model.isTrialEnd()
     t.model.trialLong()
+    t.model.mustAuth()
 
     t.field('daysLeftInTrial', {
       type: 'Int',
@@ -207,6 +208,7 @@ export const Appmutations = extendType({
               t.string('lang')
               t.string('appId')
               t.string('userAgent')
+              t.boolean('mustAuth')
             },
           }),
           required: true,
@@ -214,7 +216,7 @@ export const Appmutations = extendType({
       },
 
       async resolve(_root, args, ctx) {
-        let { name, website, appId, lang, userAgent } = args.data
+        let { name, website, appId, lang, userAgent, mustAuth } = args.data
         return await ctx.db.app.update({
           where: { id: args.id },
           data: {
@@ -223,6 +225,7 @@ export const Appmutations = extendType({
             appId: appId ?? undefined,
             lang: lang ?? undefined,
             userAgent,
+            mustAuth: mustAuth ?? undefined,
           },
         })
       },

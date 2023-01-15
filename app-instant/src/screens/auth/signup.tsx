@@ -19,6 +19,7 @@ import LoginScreen from 'react-native-login-screen'
 import { Button, Image, Input, Text } from '@rneui/themed'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Container from '../../components/common/container'
+import { authMutation } from '../../modules/auth/resolvers'
 
 // const varWebsiteUrl = makeVar('')
 
@@ -35,7 +36,7 @@ const SIGN_UP = gql`
 
 export default function SignUp() {
   const [signUp, { loading }] = useMutation(SIGN_UP)
-  const { data } = useQuery(APP_INFO, {
+  const { data, client } = useQuery(APP_INFO, {
     variables: { id: Number(Constants.manifest.extra.appId) },
   })
   const { navigate } = useNavigation()
@@ -79,10 +80,14 @@ export default function SignUp() {
           },
         },
       })
-        .then((res) => {
+        .then(async (res) => {
           console.log(res)
+          await authMutation.asyncAuth({
+            token: res.data.signupInApp.token,
+            client,
+          })
           //@ts-ignore
-          navigate('Home')
+          navigate('HomeStack', { screen: 'Home' })
         })
         .catch((err) => {
           console.log(err)
@@ -139,6 +144,7 @@ export default function SignUp() {
         onPress={onFinished}
         buttonStyle={{ width: '100%' }}
         containerStyle={{ width: '100%', paddingHorizontal: 10 }}
+        loading={loading}
       />
       <TouchableOpacity
         onPress={() => {

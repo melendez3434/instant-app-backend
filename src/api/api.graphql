@@ -63,6 +63,7 @@ type App {
   id: Int!
   isTrialEnd: Boolean!
   lang: String!
+  mustAuth: Boolean!
   name: String!
   nextBill: DateTime
   owner: User
@@ -318,6 +319,7 @@ input AppOrderByWithRelationInput {
   iosProfile: IosProfileOrderByWithRelationInput
   isTrialEnd: SortOrder
   lang: SortOrder
+  mustAuth: SortOrder
   name: SortOrder
   navigation: LinkOrderByRelationAggregateInput
   nextBill: SortOrder
@@ -352,6 +354,7 @@ input AppWhereInput {
   iosProfile: IosProfileWhereInput
   isTrialEnd: BoolFilter
   lang: StringFilter
+  mustAuth: BoolFilter
   name: StringFilter
   navigation: LinkListRelationFilter
   nextBill: DateTimeNullableFilter
@@ -1277,6 +1280,7 @@ input UserOrderByWithRelationInput {
   email: SortOrder
   id: SortOrder
   inApp: AppOrderByWithRelationInput
+  name: SortOrder
   password: SortOrder
   registerFrom: SortOrder
   role: SortOrder
@@ -1302,6 +1306,7 @@ input UserWhereInput {
   email: StringFilter
   id: IntFilter
   inApp: AppWhereInput
+  name: StringNullableFilter
   password: StringFilter
   registerFrom: StringNullableFilter
   role: EnumRoleFilter
@@ -1387,6 +1392,7 @@ input updateAppDesignInput {
 input updateAppInput {
   appId: String
   lang: String
+  mustAuth: Boolean
   name: String
   userAgent: String
   website: String

@@ -6,6 +6,7 @@ export const APP_INFO = gql`
       id
       name
       website
+      mustAuth
       #   appId
       userAgent
       #   nextBill

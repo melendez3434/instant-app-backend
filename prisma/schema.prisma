@@ -53,6 +53,7 @@ model App {
   trialLong          Int                 @default(0)
   lang               String
   isTrialEnd         Boolean             @default(false)
+  mustAuth           Boolean             @default(true)
   userAgent          String?
   tempOwner          String?
   nextBill           DateTime?

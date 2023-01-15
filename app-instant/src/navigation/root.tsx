@@ -7,17 +7,27 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import HomeNavigation from './home'
 import SignUp from '../screens/auth/signup'
 import AuthNavigation from './auth'
+import { useVarAuth } from '../modules/auth/defaults'
+import { APP_INFO } from '../graphql/query'
+import { useQuery } from '@apollo/client'
+import Constants from 'expo-constants'
 
 const Stack = createNativeStackNavigator()
 
 function RootNavigation() {
+  const { isLogin } = useVarAuth()
+  const { data, loading } = useQuery(APP_INFO, {
+    variables: { id: Number(Constants.manifest?.extra?.appId) },
+  })
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="LoginStack"
-        options={{ headerShown: false }}
-        component={AuthNavigation}
-      />
+      {!isLogin && data.app.mustAuth && (
+        <Stack.Screen
+          name="LoginStack"
+          options={{ headerShown: false }}
+          component={AuthNavigation}
+        />
+      )}
       <Stack.Screen
         name="HomeStack"
         options={{ headerShown: false }}
