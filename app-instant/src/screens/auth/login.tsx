@@ -88,6 +88,7 @@ export default function Login() {
         title="Login"
         buttonStyle={{ width: '100%' }}
         containerStyle={{ width: '100%', paddingHorizontal: 10 }}
+        loading={loading}
       />
       <TouchableOpacity
         onPress={() => {

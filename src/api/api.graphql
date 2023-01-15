@@ -1249,6 +1249,7 @@ type User {
   createdAt: DateTime!
   email: String!
   id: Int!
+  name: String
   password: String!
   registerFrom: String
   role: Role!

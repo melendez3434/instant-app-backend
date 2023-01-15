@@ -20,6 +20,7 @@ export const User = objectType({
     t.model.role()
     t.model.registerFrom()
     t.model.builderDomain()
+    t.model.name()
 
     t.int('appsCount', {
       async resolve({ id }, args, ctx) {
