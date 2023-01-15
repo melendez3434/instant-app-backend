@@ -69,9 +69,10 @@ export default function MyRoot() {
   const { data, loading, error } = useQuery(APP_INFO, {
     variables: { id: Number(Constants.manifest?.extra?.appId) },
   })
+  console.log('🚀 ~ file: root.tsx:72 ~ MyRoot ~ error', error)
   const { loading: mainLinksLoading } = useQuery(NAVIGATION_LINKS, {
     variables: {
-      id: Number(Constants.manifest?.extra?.appId),
+      appId: Number(Constants.manifest?.extra?.appId),
       where: { menuType: { equals: 'main' } },
     },
   })
