@@ -18,6 +18,7 @@ import LoginScreen from 'react-native-login-screen'
 import { Button, Image, Input, Text } from '@rneui/themed'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Container from '../../components/common/container'
+import { authMutation } from '../../modules/auth/resolvers'
 
 // const varWebsiteUrl = makeVar('')
 
@@ -34,12 +35,14 @@ const LOGIN = gql`
 
 export default function Login() {
   const [login, { loading }] = useMutation(LOGIN)
-  const { data } = useQuery(APP_INFO, {
+  const { data, client } = useQuery(APP_INFO, {
     variables: { id: Number(Constants.manifest.extra.appId) },
   })
   const { navigate } = useNavigation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [errors, setErrors]: any = useState({})
+
   const {
     backgroundImage,
     color,
@@ -50,6 +53,44 @@ export default function Login() {
     textTheme,
     title,
   } = data?.app?.design?.AppDesignDrawer || {}
+
+  const onFinished = () => {
+    let newErrors: any = null
+    if (!email) {
+      newErrors = { ...newErrors, email: 'Email is required' }
+    }
+    if (!password) {
+      newErrors = { ...newErrors, password: 'Password is required' }
+    }
+
+    setErrors(newErrors || {})
+
+    if (email && password) {
+      login({
+        variables: {
+          data: {
+            email,
+            password,
+          },
+        },
+      })
+        .then(async (res) => {
+          console.log(res)
+          await authMutation.asyncAuth({
+            token: res.data.signinInApp.token,
+            client,
+          })
+          console.log('🚀 ~ file: login.tsx:79 ~ .then ~ res done')
+
+          //@ts-ignore
+          navigate('HomeStack', { screen: 'Home' })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
+  }
+
   return (
     <Container style={styles.container}>
       {/* <HeaderComp centerComponent={'Sign Up'} loading={loading} /> */}
@@ -89,6 +130,7 @@ export default function Login() {
         buttonStyle={{ width: '100%' }}
         containerStyle={{ width: '100%', paddingHorizontal: 10 }}
         loading={loading}
+        onPress={onFinished}
       />
       <TouchableOpacity
         onPress={() => {
