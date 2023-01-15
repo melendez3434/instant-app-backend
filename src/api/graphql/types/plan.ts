@@ -49,6 +49,11 @@ export const PlanMutations = extendType({
           userId: user?.id,
           appId: app?.id,
           utm: user?.registerFrom,
+          trial: trialNumber,
+          apollotrial:
+            user?.registerFrom == 'apollosale' && trialNumber
+              ? 'yes'
+              : undefined,
         }
         const customer = !user?.stripeCustomerId
           ? await stripe.customers.create({

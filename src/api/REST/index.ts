@@ -158,8 +158,11 @@ const router = (express) => {
         }
         // Return a 200 response to acknowledge receipt of the event
         response.send()
-      } catch (error) {
+      } catch (error: any) {
         console.log('🚀 ~ file: index.ts:161 ~ error', error)
+        response.status(400).send({
+          message: error?.message || 'Look At Server Logs!',
+        })
       }
     },
   )

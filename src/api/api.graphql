@@ -1284,6 +1284,11 @@ input UserOrderByWithRelationInput {
   updatedAt: SortOrder
 }
 
+input UserStripeCustomerIdBuilderDomainCompoundUniqueInput {
+  builderDomain: String!
+  stripeCustomerId: String!
+}
+
 input UserWhereInput {
   AND: [UserWhereInput!]
   App: AppListRelationFilter
@@ -1307,7 +1312,7 @@ input UserWhereInput {
 input UserWhereUniqueInput {
   email_builderDomain: UserEmailBuilderDomainCompoundUniqueInput
   id: Int
-  stripeCustomerId: String
+  stripeCustomerId_builderDomain: UserStripeCustomerIdBuilderDomainCompoundUniqueInput
 }
 
 input addAppInput {

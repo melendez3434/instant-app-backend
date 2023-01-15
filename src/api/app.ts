@@ -200,6 +200,8 @@ const apolloServer = async () => {
     //     role: true,
     //   },
     // })
+    // const app = await prisma.app.findUnique({ where: { id: 27 } })
+    // console.log('🚀 ~ file: app.ts:204 ~ app ~ app', app)
     // await prisma.builder.updateMany({
     //   where: { ownerId: 1 },
     //   data: { domain: 'test.instantappnow.dev' },
