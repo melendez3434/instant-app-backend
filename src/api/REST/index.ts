@@ -99,7 +99,7 @@ const router = (express) => {
               },
               data: {
                 stripeSubId: subscription.subscription,
-                owner: { update: { stripeCustomerId: subscription.customer } },
+                // owner: { update: { stripeCustomerId: subscription.customer } },
               },
             })
           }

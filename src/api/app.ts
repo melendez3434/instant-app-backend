@@ -191,12 +191,13 @@ const apolloServer = async () => {
   express.set('port', process.env.PORT || 4000)
   const app = httpServer.listen(express.get('port'), async () => {
     // const users = await prisma.user.findMany({
-    //   where: { role: 'superAdmin' },
+    //   where: { stripeCustomerId: 'cus_N7iFxsy58Zbj8g' },
     //   select: {
     //     id: true,
     //     builderMine: { select: { domain: true } },
     //     builderDomain: true,
     //     email: true,
+    //     role: true,
     //   },
     // })
     // await prisma.builder.updateMany({
