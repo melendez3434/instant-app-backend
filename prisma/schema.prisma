@@ -13,17 +13,19 @@ model User {
   email String
   name  String?
 
-  password         String
-  stripeCustomerId String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  App              App[]
-  builderMine      Builder? @relation("builderToOwner")
-  builder          Builder? @relation("builderToUsers", fields: [builderDomain], references: [domain], onDelete: Cascade)
-  builderDomain    String?
-  registerFrom     String?
-  inApp            App?     @relation("AppToUsers", fields: [appId], references: [id], onDelete: Cascade)
-  appId            Int?
+  password           String
+  stripeCustomerId   String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  App                App[]
+  builderMine        Builder?            @relation("builderToOwner")
+  builder            Builder?            @relation("builderToUsers", fields: [builderDomain], references: [domain], onDelete: Cascade)
+  builderDomain      String?
+  registerFrom       String?
+  inApp              App?                @relation("AppToUsers", fields: [appId], references: [id], onDelete: Cascade)
+  appId              Int?
+  notifications      Notification[]
+  notificationTokens NotificationToken[]
 
   @@unique([email, builderDomain])
   @@unique([stripeCustomerId, builderDomain])
@@ -204,6 +206,8 @@ model Notification {
   title     String
   body      String
   status    NotificationStatus @default(waiting)
+  toType    ToType             @default(all)
+  to        User[]
   data      Json?
   publishAt DateTime           @default(now())
   serviceId String?
@@ -229,8 +233,11 @@ model NotificationToken {
   updatedAt DateTime @updatedAt
   App       App      @relation(fields: [appid], references: [id], onDelete: Cascade)
   appid     Int
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
 
   @@unique([appid, token])
+  @@unique([userId, token])
 }
 
 enum Role {
@@ -312,4 +319,11 @@ enum NotificationStatus {
   waiting
   success
   failed
+}
+
+enum ToType {
+  all
+  auth
+  nonAuth
+  custom
 }

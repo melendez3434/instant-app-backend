@@ -56,9 +56,16 @@ export default function Login() {
 
   const onFinished = () => {
     let newErrors: any = null
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      newErrors = {
+        ...newErrors,
+        email: 'You have entered an invalid email address!',
+      }
+    }
     if (!email) {
       newErrors = { ...newErrors, email: 'Email is required' }
     }
+
     if (!password) {
       newErrors = { ...newErrors, password: 'Password is required' }
     }

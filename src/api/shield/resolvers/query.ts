@@ -52,6 +52,13 @@ export const queriesShield = {
     role: ['all'],
     permissions: isAppOwner,
   },
+  appUsers: {
+    name: 'appUsers',
+    slug: 'appUsers',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
   apps: {
     name: 'apps',
     slug: 'apps',

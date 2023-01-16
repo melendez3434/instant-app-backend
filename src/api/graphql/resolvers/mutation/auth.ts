@@ -329,6 +329,7 @@ export const Mutation = mutationType({
             where: {
               email: email ? { equals: email, mode: 'insensitive' } : undefined,
               builderDomain: ctx.builderDomain,
+              role: { not: 'appUser' },
             },
           })
 
@@ -440,6 +441,7 @@ export const Mutation = mutationType({
             where: {
               email: email ? { equals: email, mode: 'insensitive' } : undefined,
               appId: ctx.appId,
+              role: 'appUser',
             },
           })
 

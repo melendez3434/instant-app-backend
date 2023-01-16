@@ -3,6 +3,7 @@ import {
   extendType,
   inputObjectType,
   intArg,
+  list,
   nonNull,
   objectType,
   stringArg,
@@ -19,6 +20,8 @@ export const Notification = objectType({
     t.model.createdAt()
     t.model.publishAt()
     t.model.status()
+    t.model.toType()
+    t.model.to()
   },
 })
 export const NotificationData = objectType({
@@ -89,15 +92,19 @@ export const NotifiMutation = extendType({
         title: nonNull(stringArg()),
         body: nonNull(stringArg()),
         publishAt: arg({ type: 'DateTime' }),
+        toType: nonNull(arg({ type: 'ToType' })),
+        to: list(nonNull(intArg())),
       },
 
-      async resolve(_root, { appId, title, body, publishAt }, ctx) {
+      async resolve(_root, { appId, title, body, publishAt, to, toType }, ctx) {
         const notifiacation = await ctx.db.notification.create({
           data: {
             App: { connect: { id: appId } },
             title,
             body,
             publishAt,
+            toType,
+            to: to ? { connect: to.map((id) => ({ id })) } : undefined,
           },
         })
         try {
@@ -117,9 +124,11 @@ export const NotifiMutation = extendType({
         title: nonNull(stringArg()),
         body: nonNull(stringArg()),
         publishAt: arg({ type: 'DateTime' }),
+        toType: nonNull(arg({ type: 'ToType' })),
+        to: list(nonNull(intArg())),
       },
 
-      async resolve(_root, { id, title, body, publishAt }, ctx) {
+      async resolve(_root, { id, title, body, publishAt, to, toType }, ctx) {
         const notifiacation = await ctx.db.notification.findUnique({
           where: { id },
         })
@@ -132,6 +141,8 @@ export const NotifiMutation = extendType({
             title,
             body,
             publishAt,
+            toType,
+            to: to ? { connect: to.map((id) => ({ id })) } : undefined,
           },
         })
         try {
@@ -218,9 +229,11 @@ export const NotifiMutation = extendType({
             create: {
               App: { connect: { id } },
               token,
+              user: ctx.user?.id ? { connect: { id: ctx.user.id } } : undefined,
             },
             update: {
               token,
+              user: ctx.user?.id ? { connect: { id: ctx.user.id } } : undefined,
             },
           })
         } catch (error) {

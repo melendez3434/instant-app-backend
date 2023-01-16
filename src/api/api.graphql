@@ -626,6 +626,13 @@ input EnumThemeModeFilter {
   notIn: [ThemeMode!]
 }
 
+input EnumToTypeFilter {
+  equals: ToType
+  in: [ToType!]
+  not: NestedEnumToTypeFilter
+  notIn: [ToType!]
+}
+
 input FloatNullableFilter {
   equals: Float
   gt: Float
@@ -826,7 +833,7 @@ type Mutation {
   addApp(data: addAppInput!): App
   addDeployRequest(data: addDeployRequestInput!, id: Int!): DeployRequest
   addLink(data: addLinkInput!): Link
-  addNotification(appId: Int!, body: String!, publishAt: DateTime, title: String!): Notification
+  addNotification(appId: Int!, body: String!, publishAt: DateTime, title: String!, to: [Int!], toType: ToType!): Notification
   addNotificationToken(id: Int!, token: String!): Boolean
   deleteApp(id: Int!): App
   deleteLink(id: Int!): Link
@@ -852,7 +859,7 @@ type Mutation {
   updateLink(data: updateLinkInput!, id: Int!): Link
   updateMyBuilder(data: updateMyBuilderInput!): Builder
   updateMyProfile(data: updateMyProfileInput!): User
-  updateNotification(body: String!, id: Int!, publishAt: DateTime, title: String!): Notification
+  updateNotification(body: String!, id: Int!, publishAt: DateTime, title: String!, to: [Int!], toType: ToType!): Notification
   updateNotificationData(data: updateNotificationDataInput!, id: Int!): NotificationData
 }
 
@@ -974,6 +981,13 @@ input NestedEnumThemeModeFilter {
   notIn: [ThemeMode!]
 }
 
+input NestedEnumToTypeFilter {
+  equals: ToType
+  in: [ToType!]
+  not: NestedEnumToTypeFilter
+  notIn: [ToType!]
+}
+
 input NestedFloatNullableFilter {
   equals: Float
   gt: Float
@@ -1043,6 +1057,8 @@ type Notification {
   publishAt: DateTime!
   status: NotificationStatus!
   title: String!
+  to(cursor: UserWhereUniqueInput, skip: Int, take: Int): [User!]!
+  toType: ToType!
 }
 
 type NotificationData {
@@ -1092,6 +1108,8 @@ input NotificationOrderByWithRelationInput {
   serviceId: SortOrder
   status: SortOrder
   title: SortOrder
+  to: UserOrderByRelationAggregateInput
+  toType: SortOrder
   updatedAt: SortOrder
 }
 
@@ -1121,6 +1139,8 @@ input NotificationTokenWhereInput {
   id: IntFilter
   token: StringFilter
   updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: IntNullableFilter
 }
 
 input NotificationWhereInput {
@@ -1137,6 +1157,8 @@ input NotificationWhereInput {
   serviceId: StringNullableFilter
   status: EnumNotificationStatusFilter
   title: StringFilter
+  to: UserListRelationFilter
+  toType: EnumToTypeFilter
   updatedAt: DateTimeFilter
 }
 
@@ -1167,6 +1189,7 @@ type Query {
   androidProfile(id: Int!): AndroidProfile
   app(id: Int!): App
   appBuilds(appId: Int!, orderBy: AppBuildOrderByWithRelationInput, skip: Int, take: Int): AppBuildsConnectionPayLoad
+  appUsers(appId: Int!, orderBy: UserOrderByWithRelationInput, skip: Int, take: Int, where: UserWhereInput): userConnectionPayLoad
   apps(orderBy: AppOrderByWithRelationInput, skip: Int, take: Int, where: AppWhereInput): AppConnectionPayLoad
   deployRequests(orderBy: DeployRequestOrderByWithRelationInput, skip: Int, take: Int, where: DeployRequestWhereInput): DeployRequestConnectionPayLoad
   iosProfile(id: Int!): IosProfile
@@ -1243,6 +1266,13 @@ enum ThemeMode {
   light
 }
 
+enum ToType {
+  all
+  auth
+  custom
+  nonAuth
+}
+
 type User {
   appsCount: Int
   builderDomain: String
@@ -1282,6 +1312,8 @@ input UserOrderByWithRelationInput {
   id: SortOrder
   inApp: AppOrderByWithRelationInput
   name: SortOrder
+  notificationTokens: NotificationTokenOrderByRelationAggregateInput
+  notifications: NotificationOrderByRelationAggregateInput
   password: SortOrder
   registerFrom: SortOrder
   role: SortOrder
@@ -1308,6 +1340,8 @@ input UserWhereInput {
   id: IntFilter
   inApp: AppWhereInput
   name: StringNullableFilter
+  notificationTokens: NotificationTokenListRelationFilter
+  notifications: NotificationListRelationFilter
   password: StringFilter
   registerFrom: StringNullableFilter
   role: EnumRoleFilter

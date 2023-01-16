@@ -23,13 +23,30 @@ export const sendNotifications = async () => {
     })
     const notifications = await prisma.notification.findMany({
       where: { status: 'waiting', publishAt: { lte: new Date() } },
-      select: { title: true, body: true, appid: true, id: true },
+      select: {
+        title: true,
+        body: true,
+        appid: true,
+        id: true,
+        to: { select: { id: true } },
+        toType: true,
+      },
     })
 
     await Promise.all(
-      notifications.map(async ({ appid, body, title, id }) => {
+      notifications.map(async ({ appid, body, title, id, toType, to }) => {
         const users = await prisma.notificationToken.findMany({
-          where: { appid },
+          where: {
+            appid,
+            userId:
+              toType == 'all'
+                ? undefined
+                : toType == 'auth'
+                ? { not: null }
+                : toType == 'nonAuth'
+                ? { equals: null }
+                : { in: to.map(({ id }) => id) },
+          },
           select: { token: true },
         })
         try {

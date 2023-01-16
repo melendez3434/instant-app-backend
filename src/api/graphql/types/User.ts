@@ -80,6 +80,31 @@ export const UserQuery = extendType({
         }
       },
     })
+    t.field('appUsers', {
+      type: 'userConnectionPayLoad',
+      args: {
+        skip: intArg(),
+        take: intArg(),
+        appId: nonNull(intArg()),
+        orderBy: 'UserOrderByWithRelationInput',
+        where: 'UserWhereInput',
+      }, //@ts-ignore
+      async resolve(source, { appId, ...args }, ctx) {
+        args.where = {
+          ...args.where,
+          role: { equals: 'appUser' },
+          appId: { equals: appId },
+        }
+
+        return {
+          //@ts-ignore
+          count: await ctx.db.user.count({ where: args.where }),
+          //@ts-ignore
+
+          nodes: await ctx.db.user.findMany(args),
+        }
+      },
+    })
   },
 })
 

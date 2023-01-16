@@ -59,6 +59,12 @@ export default function SignUp() {
   const onFinished = () => {
     console.log('onFinished')
     let newErrors: any = null
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      newErrors = {
+        ...newErrors,
+        email: 'You have entered an invalid email address!',
+      }
+    }
     if (!email) {
       newErrors = { ...newErrors, email: 'Email is required' }
     }
