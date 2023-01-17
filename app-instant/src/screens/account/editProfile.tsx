@@ -21,10 +21,11 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import Container from '../../components/common/container'
 import { authMutation } from '../../modules/auth/resolvers'
 import { useVarAuth, varAuth } from '../../modules/auth/defaults'
+import Toast from 'react-native-toast-message'
 
 // const varWebsiteUrl = makeVar('')
 
-const EDIT_PROFILE = gql`
+export const EDIT_PROFILE = gql`
   mutation EDIT_PROFILE($data: updateMyProfileInput!) {
     updateMyProfile(data: $data) {
       id
@@ -57,7 +58,7 @@ export default function Profile() {
   const onFinished = () => {
     console.log('onFinished')
     let newErrors: any = null
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       newErrors = {
         ...newErrors,
         email: 'You have entered an invalid email address!',
@@ -72,12 +73,12 @@ export default function Profile() {
     }
     setErrors(newErrors || {})
 
-    if (email && name) {
+    if (!newErrors) {
       editProfile({
         variables: {
           data: {
             email,
-            // name,
+            name,
           },
         },
       })
@@ -91,8 +92,9 @@ export default function Profile() {
               email,
             },
           })
+          Toast.show({ text1: 'Profile updated successfully', type: 'success' })
           //@ts-ignore
-          navigate('HomeStack', { screen: 'Home' })
+          //   navigate('HomeStack', { screen: 'Home' })
         })
         .catch((err) => {
           console.log(err)

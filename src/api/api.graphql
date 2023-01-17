@@ -794,6 +794,7 @@ enum LinkType {
   externalLink
   link
   openModal
+  screen
   sendEmail
   share
 }
@@ -1470,6 +1471,7 @@ input updateMyBuilderInput {
 
 input updateMyProfileInput {
   email: String
+  name: String
   newPass: String
   pass: String
 }

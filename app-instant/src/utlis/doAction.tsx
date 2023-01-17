@@ -49,6 +49,10 @@ export const doAction = async (
         .catch((errorMsg) => console.log(errorMsg))
       // toast.error('will open share modal in the native version ')
       break
+    case 'screen':
+      //@ts-ignore
+      navigation.navigate('MyAccountStack', { screen: data.value })
+      break
     default:
       break
   }
@@ -61,3 +65,4 @@ export type LinkType =
   | 'sendEmail'
   | 'callPhone'
   | 'openModal'
+  | 'screen'

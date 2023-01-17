@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import Bottomtabs from '../../components/layout/footer'
 
@@ -13,6 +13,7 @@ import Constants from 'expo-constants'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native'
 import { authMutation } from '../../modules/auth/resolvers'
+import { useVarAuth } from '../../modules/auth/defaults'
 
 export default function MyAccount() {
   const { theme } = useTheme()
@@ -20,7 +21,7 @@ export default function MyAccount() {
     variables: { id: Number(Constants.manifest.extra.appId) },
   })
   const { navigate } = useNavigation()
-
+  const { isLogin } = useVarAuth()
   const {
     backgroundImage,
     color,
@@ -31,6 +32,14 @@ export default function MyAccount() {
     textTheme,
     title,
   } = data?.app?.design?.AppDesignDrawer || {}
+
+  useEffect(() => {
+    if (!isLogin) {
+      //@ts-ignore
+      navigate('LoginStack', { screen: 'Login' })
+    }
+  }, [isLogin])
+  if (!isLogin) return null
   return (
     <Container style={styles.container}>
       <HeaderComp
@@ -52,6 +61,7 @@ export default function MyAccount() {
         />
       </View>
       <>
+        {/* @ts-ignore */}
         <TouchableOpacity onPress={() => navigate('Profile')}>
           <ListItem>
             <ListItem.Content>
@@ -60,7 +70,7 @@ export default function MyAccount() {
             <ListItem.Chevron />
           </ListItem>
         </TouchableOpacity>
-
+        {/* @ts-ignore */}
         <TouchableOpacity onPress={() => navigate('ChangePassword')}>
           <ListItem>
             <ListItem.Content>

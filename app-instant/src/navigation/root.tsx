@@ -29,17 +29,17 @@ function RootNavigation() {
           component={AuthNavigation}
         />
       )}
-      {isLogin && (
-        <Stack.Screen
-          name="MyAccountStack"
-          options={{ headerShown: false }}
-          component={MyAccountNavigation}
-        />
-      )}
+
       <Stack.Screen
         name="HomeStack"
         options={{ headerShown: false }}
         component={HomeNavigation}
+      />
+
+      <Stack.Screen
+        name="MyAccountStack"
+        options={{ headerShown: false }}
+        component={MyAccountNavigation}
       />
     </Stack.Navigator>
   )

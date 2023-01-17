@@ -56,7 +56,7 @@ export default function Login() {
 
   const onFinished = () => {
     let newErrors: any = null
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       newErrors = {
         ...newErrors,
         email: 'You have entered an invalid email address!',
@@ -72,7 +72,7 @@ export default function Login() {
 
     setErrors(newErrors || {})
 
-    if (email && password) {
+    if (!newErrors) {
       login({
         variables: {
           data: {
