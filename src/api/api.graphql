@@ -794,6 +794,7 @@ enum LinkType {
   externalLink
   link
   openModal
+  screen
   sendEmail
   share
 }
