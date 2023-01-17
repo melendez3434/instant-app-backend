@@ -156,10 +156,10 @@ export default function MyRoot() {
     lightColors: {
       primary: data.app.design.themeColor,
     },
-    // darkColors: {
-    //   primary: data.app.design.themeColor,
-    //   //   primary: '#344512',
-    // },
+    darkColors: {
+      primary: data.app.design.themeColor,
+      //   primary: '#344512',
+    },
     mode: data.app.design.titleTheme == 'light' ? 'dark' : 'light',
   })
 

@@ -264,6 +264,7 @@ enum LinkType {
   sendEmail
   callPhone
   openModal
+  screen
 }
 
 enum MenuType {

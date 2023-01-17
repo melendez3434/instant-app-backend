@@ -9,7 +9,7 @@ import { APP_INFO, NAVIGATION_LINKS } from '../../graphql/query'
 import { doAction } from '../../utlis/doAction'
 import { ActivityIndicator, useWindowDimensions } from 'react-native'
 
-const Bottomtabs = ({ loading }) => {
+const Bottomtabs = ({ loading = false }) => {
   const [value, setValue] = React.useState(0)
   const insets = useSafeAreaInsets()
   const navigation = useNavigation()

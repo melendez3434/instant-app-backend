@@ -121,6 +121,7 @@ export const Usermutations = extendType({
               t.string('pass')
               t.string('newPass')
               t.string('email')
+              t.string('name')
             },
           }),
           required: true,
@@ -129,9 +130,9 @@ export const Usermutations = extendType({
 
       async resolve(_root, args, ctx) {
         const { data } = args
-        let { email, pass, newPass, ...rest } = data
+        let { email, pass, newPass, name, ...rest } = data
         if (email && !isEmail(email))
-          throw new Error('The Email field must contain a valid email address.')
+          throw new Error('This Email is not valid.')
 
         const isEmailExist =
           email &&
@@ -139,6 +140,10 @@ export const Usermutations = extendType({
             where: {
               email,
               id: { not: { equals: ctx.user?.id } },
+              builderDomain: ctx.builderDomain
+                ? { equals: ctx.builderDomain }
+                : undefined,
+              appId: ctx.appId ? { equals: ctx.appId } : undefined,
             },
           }))
         if (
@@ -174,6 +179,7 @@ export const Usermutations = extendType({
           data: {
             ...rest,
             email: email ?? undefined,
+            name: name ?? undefined,
           },
         })
         return user
