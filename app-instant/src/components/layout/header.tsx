@@ -74,7 +74,7 @@ const HeaderComp = ({
             ? {
                 icon: isBack ? 'arrow-back-outline' : 'menu',
                 type: 'ionicon',
-                color: titleTheme !== 'dark' ? '#000' : '#fff',
+                // color: titleTheme == 'dark' ? '#000' : '#fff',
                 onPress: goBack,
               }
             : null)
@@ -94,7 +94,7 @@ const HeaderComp = ({
                     <Icon
                       name={icon}
                       type="ionicon"
-                      color={titleTheme !== 'dark' ? '#000' : '#fff'}
+                      // color={titleTheme == 'dark' ? '#000' : '#fff'}
                     />
                   </TouchableOpacity>
                 ),
@@ -110,7 +110,7 @@ const HeaderComp = ({
             style: {
               ...styles.heading,
 
-              color: titleTheme !== 'dark' ? '#000' : '#fff',
+              // color: titleTheme == 'dark' ? '#000' : '#fff',
             },
           }
         }

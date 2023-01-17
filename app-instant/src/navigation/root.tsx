@@ -11,6 +11,7 @@ import { useVarAuth } from '../modules/auth/defaults'
 import { APP_INFO } from '../graphql/query'
 import { useQuery } from '@apollo/client'
 import Constants from 'expo-constants'
+import MyAccountNavigation from './myAccount'
 
 const Stack = createNativeStackNavigator()
 
@@ -26,6 +27,13 @@ function RootNavigation() {
           name="LoginStack"
           options={{ headerShown: false }}
           component={AuthNavigation}
+        />
+      )}
+      {isLogin && (
+        <Stack.Screen
+          name="MyAccountStack"
+          options={{ headerShown: false }}
+          component={MyAccountNavigation}
         />
       )}
       <Stack.Screen
