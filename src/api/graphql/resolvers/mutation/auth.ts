@@ -334,7 +334,9 @@ export const Mutation = mutationType({
           })
 
           if (!isEmailExist) {
-            throw new Error('sorry but you are not exist')
+            throw new Error(
+              "Sorry, I can't find an account with credentials provided",
+            )
           }
           const valid = await bcrypt.compare(password, isEmailExist.password)
           if (!valid) {
@@ -446,7 +448,9 @@ export const Mutation = mutationType({
           })
 
           if (!isEmailExist) {
-            throw new Error('sorry but you are not exist')
+            throw new Error(
+              "Sorry, I can't find an account with credentials provided",
+            )
           }
           const valid = await bcrypt.compare(password, isEmailExist.password)
           if (!valid) {
