@@ -65,7 +65,7 @@ export const Mutation = mutationType({
         })
 
         if (isEmailExist) {
-          throw new Error('Sorry but this email already exists')
+          throw new Error('Email does not exist')
         }
         // hash their password
         const hash = await hashPassword(password)
@@ -142,7 +142,7 @@ export const Mutation = mutationType({
           })
 
           if (isEmailExist) {
-            throw new Error('Sorry but this email already exists')
+            throw new Error('Email does not exist')
           }
           // hash their password
           const hash = await hashPassword(password)
@@ -263,7 +263,7 @@ export const Mutation = mutationType({
           })
 
           if (isEmailExist) {
-            throw new Error('Sorry but this email already exists')
+            throw new Error('Email does not exist')
           }
           const isAppExist = await ctx.db.app.count({
             where: {
@@ -398,7 +398,7 @@ export const Mutation = mutationType({
         })
 
         if (isEmailExist) {
-          throw new Error('Sorry but this email already exists')
+          throw new Error('Email does not exist')
         }
         // hash their password
         const hash = await hashPassword(password)
