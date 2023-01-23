@@ -1,24 +1,17 @@
-import { useEffect, useState } from 'react'
-import {
-  StyleSheet,
-  ActivityIndicator,
-  useWindowDimensions,
-} from 'react-native'
-import Constants from 'expo-constants'
+import { useState } from 'react'
+import { StyleSheet, Pressable } from 'react-native'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { WebView } from 'react-native-webview'
 import { useNavigation } from '@react-navigation/native'
 
 import React from 'react'
 
-import HeaderComp from '../../components/layout/header'
 import { APP_INFO } from '../../graphql/query'
 import Bottomtabs from '../../components/layout/footer'
-import LoginScreen from 'react-native-login-screen'
 import { Button, Image, Input, Text } from '@rneui/themed'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+// import {TouchableOpacity} from "react-native-gesture-handler";
 import Container from '../../components/common/container'
 import { authMutation } from '../../modules/auth/resolvers'
+import { getAppid } from '../../utlis/getAppId'
 
 // const varWebsiteUrl = makeVar('')
 
@@ -36,7 +29,7 @@ const LOGIN = gql`
 export default function Login() {
   const [login, { loading }] = useMutation(LOGIN)
   const { data, client } = useQuery(APP_INFO, {
-    variables: { id: Number(Constants.manifest.extra.appId) },
+    variables: { id: getAppid() },
   })
   const { navigate } = useNavigation()
   const [email, setEmail] = useState('')
@@ -117,6 +110,7 @@ export default function Login() {
 
       <Input
         placeholder="Email"
+        errorMessage={errors.email}
         onChangeText={(text) => {
           console.log(text)
           setEmail(text)
@@ -126,6 +120,7 @@ export default function Login() {
       <Input
         placeholder="Password"
         secureTextEntry={true}
+        errorMessage={errors.password}
         onChangeText={(text) => {
           console.log(text)
           setPassword(text)
@@ -139,14 +134,14 @@ export default function Login() {
         loading={loading}
         onPress={onFinished}
       />
-      <TouchableOpacity
+      <Pressable
         onPress={() => {
           //@ts-ignore
           navigate('SignUp')
         }}
       >
         <Text style={{ marginVertical: 30 }}>Create an account</Text>
-      </TouchableOpacity>
+      </Pressable>
 
       <Bottomtabs loading={loading} />
     </Container>

@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   useWindowDimensions,
 } from 'react-native'
-import Constants from 'expo-constants'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { WebView } from 'react-native-webview'
 import { useNavigation } from '@react-navigation/native'
@@ -15,13 +14,13 @@ import React from 'react'
 import HeaderComp from '../../components/layout/header'
 import { APP_INFO } from '../../graphql/query'
 import Bottomtabs from '../../components/layout/footer'
-import LoginScreen from 'react-native-login-screen'
 import { Button, Image, Input, Text } from '@rneui/themed'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Container from '../../components/common/container'
 import { authMutation } from '../../modules/auth/resolvers'
 import { useVarAuth, varAuth } from '../../modules/auth/defaults'
 import Toast from 'react-native-toast-message'
+import { getAppid } from '../../utlis/getAppId'
 
 // const varWebsiteUrl = makeVar('')
 
@@ -36,7 +35,7 @@ export const EDIT_PROFILE = gql`
 export default function Profile() {
   const [editProfile, { loading }] = useMutation(EDIT_PROFILE)
   const { data, client } = useQuery(APP_INFO, {
-    variables: { id: Number(Constants.manifest.extra.appId) },
+    variables: { id: getAppid() },
   })
   const { user } = useVarAuth()
   const { navigate } = useNavigation()

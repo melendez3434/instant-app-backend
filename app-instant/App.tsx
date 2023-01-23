@@ -16,10 +16,12 @@ import Toast from 'react-native-toast-message'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
+import { varAuth } from './src/modules/auth/defaults'
 
-const endpointDev = Constants.manifest?.extra.isDev
-  ? 'https://instantappnow-dev.herokuapp.com/graphql'
-  : 'https://instantappnow.herokuapp.com/graphql'
+const endpointDev =
+  Constants.manifest?.extra?.isDev ?? true
+    ? 'https://instantappnow-dev.herokuapp.com/graphql'
+    : 'https://instantappnow.herokuapp.com/graphql'
 // const endpointDev = 'http://localhost:4000/graphql'
 console.log('🚀 ~ file: App.tsx:11 ~ endpointDev', endpointDev)
 
@@ -51,9 +53,15 @@ const contextLinkForCreateApolloClient = setContext(() => {
   //   process.env.NODE_ENV !== "development"
   //     ? !ssrMode && window.location.hostname
   //     : DEFAULT_BUILDER;
+  console.log(
+    '🚀 ~ file: App.tsx:59 ~ contextLinkForCreateApolloClient ~ varAuth()',
+    varAuth(),
+  )
+
   const headers: any = {
-    // authorization: varAuth()?.token ? `bearer ${varAuth().token}` : "",
+    authorization: varAuth()?.token ? `bearer ${varAuth().token}` : '',
     appId: Number(Constants.manifest?.extra?.appId),
+    builderDomain: varAuth()?.user?.builderDomain,
   }
 
   return {

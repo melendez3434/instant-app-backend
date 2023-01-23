@@ -1,48 +1,63 @@
+
+
 {
   "name": "app-builder",
   "version": "1.0.0",
+
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": " IS_DEV=true expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "jest --watchAll"
+  },
+  "jest": {
+    "preset": "jest-expo"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.0.5",
+    "@react-navigation/native": "^6.0.2",
+    "@react-navigation/native-stack": "^6.1.0",
+    "expo": "~47.0.12",
+    "expo-constants": "~14.0.2",
+    "expo-linking": "~3.3.0",
+    "expo-splash-screen": "~0.17.5",
+    "expo-status-bar": "~1.4.2",
+    "expo-web-browser": "~12.0.0",
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
+    "react-native": "0.70.5",
+    "react-native-safe-area-context": "4.4.1",
+    "react-native-screens": "~3.18.0",
+    "react-native-web": "~0.18.9",
+    "@expo/webpack-config": "^0.17.2",
+    
+
+
+
     "@apollo/client": "^3.7.1",
     "@react-native-async-storage/async-storage": "~1.17.3",
-    "@react-navigation/bottom-tabs": "^6.4.1",
     "@react-navigation/drawer": "^6.5.1",
-    "@react-navigation/native": "^6.0.14",
-    "@react-navigation/native-stack": "^6.9.2",
     "@rneui/base": "^4.0.0-rc.7",
     "@rneui/themed": "^4.0.0-rc.7",
-    "@types/react": "~18.0.0",
-    "@types/react-native": "~0.69.1",
-    "@wry/context": "^0.7.0",
-    "expo": "~46.0.16",
     "expo-device": "~4.3.0",
-    "expo-linking": "~3.2.4",
     "expo-notifications": "~0.16.1",
-    "expo-sharing": "~10.3.0",
-    "expo-splash-screen": "~0.16.2",
-    "expo-status-bar": "~1.4.0",
-    "expo-web-browser": "~11.0.0",
     "graphql": "^16.6.0",
-    "optimism": "^0.16.2",
-    "react": "18.0.0",
-    "react-native": "0.69.6",
     "react-native-gesture-handler": "~2.5.0",
-    "react-native-login-screen": "^4.2.0",
     "react-native-reanimated": "~2.9.1",
-    "react-native-safe-area-context": "4.3.1",
-    "react-native-screens": "~3.15.0",
-    "react-native-text-input-interactive": "^0.1.4",
     "react-native-toast-message": "^2.1.5",
+    "react-native-vector-icons": "^9.2.0",
     "react-native-webview": "11.23.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.12.9",
+    "@types/react": "~18.0.24",
+    "@types/react-native": "~0.70.6",
+    "jest": "^26.6.3",
+    "jest-expo": "~47.0.1",
+    "react-test-renderer": "18.1.0",
+    "typescript": "^4.6.3"
   },
   "private": true
 }

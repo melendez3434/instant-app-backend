@@ -18,6 +18,7 @@ export const authMutation = {
       fetchPolicy: 'network-only',
     })
     console.log('🚀 ~ file: resolvers.ts ~ line 19 ~ asyncAuth: ~ me', client)
+    console.log('🚀 ~ file: resolvers.ts:16 ~ asyncAuth: ~ me', me)
 
     if (me) {
       varAuth({

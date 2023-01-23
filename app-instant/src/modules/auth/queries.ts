@@ -7,6 +7,7 @@ export const CURRENT_CUSTOMER = gql`
       email
       name
       role
+      builderDomain
     }
   }
 `

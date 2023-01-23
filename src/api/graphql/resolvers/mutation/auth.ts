@@ -127,6 +127,15 @@ export const Mutation = mutationType({
             trialLong,
             ...rest
           } = args
+
+          if (addAppInput) {
+            const isUrl = url.parse(addAppInput.website)?.hostname
+            console.log('🚀 ~ file: auth.ts:256 ~ resolve ~ isUrl', isUrl)
+            if (!isUrl) {
+              throw new Error('Invalid website url')
+            }
+          }
+
           console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
           // lowercase their email
           email.toLowerCase()
@@ -220,26 +229,25 @@ export const Mutation = mutationType({
             )
           }
           const trialNumber = !trialLong ? 0 : trialLong > 60 ? 60 : trialLong
-
-          const app = addAppInput
-            ? await ctx.db.app.create({
-                data: {
-                  name: addAppInput?.name,
-                  website: addAppInput?.website,
-                  lang: 'EN',
-                  appId: url
-                    .parse(addAppInput?.website)
-                    .hostname.split('.')
-                    .reverse()
-                    .join('.'),
-                  assets: { create: { displayLogo: true, color: '#000' } },
-                  design: { create: { AppDesignDrawer: { create: {} } } },
-                  trialLong: trialNumber,
-                  owner: { connect: { id: admin.id } },
-                },
-              })
-            : null
-          console.log('🚀 ~ file: auth.ts:213 ~ resolve ~ app', app)
+          let app
+          if (addAppInput) {
+            app = await ctx.db.app.create({
+              data: {
+                name: addAppInput?.name,
+                website: addAppInput?.website,
+                lang: 'EN',
+                appId: url
+                  .parse(addAppInput?.website)
+                  .hostname.split('.')
+                  .reverse()
+                  .join('.'),
+                assets: { create: { displayLogo: true, color: '#000' } },
+                design: { create: { AppDesignDrawer: { create: {} } } },
+                trialLong: trialNumber,
+                owner: { connect: { id: admin.id } },
+              },
+            })
+          }
 
           return { user: admin, token, app }
         },
@@ -252,7 +260,11 @@ export const Mutation = mutationType({
         },
         async resolve(_root, args, ctx) {
           const { email, website } = args
-
+          const isUrl = url.parse(website)?.hostname
+          console.log('🚀 ~ file: auth.ts:256 ~ resolve ~ isUrl', isUrl)
+          if (!isUrl) {
+            throw new Error('Invalid website url')
+          }
           email.toLowerCase()
 
           const isEmailExist = await ctx.db.user.findFirst({
@@ -403,6 +415,11 @@ export const Mutation = mutationType({
         // hash their password
         const hash = await hashPassword(password)
         // create the user in the database
+        const app = await ctx.db.app.findUnique({
+          where: { id: ctx.appId },
+          select: { owner: { select: { builderDomain: true } } },
+        })
+
         const user = await ctx.db.user.create({
           data: {
             ...rest,
@@ -410,6 +427,9 @@ export const Mutation = mutationType({
             password: hash,
             role: 'appUser',
             inApp: { connect: { id: ctx.appId } },
+            builder: app?.owner?.builderDomain
+              ? { connect: { domain: app?.owner?.builderDomain } }
+              : undefined,
           },
         })
         const token = ctx.auth.signInWithJWT(user)

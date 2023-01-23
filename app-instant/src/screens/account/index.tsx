@@ -9,19 +9,20 @@ import HeaderComp from '../../components/layout/header'
 import { Icon, Image, ListItem, Text, useTheme } from '@rneui/themed'
 import { useQuery } from '@apollo/client'
 import { APP_INFO } from '../../graphql/query'
-import Constants from 'expo-constants'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native'
 import { authMutation } from '../../modules/auth/resolvers'
 import { useVarAuth } from '../../modules/auth/defaults'
+import { getAppid } from '../../utlis/getAppId'
 
 export default function MyAccount() {
   const { theme } = useTheme()
   const { data, client } = useQuery(APP_INFO, {
-    variables: { id: Number(Constants.manifest.extra.appId) },
+    variables: { id: getAppid() },
   })
   const { navigate } = useNavigation()
   const { isLogin } = useVarAuth()
+  console.log('🚀 ~ file: index.tsx:25 ~ MyAccount ~ isLogin', isLogin)
   const {
     backgroundImage,
     color,

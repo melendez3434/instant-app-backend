@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   useWindowDimensions,
 } from 'react-native'
-import Constants from 'expo-constants'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { WebView } from 'react-native-webview'
 import { useNavigation } from '@react-navigation/native'
@@ -15,11 +14,11 @@ import React from 'react'
 import HeaderComp from '../../components/layout/header'
 import { APP_INFO } from '../../graphql/query'
 import Bottomtabs from '../../components/layout/footer'
-import LoginScreen from 'react-native-login-screen'
 import { Button, Image, Input, Text } from '@rneui/themed'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Container from '../../components/common/container'
 import { authMutation } from '../../modules/auth/resolvers'
+import { getAppid } from '../../utlis/getAppId'
 
 // const varWebsiteUrl = makeVar('')
 
@@ -37,7 +36,7 @@ const SIGN_UP = gql`
 export default function SignUp() {
   const [signUp, { loading }] = useMutation(SIGN_UP)
   const { data, client } = useQuery(APP_INFO, {
-    variables: { id: Number(Constants.manifest.extra.appId) },
+    variables: { id: getAppid() },
   })
   const { navigate } = useNavigation()
   const [email, setEmail] = useState('')
