@@ -1,6 +1,7 @@
 migrations/
 migrations/
 node_modules/
+web-build/
 config/
 dist/
 build/

@@ -17,11 +17,11 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
 import { varAuth } from './src/modules/auth/defaults'
+import { getAppid, getEndPoint } from './src/utlis/getAppId'
+import useCachedResources from './src/hooks/useCachedResources'
 
-const endpointDev =
-  Constants.manifest?.extra?.isDev ?? true
-    ? 'https://instantappnow-dev.herokuapp.com/graphql'
-    : 'https://instantappnow.herokuapp.com/graphql'
+const endpointDev = getEndPoint()
+
 // const endpointDev = 'http://localhost:4000/graphql'
 console.log('🚀 ~ file: App.tsx:11 ~ endpointDev', endpointDev)
 
@@ -60,7 +60,7 @@ const contextLinkForCreateApolloClient = setContext(() => {
 
   const headers: any = {
     authorization: varAuth()?.token ? `bearer ${varAuth().token}` : '',
-    appId: Number(Constants.manifest?.extra?.appId),
+    appId: getAppid(),
     builderDomain: varAuth()?.user?.builderDomain,
   }
 
@@ -75,18 +75,24 @@ const client = new ApolloClient({
 })
 
 export default function App() {
-  return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <ApolloProvider client={client}>
-          <MyRoot />
-          <Toast />
+  const isLoadingComplete = useCachedResources()
 
-          <StatusBar style="auto" />
-        </ApolloProvider>
-      </NavigationContainer>
-    </SafeAreaProvider>
-  )
+  if (!isLoadingComplete) {
+    return null
+  } else {
+    return (
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <ApolloProvider client={client}>
+            <MyRoot />
+            <Toast />
+
+            <StatusBar style="auto" />
+          </ApolloProvider>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    )
+  }
 }
 
 const styles = StyleSheet.create({})

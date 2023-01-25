@@ -1,9 +1,30 @@
-import Constants from "expo-constants";
+import Constants from 'expo-constants'
 
 export const getAppid = () => {
-  return Number(
-    Constants.manifest?.extra?.appId ||
-      window?.location?.search?.split("=")[1] ||
-      1
-  );
-};
+  let appId = Constants.manifest?.extra?.appId || 1
+  try {
+    appId = Number(window?.location?.search?.split('=')[1] || 1)
+  } catch (error) {
+    console.log('🚀 ~ file: getAppId.tsx:21 ~ getAppid ~ error', error)
+  }
+  console.log('🚀 ~ file: getAppId.tsx:14 ~ getAppid ~ appId', appId)
+
+  return appId
+}
+export const getEndPoint = () => {
+  let url = Constants.manifest?.extra?.isDev
+    ? 'https://instantappnow-dev.herokuapp.com/graphql'
+    : 'https://instantappnow.herokuapp.com/graphql'
+  try {
+    if (window) {
+      url =
+        process.env.NODE_ENV !== 'production'
+          ? 'https://instantappnow-dev.herokuapp.com/graphql'
+          : 'https://instantappnow.herokuapp.com/graphql'
+    }
+  } catch (error) {
+    console.log('🚀 ~ file: getAppId.tsx:21 ~ getAppid ~ error', error)
+  }
+
+  return url
+}

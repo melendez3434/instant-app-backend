@@ -229,6 +229,9 @@ const apolloServer = async () => {
     // )
     // console.log('🚀 ~ file: app.ts ~ line 192 ~ app ~ users', users)
     startCron()
+    // await prisma.app.updateMany({
+    //   data: { mustAuth: false },
+    // })
     console.log('server running at port ' + (process.env.PORT || 4000))
   })
 
