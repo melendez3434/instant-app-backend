@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import {
   StyleSheet,
-  Text,
   View,
   ActivityIndicator,
   useColorScheme,
@@ -11,7 +10,7 @@ import {
 import * as SplashScreen from 'expo-splash-screen'
 import { useMutation, useQuery } from '@apollo/client'
 import RootNavigation from './navigation/root'
-import { ThemeProvider, createTheme, useThemeMode } from '@rneui/themed'
+import { ThemeProvider, createTheme, useThemeMode, Text } from '@rneui/themed'
 import React from 'react'
 import {
   ADD_NOTIFICATION_TOKEN,
@@ -107,9 +106,11 @@ export default function MyRoot() {
   React.useEffect(() => {
     if (Platform.OS === 'web') return
     registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken({
-        variables: { token, id: getAppid() },
-      }).catch((e) => console.log(e)),
+      token
+        ? setExpoPushToken({
+            variables: { token, id: getAppid() },
+          }).catch((e) => console.log(e))
+        : null,
     )
 
     // This listener is fired whenever a notification is received while the app is foregrounded
@@ -146,6 +147,19 @@ export default function MyRoot() {
       Notifications.removeNotificationSubscription(responseListener.current)
     }
   }, [])
+  if (!data?.app && !finalLoading)
+    return (
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          flex: 1,
+        }}
+      >
+        <Text h1>No App with this ID</Text>
+      </View>
+    )
+
   if (!data?.app || finalLoading) return <ActivityIndicator />
   console.log(
     '🚀 ~ file: root.tsx ~ line 39 ~ MyRoot ~ data.app.design.textTheme',

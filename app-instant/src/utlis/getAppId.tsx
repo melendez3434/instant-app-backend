@@ -1,4 +1,5 @@
 import Constants from 'expo-constants'
+import { varPreviewer } from '../modules/previewer/defaults'
 
 export const getAppid = () => {
   let appId = Constants.manifest?.extra?.appId || 1
@@ -9,7 +10,7 @@ export const getAppid = () => {
   }
   console.log('🚀 ~ file: getAppId.tsx:14 ~ getAppid ~ appId', appId)
 
-  return appId
+  return Number(varPreviewer()?.id || appId) || appId
 }
 export const getEndPoint = () => {
   let url = Constants.manifest?.extra?.isDev

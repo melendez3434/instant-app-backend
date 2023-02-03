@@ -39,7 +39,7 @@ export const Mutation = mutationType({
       },
       async resolve(_root, args, ctx) {
         const { email, password, logo, companyName, icon } = args
-        const slugedName = makeSlug(args.name)
+        const slugedName = makeSlug(args.name.split(' ').slice(0, 2).join(' '))
         console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
         const isNameExist = await ctx.db.builder.findFirst({
           where: {

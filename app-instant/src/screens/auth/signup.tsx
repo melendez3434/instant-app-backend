@@ -1,17 +1,10 @@
 import { useEffect, useState } from 'react'
-import {
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  useWindowDimensions,
-} from 'react-native'
+import { StyleSheet } from 'react-native'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { WebView } from 'react-native-webview'
 import { useNavigation } from '@react-navigation/native'
 
 import React from 'react'
 
-import HeaderComp from '../../components/layout/header'
 import { APP_INFO } from '../../graphql/query'
 import Bottomtabs from '../../components/layout/footer'
 import { Button, Image, Input, Text } from '@rneui/themed'

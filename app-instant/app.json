@@ -4,10 +4,10 @@
     "slug": "app-builder",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "https://res.cloudinary.com/dtkb6bsxf/image/upload/v1670681420/zeb8srxikyrz2orzapyn.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "https://res.cloudinary.com/dtkb6bsxf/image/upload/v1670681420/zeb8srxikyrz2orzapyn.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -16,18 +16,19 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "bundleIdentifier": "store.b7r.www",
+      "bundleIdentifier": "previewer.now.app",
       "supportsTablet": true
     },
 
     "android": {
-      "package": "store.b7r.www"
+      "package": "previewer.now.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "appId": 1,
+      "isPreview": true,
       "isDev": true,
       "eas": {
         "projectId": "f9e1b32d-44c4-4e8a-9996-f1b540ff6105"
