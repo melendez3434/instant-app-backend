@@ -1,3 +1,4 @@
+import axios from 'axios'
 import {
   arg,
   extendType,
@@ -229,13 +230,68 @@ export const Deploymentmutations = extendType({
             'There is a waiting request please wait until it finished',
           )
 
-        return await ctx.db.deployRequest.create({
+        const deployRequest = await ctx.db.deployRequest.create({
           data: {
             platform: args.data.platform,
 
             App: { connect: { id: args.id } },
           },
         })
+
+        if (process.env.NODE_ENV === 'production') {
+          if (args.data.platform == 'android') {
+            const androidProfile = await ctx.db.androidProfile.findUnique({
+              where: {
+                appId: args.id,
+              },
+              include: { App: { select: { name: true } } },
+            })
+
+            axios
+              .post('https://hooks.zapier.com/hooks/catch/11801412/3y5p1hs/', {
+                appName: androidProfile?.App?.name,
+                developerAccountInformation: {
+                  developerAccount: androidProfile?.googleDeveloperAccount,
+                  isEnrolledToGoogle: androidProfile?.isEnrolledToGoogle,
+                  willPublsihYourApp: androidProfile?.willPublsihYourApp,
+                  setupNewAccount: androidProfile?.setupNewAccount,
+                  appStoreTitle: androidProfile?.appStoreTitle,
+                },
+                desdescription: androidProfile?.storeDescription,
+                keywords: androidProfile?.keywords,
+                iconHyperlink: androidProfile?.logo,
+              })
+              .finally(() => {})
+          } else {
+            const iosProfile = await ctx.db.iosProfile.findUnique({
+              where: {
+                appId: args.id,
+              },
+              include: { App: { select: { name: true } } },
+            })
+
+            axios
+              .post('https://hooks.zapier.com/hooks/catch/11801412/3y5cqzj/', {
+                appName: iosProfile?.App?.name,
+                developerAccountInformation: {
+                  primaryEmail: iosProfile?.primaryEmail,
+                  phoneNumber: iosProfile?.phoneNumber,
+                  developerName: iosProfile?.developerName,
+                  fullName: iosProfile?.fullName,
+                  accountHolder: iosProfile?.accountHolder,
+                  organizationName: iosProfile?.organizationName,
+                  isEnrolledToApple: iosProfile?.isEnrolledToApple,
+                  addAdminToApple: iosProfile?.addAdminToApple,
+                  appStoreTitle: iosProfile?.appStoreTitle,
+                },
+                desdescription: iosProfile?.storeDescription,
+                keywords: iosProfile?.keywords,
+                iconHyperlink: iosProfile?.logo,
+              })
+              .finally(() => {})
+          }
+        }
+        return deployRequest
       },
     })
     t.field('updateDeployRequest', {
