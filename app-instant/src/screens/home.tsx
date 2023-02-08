@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native'
 import * as SplashScreen from 'expo-splash-screen'
-import { useQuery } from '@apollo/client'
+import { gql, useLazyQuery, useQuery } from '@apollo/client'
 import { WebView } from 'react-native-webview'
 import { useNavigation } from '@react-navigation/native'
 import { APP_INFO, NAVIGATION_LINKS } from '../graphql/query'
@@ -37,12 +37,26 @@ import { getAppid } from '../utlis/getAppId'
 
 // const varWebsiteUrl = makeVar('')
 
+const CHECK_WEBSITE = gql`
+  query CHECK_WEBSITE($url: String!) {
+    checkWebsite(url: $url)
+  }
+`
+
 export default function HomeScreen() {
   const navigation = useNavigation()
 
   const { data } = useQuery(APP_INFO, {
     variables: { id: getAppid() },
   })
+  const [checkWebsite] = useLazyQuery(CHECK_WEBSITE, {
+    onCompleted: (data) => {
+      if (data?.checkWebsite == false) {
+        setIFrameError(true)
+      }
+    },
+  })
+
   // const [externalLink, setExternalLink] = useState(null)
   // const [websiteUrl, setWebsiteUrl] = useState(data.app?.website)
   //@ts-ignore
@@ -52,7 +66,7 @@ export default function HomeScreen() {
   // const websiteUrl = useReactiveVar(varWebsiteUrl) || data.app?.website
 
   const [loading, setLoading] = useState(true)
-
+  const [iFrameError, setIFrameError] = useState(false)
   const [pageTitle, setPageTitle] = useState('')
 
   useEffect(() => {
@@ -109,6 +123,25 @@ export default function HomeScreen() {
 
   const { website } = data?.app || {}
 
+  useEffect(() => {
+    if (Platform.OS == 'web') {
+      checkWebsite({
+        variables: {
+          url: websiteUrl,
+        },
+      })
+
+      // fetch(websiteUrl)
+      //   .then(function (response) {
+      //     console.log(response.status) // returns 200
+      //   })
+      //   .catch(function (error) {
+      //     console.log('🚀 ~ file: home.tsx:116 ~ fetch ~ error', error)
+      //     setIFrameError(true)
+      //   })
+    }
+  }, [websiteUrl])
+
   return (
     <Container style={styles.container}>
       <HeaderComp
@@ -119,11 +152,39 @@ export default function HomeScreen() {
       />
 
       {Platform.OS == 'web' ? (
-        <iframe
-          src={websiteUrl}
-          style={{ width: '100%', height: '100%' }}
-          frameBorder="0"
-        ></iframe>
+        <>
+          {iFrameError ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'red' }}>
+                Error Loading Page
+              </Text>
+              <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'red' }}>
+                Please Check Your Internet Connection or the website is not
+                available
+              </Text>
+            </View>
+          ) : (
+            <iframe
+              src={websiteUrl}
+              style={{ width: '100%', height: '100%' }}
+              frameBorder="0"
+              // onError={(e) => {
+              //   console.log('🚀 ~ file: home.tsx ~ line 125 ~ onError ~ e', e)
+              //   return 'test'
+              // }}
+              // onLoad={(e) => {
+              //   console.log('🚀 ~ file: home.tsx ~ line 125 ~ onError ~ e', e)
+              //   return 'test'
+              // }}
+            ></iframe>
+          )}
+        </>
       ) : (
         <WebView
           pullToRefreshEnabled={pullToRefresh}

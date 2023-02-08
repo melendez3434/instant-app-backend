@@ -23,6 +23,13 @@ export const queriesShield = {
     role: ['all'],
     permissions: allow,
   },
+  checkWebsite: {
+    name: 'checkWebsite',
+    slug: 'checkWebsite',
+    desc: '',
+    role: ['all'],
+    permissions: allow,
+  },
   app: {
     name: 'app',
     slug: 'app',
