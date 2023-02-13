@@ -26,6 +26,7 @@
       },
       "ios": {
         "credentialsSource": "local"
+
       }
     }
   },

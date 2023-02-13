@@ -17,6 +17,7 @@ const https = require('https') // or 'https' for https:// URLs
 const path = require('path')
 import fs from 'fs'
 import { Context } from '../../../utils/context'
+import { intercomClient } from '../../../utils/intercom'
 
 export const AppBuild = objectType({
   name: 'AppBuild',
@@ -109,6 +110,11 @@ export const AppBuildMutations = extendType({
             id: true,
             name: true,
             appId: true,
+            owner: {
+              select: {
+                builder: { select: { ownerId: true, domain: true } },
+              },
+            },
             assets: {
               select: {
                 appIcon: true,
@@ -300,6 +306,33 @@ npx eas build --platform ${platform}  --json  --non-interactive
                           : buildData.artifacts.buildUrl,
                     },
                   })
+                  if (process.env.NODE_ENV !== 'development') {
+                    try {
+                      const response = await intercomClient.events.create({
+                        eventName: 'app-build-success',
+                        createdAt: Math.floor(Date.now() / 1000),
+                        userId: app?.owner?.builder?.ownerId.toString(),
+                        metadata: {
+                          app_id: app?.id || '',
+                          app_name: app?.name || '',
+                          app_version: appVersion?.toString() || '',
+                          app_build_version: Number(buildData.appBuildVersion),
+                          app_build_id: buildData.id,
+                          app_build_status: buildData.status,
+                          app_build_url: buildData.artifacts.buildUrl,
+                          app_build_platform: platform,
+                          builder_domain: app?.owner?.builder?.domain || '',
+                        },
+                      })
+
+                      console.log(
+                        '🚀 ~ file: build.ts:326 ~ response',
+                        response,
+                      )
+                    } catch (error) {
+                      console.log('🚀 ~ file: build.ts:329 ~ error', error)
+                    }
+                  }
                 } catch (error) {
                   console.log('🚀 ~ file: app.ts ~ line 395 ~ error', error)
                   await ctx.db.appBuild.update({

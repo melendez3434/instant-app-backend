@@ -229,9 +229,14 @@ const apolloServer = async () => {
     // )
     // console.log('🚀 ~ file: app.ts ~ line 192 ~ app ~ users', users)
     startCron()
-    // await prisma.app.updateMany({
-    //   data: { mustAuth: false },
-    // })
+
+    // console.log(
+    //   '🚀 ~ file: app.ts ~ line 192 ~ app ~ users',
+    //   await prisma.builder.findMany({
+    //     where: { domain: { contains: 'podcast' } },
+    //     include: { owner: true },
+    //   }),
+    // )
     console.log('server running at port ' + (process.env.PORT || 4000))
   })
 
