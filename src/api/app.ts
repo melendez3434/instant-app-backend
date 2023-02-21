@@ -190,15 +190,15 @@ const apolloServer = async () => {
   // apollo.installSubscriptionHandlers(app)
   express.set('port', process.env.PORT || 4000)
   const app = httpServer.listen(express.get('port'), async () => {
-    const apps = await prisma.appBuild.findMany({
-      where: { status: 'failed' },
-      orderBy: { id: 'desc' },
-      take: 10,
-    })
-    console.log(
-      '🚀 ~ file: app.ts:197 ~ app ~ apps:',
-      JSON.stringify(apps, undefined, 2),
-    )
+    // const apps = await prisma.appBuild.findMany({
+    //   where: { status: 'failed' },
+    //   orderBy: { id: 'desc' },
+    //   take: 10,
+    // })
+    // console.log(
+    //   '🚀 ~ file: app.ts:197 ~ app ~ apps:',
+    //   JSON.stringify(apps, undefined, 2),
+    // )
     // const app = await prisma.app.findUnique({ where: { id: 27 } })
     // console.log('🚀 ~ file: app.ts:204 ~ app ~ app', app)
     // await prisma.builder.updateMany({
