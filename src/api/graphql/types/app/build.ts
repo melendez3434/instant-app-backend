@@ -173,8 +173,10 @@ export const AppBuildMutations = extendType({
               const file = require(fileName)
               console.log('🚀 ~ file: build.ts ~ line 118 ~ file', file)
 
-              file.build.preview.android.buildType = buildType
-              file.build.production.android.buildType = buildType
+              file.build.preview.android.buildType =
+                buildType == 'AAB' ? 'app-bundle' : 'apk'
+              file.build.production.android.buildType =
+                buildType == 'AAB' ? 'app-bundle' : 'apk'
               file.build.preview.android.credentialsSource =
                 rest.androidCertAuto ? 'remote' : 'local'
               file.build.production.android.credentialsSource =

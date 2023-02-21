@@ -3,7 +3,11 @@
 // import axios from 'axios'
 // import moment from 'moment'
 // import { prisma } from './createContext'
+import { EmailTemplate, Prisma } from '@prisma/client'
+import moment from 'moment'
+import { prisma } from './createContext'
 import { sendNotifications } from './notifications'
+import sendSgMail, { MAILER_ITEMS } from './sgMail'
 
 var CronJobManager = require('cron-job-manager')
 
@@ -56,8 +60,115 @@ const options = {
 //     }),
 //   )
 // }
+const sendAllNotifications = async () => {
+  try {
+    await sendNotifications()
+    // // send welcome email after 10 minutes to every new app
+    // await sendWelcomeEmail()
+    // // send reminder email after 24 hour to every new app if the user didn't publish the app
+    // await sendReminderEmail()
+    // // send three day reminder email after 3 days to every new app if the user didn't publish the app
+    // await sendThreeDayReminderEmail()
+  } catch (error) {
+    console.log('🚀 ~ file: cron.ts:68 ~ sendAllNotifications ~ error', error)
+  }
+}
+const sendThreeDayReminderEmail = async () => {
+  await sendEmailTemplate({
+    flag: 'THREE_DAY_REMINDER',
+    emailProps: {
+      subject: ({ name }) => `Your ${name} app is ready!`,
+    },
+  })
+}
+
+const sendReminderEmail = async () => {
+  await sendEmailTemplate({
+    flag: 'REMINDER',
+    emailProps: {
+      subject: 'We’re ready for you...',
+    },
+  })
+}
+
+const sendWelcomeEmail = async () => {
+  await sendEmailTemplate({
+    flag: 'WELCOME',
+    emailProps: {
+      subject: ' Let’s get your app live! 2 Steps to go...',
+    },
+  })
+}
+const sendEmailTemplate = async ({
+  flag,
+  select = {},
+  emailProps,
+}: {
+  select?: Prisma.AppSelect
+  flag: EmailTemplate
+  emailProps: {
+    subject: string | ((variables?: any) => string)
+    variables?: any
+  }
+}) => {
+  const apps = await prisma.app.findMany({
+    where: {
+      NOT: { emailsFlags: { has: flag } },
+      createdAt: { lt: moment().subtract(24, 'hour').toDate() },
+      AND: [{ AndroidProfile: { is: null } }, { iosProfile: { is: null } }],
+    },
+    select: {
+      name: true,
+      id: true,
+      tempOwner: true,
+      owner: { select: { email: true, builderDomain: true } },
+      ...select,
+    },
+  })
+  Promise.all(
+    apps.map(async (variables) => {
+      const { id, name, owner, tempOwner } = variables
+      const EmailAddress = owner?.email || tempOwner
+      const subject =
+        typeof emailProps.subject === 'function'
+          ? emailProps.subject(variables)
+          : emailProps.subject
+      try {
+        EmailAddress &&
+          (await sendSgMail({
+            to: EmailAddress,
+            subject,
+            templateId: MAILER_ITEMS[flag],
+            dynamic_template_data: {
+              appName: name,
+              url: 'https://' + owner?.builderDomain,
+              ...(emailProps.variables || {}),
+            },
+          }))
+      } catch (error) {
+        console.log('🚀 ~ file: cron.ts:43 ~ apps.map ~ error', error)
+      }
+      await prisma.app.update({
+        where: {
+          id,
+        },
+        data: {
+          emailsFlags: {
+            push: [flag],
+          },
+        },
+      })
+    }),
+  )
+}
 
 export const startCron = async () => {
+  cronManager.add(
+    'sendNotifications',
+    '*/5 * * * *',
+    sendAllNotifications,
+    options,
+  )
   cronManager.add(
     'sendNotifications',
     '*/5 * * * *',

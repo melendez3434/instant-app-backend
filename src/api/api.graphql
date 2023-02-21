@@ -315,6 +315,7 @@ input AppOrderByWithRelationInput {
   createdAt: SortOrder
   deployRequests: DeployRequestOrderByRelationAggregateInput
   design: AppDesignOrderByWithRelationInput
+  emailsFlags: SortOrder
   id: SortOrder
   iosProfile: IosProfileOrderByWithRelationInput
   isTrialEnd: SortOrder
@@ -350,6 +351,7 @@ input AppWhereInput {
   createdAt: DateTimeFilter
   deployRequests: DeployRequestListRelationFilter
   design: AppDesignWhereInput
+  emailsFlags: EnumEmailTemplateNullableListFilter
   id: IntFilter
   iosProfile: IosProfileWhereInput
   isTrialEnd: BoolFilter
@@ -535,6 +537,12 @@ enum DrawerMode {
   notUsed
 }
 
+enum EmailTemplate {
+  REMINDER
+  THREE_DAY_REMINDER
+  WELCOME
+}
+
 input EnumAppBuildPlatformFilter {
   equals: AppBuildPlatform
   in: [AppBuildPlatform!]
@@ -561,6 +569,14 @@ input EnumDrawerModeFilter {
   in: [DrawerMode!]
   not: NestedEnumDrawerModeFilter
   notIn: [DrawerMode!]
+}
+
+input EnumEmailTemplateNullableListFilter {
+  equals: [EmailTemplate!]
+  has: EmailTemplate
+  hasEvery: [EmailTemplate!]
+  hasSome: [EmailTemplate!]
+  isEmpty: Boolean
 }
 
 input EnumLayoutTemplateFilter {

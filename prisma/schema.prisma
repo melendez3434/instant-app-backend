@@ -48,16 +48,18 @@ model Builder {
 }
 
 model App {
-  id                 Int                 @id @default(autoincrement())
-  name               String
-  website            String
-  appId              String
-  trialLong          Int                 @default(0)
-  lang               String
-  isTrialEnd         Boolean             @default(false)
-  mustAuth           Boolean             @default(false)
-  userAgent          String?
-  tempOwner          String?
+  id          Int             @id @default(autoincrement())
+  name        String
+  website     String
+  appId       String
+  trialLong   Int             @default(0)
+  lang        String
+  isTrialEnd  Boolean         @default(false)
+  mustAuth    Boolean         @default(false)
+  userAgent   String?
+  tempOwner   String?
+  emailsFlags EmailTemplate[]
+
   nextBill           DateTime?
   stripeSubId        String?             @unique
   trialEndDate       DateTime?
@@ -327,4 +329,10 @@ enum ToType {
   auth
   nonAuth
   custom
+}
+
+enum EmailTemplate {
+  WELCOME
+  REMINDER
+  THREE_DAY_REMINDER
 }
