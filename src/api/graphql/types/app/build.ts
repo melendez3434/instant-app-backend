@@ -25,7 +25,18 @@ export const AppBuild = objectType({
     t.model.id()
     t.model.appBuildVersion()
     t.model.appVersion()
-    t.model.data()
+    t.model.data({
+      resolve: (source, args, ctx: Context) => {
+        // console.log(
+        //   '🚀 ~ file: build.ts:29 ~ t.model.data ~ source:',
+        //   source.data,
+        // )
+
+        return typeof source.data == 'string'
+          ? JSON.parse(source.data)
+          : source.data
+      },
+    })
     t.model.platform()
     t.model.status()
     t.model.createdAt()
@@ -101,7 +112,8 @@ export const AppBuildMutations = extendType({
         // }),
       },
 
-      async resolve(_root, { id, platform, buildType, ...rest }, ctx) {
+      async resolve(_root, args, ctx) {
+        const { id, platform, buildType, ...rest } = args
         console.log('🚀 ~ file: build.ts:102 ~ resolve ~ buildType', buildType)
         console.log('🚀 ~ file: build.ts:102 ~ resolve ~ platform', platform)
         const app = await ctx.db.app.findUnique({
@@ -281,7 +293,7 @@ npx eas build --platform ${platform}  --json  --non-interactive
                   return await ctx.db.appBuild.update({
                     where: { id: AppBuild.id },
                     data: {
-                      data: JSON.stringify({ err, data, stderr }),
+                      data: JSON.stringify({ err, data, stderr, args }),
                       status: 'failed',
                     },
                   })

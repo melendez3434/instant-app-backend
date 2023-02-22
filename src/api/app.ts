@@ -192,8 +192,9 @@ const apolloServer = async () => {
   const app = httpServer.listen(express.get('port'), async () => {
     // const apps = await prisma.appBuild.findMany({
     //   where: { status: 'failed' },
+    //   include: { App: { include: { owner: { include: { builder: true } } } } },
     //   orderBy: { id: 'desc' },
-    //   take: 10,
+    //   take: 1,
     // })
     // console.log(
     //   '🚀 ~ file: app.ts:197 ~ app ~ apps:',
