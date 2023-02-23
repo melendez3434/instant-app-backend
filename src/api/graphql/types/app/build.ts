@@ -238,6 +238,8 @@ export const AppBuildMutations = extendType({
                   isAddNotificationData ? './google-services.json' : undefined),
                   (appFile.expo.extra.appId = app?.id)
                 appFile.expo.extra.isDev = Boolean(process.env.IS_DEV)
+                appFile.expo.extra.isPreview = undefined
+
                 console.log('🚀 ~ file: build.ts:204 ~ appFile', appFile)
 
                 await fs.promises.writeFile(

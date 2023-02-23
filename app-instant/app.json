@@ -3,6 +3,7 @@
     "name": "App Now Previewer",
     "slug": "app-builder",
     "version": "1.0.0",
+    "scheme": "appbuilder",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Platform } from 'react-native'
+import { StyleSheet, Platform, Alert } from 'react-native'
 import * as SplashScreen from 'expo-splash-screen'
 import Constants from 'expo-constants'
 import {
@@ -22,6 +22,7 @@ import useCachedResources from './src/hooks/useCachedResources'
 import { useVarPreviewer, varPreviewer } from './src/modules/previewer/defaults'
 import PreviewerScreen from './src/screens/previewer'
 import { Button } from '@rneui/themed'
+import * as Linking from 'expo-linking'
 
 const endpointDev = getEndPoint()
 
@@ -80,8 +81,27 @@ const client = new ApolloClient({
 export default function App() {
   const isLoadingComplete = useCachedResources()
   const { id } = useVarPreviewer()
-  console.log('🚀 ~ file: App.tsx:5 ~ Constants', Constants)
+  const [removeClear, setRemoveClear] = React.useState(false)
+  const url = Linking.useURL()
 
+  useEffect(() => {
+    if (url) {
+      const { path, queryParams } = Linking.parse(url || '')
+      console.log('🚀 ~ file: App.tsx:89 ~ useEffect ~ url:', url)
+      console.log(
+        '🚀 ~ file: App.tsx:104 ~ useEffect ~ queryParams:',
+        queryParams,
+      )
+
+      if (queryParams?.id) {
+        setRemoveClear(true)
+
+        varPreviewer({
+          id: queryParams.id,
+        })
+      }
+    }
+  }, [url])
   if (!isLoadingComplete) {
     return null
   } else {
@@ -98,7 +118,7 @@ export default function App() {
             ) : (
               <MyRoot />
             )}
-            {id && Constants.manifest?.extra?.isPreview && (
+            {id && Constants.manifest?.extra?.isPreview && !removeClear && (
               <Button
                 // buttonStyle={{
                 //   position: 'absolute',

@@ -15,6 +15,10 @@ export const PlanMutations = extendType({
       },
       async resolve(source, { id }, ctx) {
         const YOUR_DOMAIN = 'http://' + ctx.builderDomain
+        console.log(
+          '🚀 ~ file: plan.ts:18 ~ resolve ~ YOUR_DOMAIN:',
+          YOUR_DOMAIN,
+        )
 
         // const prices = await stripe.prices.list({
         //   expand: ['data.product'],
@@ -104,19 +108,26 @@ export const PlanMutations = extendType({
       type: 'Boolean',
       args: { id: nonNull(intArg()) },
       async resolve(source, { id }, ctx) {
-        const app = await ctx.db.app.findUnique({
-          where: { id },
-          select: { stripeSubId: true, id: true, name: true },
-        })
+        try {
+          const app = await ctx.db.app.findUnique({
+            where: { id },
+            select: { stripeSubId: true, id: true, name: true },
+          })
 
-        const subscription = await stripe.subscriptions.update(
-          app?.stripeSubId,
-          { trial_end: 'now' },
-        )
-        // await ctx.db.app.update({
-        //   where: { id },
-        //   data: { trialEndDate: new Date(), isTrialEnd: true },
-        // })
+          console.log('🚀 ~ file: plan.ts:115 ~ resolve ~ app:', app)
+
+          const subscription = await stripe.subscriptions.update(
+            app?.stripeSubId,
+            { trial_end: 'now' },
+          )
+          // await ctx.db.app.update({
+          //   where: { id },
+          //   data: { trialEndDate: new Date(), isTrialEnd: true },
+          // })
+        } catch (error) {
+          console.log('🚀 ~ file: plan.ts:130 ~ resolve ~ error:', error)
+          return false
+        }
         return true
       },
     })
