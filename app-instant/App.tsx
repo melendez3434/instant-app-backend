@@ -82,27 +82,55 @@ export default function App() {
   const isLoadingComplete = useCachedResources()
   const { id } = useVarPreviewer()
   const [removeClear, setRemoveClear] = React.useState(false)
+  const [loading, setLoading] = React.useState(
+    Constants.manifest?.extra?.isPreview,
+  )
   const url = Linking.useURL()
+  const connectPreviewApp = async (link) => {
+    const { path, queryParams } = Linking.parse(link || '')
+    console.log('🚀 ~ file: App.tsx:89 ~ useEffect ~ url:', url)
+    console.log(
+      '🚀 ~ file: App.tsx:104 ~ useEffect ~ queryParams:',
+      queryParams,
+    )
+    // Alert.alert('link', link)
 
+    // Alert.alert('queryParams', JSON.stringify(queryParams))
+
+    if (queryParams?.id) {
+      setRemoveClear(true)
+
+      varPreviewer({
+        id: queryParams.id,
+      })
+    }
+  }
   useEffect(() => {
-    if (url) {
-      const { path, queryParams } = Linking.parse(url || '')
-      console.log('🚀 ~ file: App.tsx:89 ~ useEffect ~ url:', url)
-      console.log(
-        '🚀 ~ file: App.tsx:104 ~ useEffect ~ queryParams:',
-        queryParams,
-      )
-
-      if (queryParams?.id) {
-        setRemoveClear(true)
-
-        varPreviewer({
-          id: queryParams.id,
-        })
+    if (Constants.manifest?.extra?.isPreview) {
+      if (url) {
+        connectPreviewApp(url)
       }
     }
   }, [url])
-  if (!isLoadingComplete) {
+  useEffect(() => {
+    if (Constants.manifest?.extra?.isPreview) {
+      setInterval(() => {
+        Linking.getInitialURL()
+          .then((link) => {
+            console.log(
+              '🚀 ~ file: App.tsx:107 ~ useEffect ~ Constants.manifest?.extra?.isPreview:',
+              Constants.manifest?.extra?.isPreview,
+            )
+
+            !varPreviewer()?.id && connectPreviewApp(link)
+          })
+          .finally(() => {
+            setLoading(false)
+          })
+      }, 1000)
+    }
+  }, [])
+  if (!isLoadingComplete || loading) {
     return null
   } else {
     return (

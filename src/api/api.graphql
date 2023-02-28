@@ -1229,6 +1229,7 @@ enum QueryMode {
 enum Role {
   admin
   appUser
+  platformAdmin
   superAdmin
   user
 }

@@ -246,6 +246,7 @@ enum Role {
   admin
   user
   superAdmin
+  platformAdmin
   appUser
 }
 

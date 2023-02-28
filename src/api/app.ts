@@ -192,8 +192,22 @@ const apolloServer = async () => {
   const app = httpServer.listen(express.get('port'), async () => {
     // const users = await prisma.user.findMany({
     //   where: { email: 'ioanagaskins@gmail.com' },
+    //   // data: {
+    //   //   stripeCustomerId: null,
+    //   // },
+    //   include: { App: true },
     // })
-    // console.log('🚀 ~ file: app.ts:247 ~ app ~ users:', users)
+    // const build = await prisma.appBuild.findMany({
+    //   where: { id: 52 },
+    //   include: { App: { include: { owner: { include: { builder: true } } } } },
+    //   orderBy: { id: 'desc' },
+    //   take: 1,
+    // })
+    // console.log(
+    //   '🚀 ~ file: app.ts:206 ~ app ~ build:',
+    //   JSON.stringify(build, undefined, 2),
+    // )
+    // console.log('🚀 ~ file: app.ts:247 ~ app ~ users:', users[0].App[0])
 
     // const app = await prisma.user.findMany({
     //   where: { id: 24 },

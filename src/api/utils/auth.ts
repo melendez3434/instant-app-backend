@@ -50,7 +50,10 @@ export class Auth {
 
     const payload = await authenticate(req, res)
 
-    if (payload && payload.builderDomain == host) {
+    if (
+      payload &&
+      (payload.builderDomain == host || payload.role == 'platformAdmin')
+    ) {
       this.payload = payload
       this.hasSignedIn = true
       return payload

@@ -18,7 +18,7 @@ export const createContext = async ({
 }: {
   req?: any
   res?: Response
-  connection: any
+  connection?: any
 }) => {
   if (connection) {
     const auth = new Auth({

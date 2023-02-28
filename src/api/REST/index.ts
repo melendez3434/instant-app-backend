@@ -1,5 +1,7 @@
-import { prisma } from '../utils/createContext'
+import { createContext, prisma } from '../utils/createContext'
 import moment from 'moment'
+import * as bcrypt from 'bcryptjs'
+import hashPassword from '../utils/hashPassword'
 
 const app = require('express')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
@@ -166,6 +168,76 @@ const router = (express) => {
       }
     },
   )
+
+  express.use(async (req, res, next) => {
+    const ctx = await createContext({ req, res })
+    req.ctx = ctx
+
+    next()
+  })
+
+  express.use(app.json())
+
+  express.post('/rest/login', async (req, res) => {
+    try {
+      const { email, password } = req.body
+      const user = await prisma.user.findFirst({
+        where: {
+          email,
+          role: 'platformAdmin',
+        },
+      })
+      if (!user) {
+        return res.status(400).send({
+          message: 'User not found',
+        })
+      }
+      const isPasswordValid = await bcrypt.compare(password, user.password)
+      if (!isPasswordValid) {
+        return res.status(401).send({
+          accessToken: null,
+          message: 'Invalid Password!',
+        })
+      }
+      const token = req.ctx.auth.signInWithJWT(user)
+
+      res.status(200).send({
+        user: user,
+        token,
+      })
+    } catch (err: any) {
+      res.status(500).send({ message: err.message })
+    }
+  })
+  express.get('/rest/users', async (req, res) => {
+    if (req.ctx?.user?.role !== 'platformAdmin')
+      return res.status(401).send({ message: 'Unauthorized' })
+    if (req.query?.take && Number(req.query?.take) > 100)
+      return res.status(400).send({ message: 'Take must be less than 100' })
+
+    try {
+      const apps = await prisma.app.findMany({
+        select: {
+          id: true,
+          name: true,
+          planStatus: true,
+          nextBill: true,
+          trialEndDate: true,
+          AndroidProfile: { select: { id: true } },
+          iosProfile: { select: { id: true } },
+        },
+        take: Number(req.query?.take || 10),
+        skip: Number(req.query?.skip || 0),
+        orderBy: {
+          id: 'desc',
+        },
+      })
+      const count = await prisma.app.count({})
+      res.status(200).send({ apps, count })
+    } catch (err: any) {
+      res.status(500).send({ message: err.message })
+    }
+  })
 }
 
 export default router

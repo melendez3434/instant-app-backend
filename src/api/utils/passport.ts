@@ -42,6 +42,7 @@ const authenticate = (req: any, res: any): Promise<any | null> => {
         if (!payload?.userId) resolve(null)
         const newUser = await prisma.user.findUnique({
           where: { id: payload.userId },
+          // where: { id:70 },
           select: {
             id: true,
             email: true,
