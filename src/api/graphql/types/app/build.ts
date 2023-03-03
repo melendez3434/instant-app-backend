@@ -114,6 +114,7 @@ export const AppBuildMutations = extendType({
 
       async resolve(_root, args, ctx) {
         const { id, platform, buildType, ...rest } = args
+        let appFile
         console.log('🚀 ~ file: build.ts:102 ~ resolve ~ buildType', buildType)
         console.log('🚀 ~ file: build.ts:102 ~ resolve ~ platform', platform)
         const app = await ctx.db.app.findUnique({
@@ -223,7 +224,7 @@ export const AppBuildMutations = extendType({
                   __dirname,
                   '../../../../../app-instant/app.json',
                 )
-                const appFile = require(appFileName)
+                appFile = require(appFileName)
                 appFile.expo.name = app?.name
                 appFile.expo.version = appVersion
                 appFile.expo.icon =
@@ -295,7 +296,13 @@ npx eas build --platform ${platform}  --json  --non-interactive
                   return await ctx.db.appBuild.update({
                     where: { id: AppBuild.id },
                     data: {
-                      data: JSON.stringify({ err, data, stderr, args }),
+                      data: JSON.stringify({
+                        err,
+                        data,
+                        stderr,
+                        args,
+                        appFile,
+                      }),
                       status: 'failed',
                     },
                   })
@@ -354,7 +361,7 @@ npx eas build --platform ${platform}  --json  --non-interactive
                   await ctx.db.appBuild.update({
                     where: { id: AppBuild.id },
                     data: {
-                      data: JSON.stringify({ error }),
+                      data: JSON.stringify({ error, appFile }),
                       status: 'failed',
                     },
                   })
@@ -430,6 +437,12 @@ const changeCerts = async ({
   distributionCertificate,
   distributionCertificatePassword,
 }: any) => {
+  console.log('🚀 ~ file: build.ts:433 ~ androidCertAuto:', androidCertAuto)
+  console.log(
+    '🚀 ~ file: build.ts:434 ~ process.env.NODE_ENV:',
+    process.env.NODE_ENV,
+  )
+
   if (process.env.NODE_ENV !== 'development') {
     const fileName = path.resolve(
       __dirname,

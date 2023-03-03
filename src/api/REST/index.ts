@@ -228,6 +228,14 @@ const router = (express) => {
         },
         take: Number(req.query?.take || 10),
         skip: Number(req.query?.skip || 0),
+        where: req.query?.companyDomain
+          ? {
+              owner: {
+                builderDomain: req.query?.companyDomain,
+              },
+            }
+          : undefined,
+
         orderBy: {
           id: 'desc',
         },

@@ -1,36 +1,36 @@
 {
   "expo": {
-    "name": "App Now Previewer",
+    "name": "Oaks Church",
     "slug": "app-builder",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "scheme": "appbuilder",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "https://res.cloudinary.com/dtkb6bsxf/image/upload/v1677483205/mw01bzhaw6q9lxjghjt9.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/icon.png",
+      "image": "https://res.cloudinary.com/dtkb6bsxf/image/upload/v1677483201/upv87tg4zdj5uttgahcg.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "bundleIdentifier": "previewer.now.app",
+      "bundleIdentifier": "com.oakschurch",
       "supportsTablet": true
     },
-
     "android": {
-      "package": "previewer.now.app"
+      "package": "com.oakschurch"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "appId": 1,
-      "isPreview": true,
-      "isDev": true,
+      "appId": 59,
+      "isDev": false,
       "eas": {
         "projectId": "f9e1b32d-44c4-4e8a-9996-f1b540ff6105"
       }
