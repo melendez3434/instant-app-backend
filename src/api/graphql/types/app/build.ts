@@ -318,7 +318,7 @@ npx eas build --platform ${platform}  --json  --non-interactive
                   await ctx.db.appBuild.update({
                     where: { id: AppBuild.id },
                     data: {
-                      data: buildData,
+                      data: JSON.stringify({ buildData, appFile }),
                       appVersion: buildData.appVersion,
                       appBuildVersion: Number(buildData.appBuildVersion),
                       status:
