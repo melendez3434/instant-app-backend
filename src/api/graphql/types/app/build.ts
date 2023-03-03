@@ -235,9 +235,10 @@ export const AppBuildMutations = extendType({
                   app?.assets?.color || '#ffffff'
                 appFile.expo.ios.bundleIdentifier = app?.appId
                 appFile.expo.android.package = app?.appId
-                ;(appFile.expo.android.googleServicesFile =
-                  isAddNotificationData ? './google-services.json' : undefined),
-                  (appFile.expo.extra.appId = app?.id)
+                appFile.expo.android.googleServicesFile = isAddNotificationData
+                  ? './google-services.json'
+                  : undefined
+                appFile.expo.extra.appId = app?.id
                 appFile.expo.extra.isDev = Boolean(process.env.IS_DEV)
                 appFile.expo.extra.isPreview = undefined
 
