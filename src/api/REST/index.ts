@@ -240,7 +240,15 @@ const router = (express) => {
           id: 'desc',
         },
       })
-      const count = await prisma.app.count({})
+      const count = await prisma.app.count({
+        where: req.query?.companyDomain
+          ? {
+              owner: {
+                builderDomain: req.query?.companyDomain,
+              },
+            }
+          : undefined,
+      })
       res.status(200).send({ apps, count })
     } catch (err: any) {
       res.status(500).send({ message: err.message })
