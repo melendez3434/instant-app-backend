@@ -143,6 +143,7 @@ export const AppBuildMutations = extendType({
               orderBy: { id: 'desc' },
               select: {
                 appVersion: true,
+                appBuildVersion: true,
               },
               take: 1,
             },
@@ -169,6 +170,9 @@ export const AppBuildMutations = extendType({
                   .map((v, i) => (i ? v : Number(v) + 1))
                   .join('.')
               : '1.0.0'
+            const appBuildVersion = app?.appBuilds[0]?.appBuildVersion
+              ? app?.appBuilds[0]?.appBuildVersion + 1
+              : 1
             console.log(
               '🚀 ~ file: build.ts ~ line 105 ~ appVersion',
               appVersion,
@@ -235,6 +239,8 @@ export const AppBuildMutations = extendType({
                   app?.assets?.color || '#ffffff'
                 appFile.expo.ios.bundleIdentifier = app?.appId
                 appFile.expo.android.package = app?.appId
+                appFile.expo.android.versionCode = appBuildVersion
+
                 appFile.expo.android.googleServicesFile = isAddNotificationData
                   ? './google-services.json'
                   : undefined
@@ -340,11 +346,14 @@ npx eas build --platform ${platform}  --json  --non-interactive
                           app_id: app?.id || '',
                           app_name: app?.name || '',
                           app_version: appVersion?.toString() || '',
-                          app_build_version: Number(buildData.appBuildVersion),
-                          app_build_id: buildData.id,
-                          app_build_status: buildData.status,
-                          app_build_url: buildData.artifacts.buildUrl,
-                          app_build_platform: platform,
+                          app_build_version:
+                            Number(buildData?.appBuildVersion)?.toString() ||
+                            '',
+                          app_build_id: buildData?.id?.toString() || '',
+                          app_build_status: buildData?.status?.toString() || '',
+                          app_build_url:
+                            buildData?.artifacts?.buildUrl?.toString() || '',
+                          app_build_platform: platform?.toString() || '',
                           builder_domain: app?.owner?.builder?.domain || '',
                         },
                       })
@@ -561,3 +570,26 @@ const addNotificationData = async (appId, { db }: Context) => {
 const getJsonFromString = (string) => {
   return JSON.parse(('[' + string.split('[').pop()).toString())
 }
+// intercomClient.events
+//   .create({
+//     eventName: 'app-build-success',
+//     createdAt: Math.floor(Date.now() / 1000),
+//     userId: '1',
+//     metadata: {
+//       app_id: 1,
+//       app_name: 1,
+//       app_version: 1,
+//       app_build_version: 1,
+//       app_build_id: 1,
+//       app_build_status: undefined,
+//       app_build_url: 2,
+//       app_build_platform: undefined,
+//       builder_domain: 'domain',
+//     },
+//   })
+//   .then((res) => {
+//     console.log('🚀 ~ file: build.ts:483 ~ res', res)
+//   })
+//   .catch((err) => {
+//     console.log('🚀 ~ file: build.ts:483 ~ err', err)
+//   })
