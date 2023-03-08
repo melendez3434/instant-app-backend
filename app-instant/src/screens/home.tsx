@@ -8,6 +8,7 @@ import {
   ImageBackground,
   Share,
   Platform,
+  Linking,
 } from 'react-native'
 import * as SplashScreen from 'expo-splash-screen'
 import { gql, useLazyQuery, useQuery } from '@apollo/client'
@@ -34,6 +35,7 @@ import HeaderComp from '../components/layout/header'
 import Bottomtabs from '../components/layout/footer'
 import Container from '../components/common/container'
 import { getAppid } from '../utlis/getAppId'
+import * as WebBrowser from 'expo-web-browser'
 
 // const varWebsiteUrl = makeVar('')
 
@@ -193,6 +195,18 @@ export default function HomeScreen() {
           onLoad={(event) => {
             setPageTitle(event.nativeEvent.title)
             setLoading(false)
+          }}
+          onNavigationStateChange={async (event) => {
+            try {
+              if (event.url.includes('pushpay.com/g/oakschurchntx')) {
+                await WebBrowser.openBrowserAsync(data.value)
+              }
+            } catch (error) {
+              console.log(
+                '🚀 ~ file: home.tsx:207 ~ onNavigationStateChange={ ~ error:',
+                error,
+              )
+            }
           }}
         />
       )}
