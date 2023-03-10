@@ -67,7 +67,7 @@ export default function HomeScreen() {
 
   // const websiteUrl = useReactiveVar(varWebsiteUrl) || data.app?.website
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [iFrameError, setIFrameError] = useState(false)
   const [pageTitle, setPageTitle] = useState('')
 
@@ -143,7 +143,6 @@ export default function HomeScreen() {
       //   })
     }
   }, [websiteUrl])
-
   return (
     <Container style={styles.container}>
       <HeaderComp
@@ -199,7 +198,16 @@ export default function HomeScreen() {
           onNavigationStateChange={async (event) => {
             try {
               if (event.url.includes('pushpay.com/g/oakschurchntx')) {
-                await WebBrowser.openBrowserAsync(data.value)
+                console.log(
+                  '🚀 ~ file: home.tsx:200 ~ onNavigationStateChange={ aaa~ event:',
+                  event,
+                )
+
+                varWebsiteUrl(event.url)
+                setTimeout(() => {
+                  varWebsiteUrl(data.app?.website)
+                }, 1000)
+                await WebBrowser.openBrowserAsync(event.url)
               }
             } catch (error) {
               console.log(
