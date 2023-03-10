@@ -65,7 +65,7 @@ export const Mutation = mutationType({
         })
 
         if (isEmailExist) {
-          throw new Error('Email does not exist')
+          throw new Error('Email is already exist')
         }
         // hash their password
         const hash = await hashPassword(password)
