@@ -7,6 +7,13 @@ import {
 } from '../rules'
 
 const appMutationsShield = {
+  updateMyBuilder: {
+    name: 'updateMyBuilder',
+    slug: 'updateMyBuilder',
+    desc: '',
+    role: ['superAdmin', 'platformAdmin'],
+    permissions: isAuth,
+  },
   subscribe: {
     name: 'subscribe',
     slug: 'subscribe',
