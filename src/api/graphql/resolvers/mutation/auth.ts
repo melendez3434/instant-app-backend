@@ -14,7 +14,7 @@ import {
 import isEmail from 'validator/lib/isEmail'
 import makeSlug from 'slug-arabic'
 import axios from 'axios'
-var url = require('url')
+import url from 'url'
 
 function randomString(length, chars) {
   var mask = ''
@@ -128,12 +128,25 @@ export const Mutation = mutationType({
             ...rest
           } = args
 
+          let appId
+          // if (addAppInput) {
+          //   const isUrl = url.parse(addAppInput.website)?.hostname
+          //   console.log('🚀 ~ file: auth.ts:256 ~ resolve ~ isUrl', isUrl)
+          //   if (!isUrl) {
+          //     throw new Error('Invalid website url')
+          //   }
+          // }
           if (addAppInput) {
-            const isUrl = url.parse(addAppInput.website)?.hostname
-            console.log('🚀 ~ file: auth.ts:256 ~ resolve ~ isUrl', isUrl)
-            if (!isUrl) {
-              throw new Error('Invalid website url')
+            if (!addAppInput.website.includes('https://')) {
+              addAppInput.website = 'https://' + addAppInput.website
             }
+
+            appId = url
+              .parse(addAppInput?.website)
+              ?.hostname?.split('.')
+              .reverse()
+              .join('.')
+            if (!appId) throw new Error('Invalid website')
           }
 
           console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
@@ -230,17 +243,14 @@ export const Mutation = mutationType({
           }
           const trialNumber = !trialLong ? 0 : trialLong > 60 ? 60 : trialLong
           let app
+
           if (addAppInput) {
             app = await ctx.db.app.create({
               data: {
                 name: addAppInput?.name,
                 website: addAppInput?.website,
                 lang: 'EN',
-                appId: url
-                  .parse(addAppInput?.website)
-                  .hostname.split('.')
-                  .reverse()
-                  .join('.'),
+                appId,
                 assets: { create: { displayLogo: true, color: '#000' } },
                 design: { create: { AppDesignDrawer: { create: {} } } },
                 trialLong: trialNumber,
@@ -259,12 +269,20 @@ export const Mutation = mutationType({
           website: nonNull(stringArg()),
         },
         async resolve(_root, args, ctx) {
-          const { email, website } = args
-          const isUrl = url.parse(website)?.hostname
-          console.log('🚀 ~ file: auth.ts:256 ~ resolve ~ isUrl', isUrl)
-          if (!isUrl) {
-            throw new Error('Invalid website url')
+          let { email, website } = args
+
+          if (!website.includes('https://')) {
+            website = 'https://' + website
           }
+
+          const appId = url
+            .parse(website)
+            ?.hostname?.split('.')
+            .reverse()
+            .join('.')
+          const name = url.parse(website)?.hostname?.split('.')[0]
+          if (!appId || !name) throw new Error('Invalid website')
+
           email.toLowerCase()
 
           const isEmailExist = await ctx.db.user.findFirst({
@@ -286,14 +304,10 @@ export const Mutation = mutationType({
           !isAppExist &&
             (await ctx.db.app.create({
               data: {
-                name: url.parse(website).hostname,
+                name,
                 website,
                 lang: 'EN',
-                appId: url
-                  .parse(website)
-                  .hostname.split('.')
-                  .reverse()
-                  .join('.'),
+                appId,
                 assets: { create: { displayLogo: true, color: '#000' } },
                 design: { create: { AppDesignDrawer: { create: {} } } },
                 tempOwner: email,

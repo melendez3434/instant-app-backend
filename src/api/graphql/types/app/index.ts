@@ -180,13 +180,23 @@ export const Appmutations = extendType({
 
       async resolve(_root, args, ctx) {
         let { name, website } = args.data
+        if (!website.includes('https://')) {
+          website = 'https://' + website
+        }
+
+        const appId = url
+          .parse(website)
+          ?.hostname?.split('.')
+          .reverse()
+          .join('.')
+        if (!appId) throw new Error('Invalid website')
 
         return await ctx.db.app.create({
           data: {
             name,
             website,
             lang: 'EN',
-            appId: url.parse(website).hostname.split('.').reverse().join('.'),
+            appId,
             assets: { create: { displayLogo: true, color: '#000' } },
             design: { create: { AppDesignDrawer: { create: {} } } },
 

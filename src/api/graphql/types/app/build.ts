@@ -9,7 +9,6 @@ import {
   stringArg,
   booleanArg,
 } from 'nexus'
-var url = require('url')
 var cmd = require('node-cmd')
 
 const https = require('https') // or 'https' for https:// URLs
