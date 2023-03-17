@@ -39,18 +39,27 @@ export const Mutation = mutationType({
       },
       async resolve(_root, args, ctx) {
         const { email, password, logo, companyName, icon } = args
-        const slugedName = makeSlug(args.name.split(' ').slice(0, 2).join(' '))
+        let slugedName = makeSlug(args.name.split(' ').slice(0, 2).join(' '))
         console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
-        const isNameExist = await ctx.db.builder.findFirst({
+        const isFirstTwoWordNameExist = await ctx.db.builder.findFirst({
           where: {
             name: { equals: slugedName, mode: 'insensitive' },
           },
         })
 
-        if (isNameExist) {
-          throw new Error(
-            'Sorry but this name already exists' + ' ' + args.name,
-          )
+        if (isFirstTwoWordNameExist) {
+          slugedName = makeSlug(args.name.split(' ').slice(0, 3).join(' '))
+
+          const isFirstThreeWordNameExist = await ctx.db.builder.findFirst({
+            where: {
+              name: { equals: slugedName, mode: 'insensitive' },
+            },
+          })
+          if (isFirstThreeWordNameExist) {
+            throw new Error(
+              'Sorry but this name already exists' + ' ' + args.name,
+            )
+          }
         }
         // lowercase their email
         email.toLowerCase()
