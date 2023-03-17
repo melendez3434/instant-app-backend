@@ -859,6 +859,8 @@ type Mutation {
   fastSignup(email: String!, website: String!): Boolean
   generateBuild(androidCertAuto: Boolean, buildType: BuildType! = apk, distributionCertificate: String, distributionCertificatePassword: String, id: Int!, keyAlias: String, keyPassword: String, keystorePassword: String, keystoreUrl: String, platform: AppBuildPlatform!, provisioningProfilePath: String): AppBuild
   removeNotification(id: Int!): Notification
+  requestReset(email: String!): String
+  resetPassword(password: String!): User
   signOut: String
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signinInApp(data: LoginInput!): AuthPayLoad
@@ -878,6 +880,7 @@ type Mutation {
   updateMyProfile(data: updateMyProfileInput!): User
   updateNotification(body: String!, id: Int!, publishAt: DateTime, title: String!, to: [Int!], toType: ToType!): Notification
   updateNotificationData(data: updateNotificationDataInput!, id: Int!): NotificationData
+  validateCode(code: String!, email: String!): AuthPayLoad
 }
 
 input NestedBoolFilter {
@@ -1335,6 +1338,8 @@ input UserOrderByWithRelationInput {
   notifications: NotificationOrderByRelationAggregateInput
   password: SortOrder
   registerFrom: SortOrder
+  resetToken: SortOrder
+  resetTokenExpiry: SortOrder
   role: SortOrder
   stripeCustomerId: SortOrder
   updatedAt: SortOrder
@@ -1363,6 +1368,8 @@ input UserWhereInput {
   notifications: NotificationListRelationFilter
   password: StringFilter
   registerFrom: StringNullableFilter
+  resetToken: StringNullableFilter
+  resetTokenExpiry: IntNullableFilter
   role: EnumRoleFilter
   stripeCustomerId: StringNullableFilter
   updatedAt: DateTimeFilter

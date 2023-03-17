@@ -26,6 +26,8 @@ model User {
   appId              Int?
   notifications      Notification[]
   notificationTokens NotificationToken[]
+  resetToken         String?
+  resetTokenExpiry   Int?
 
   @@unique([email, builderDomain])
   @@unique([stripeCustomerId, builderDomain])
