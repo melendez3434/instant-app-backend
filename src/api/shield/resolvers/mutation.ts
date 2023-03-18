@@ -206,6 +206,27 @@ const auth = {
     role: ['all'],
     permissions: allow,
   },
+  requestReset: {
+    name: 'requestReset',
+    slug: 'requestReset',
+    desc: '',
+    role: ['all'],
+    permissions: allow,
+  },
+  validateCode: {
+    name: 'validateCode',
+    slug: 'validateCode',
+    desc: '',
+    role: ['all'],
+    permissions: allow,
+  },
+  resetPassword: {
+    name: 'resetPassword',
+    slug: 'resetPassword',
+    desc: '',
+    role: ['all'],
+    permissions: isAuth,
+  },
   signOut: {
     name: 'signOut',
     slug: 'signOut',
