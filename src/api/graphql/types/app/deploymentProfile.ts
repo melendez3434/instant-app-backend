@@ -273,6 +273,7 @@ export const Deploymentmutations = extendType({
                 keywords: androidProfile?.keywords,
                 iconHyperlink: androidProfile?.logo,
                 buildLink: `https://${androidProfile?.App.owner?.builderDomain}/admin/apps/${androidProfile?.App.id}/builds/`,
+                deployRequestLink: `https://${androidProfile?.App.owner?.builderDomain}/app/${androidProfile?.App.id}/deploy/`,
                 appId: androidProfile?.App.id,
                 builderDomain: androidProfile?.App.owner?.builderDomain,
               })
@@ -303,6 +304,7 @@ export const Deploymentmutations = extendType({
                 buildLink: `https://${iosProfile?.App.owner?.builderDomain}/admin/apps/${iosProfile?.App.id}/builds/`,
                 appId: iosProfile?.App.id,
                 builderDomain: iosProfile?.App.owner?.builderDomain,
+                deployRequestLink: `https://${iosProfile?.App.owner?.builderDomain}/app/${iosProfile?.App.id}/deploy/`,
                 developerAccountInformation: {
                   primaryEmail: iosProfile?.primaryEmail,
                   phoneNumber: iosProfile?.phoneNumber,
