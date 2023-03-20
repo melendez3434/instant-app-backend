@@ -244,7 +244,19 @@ export const Deploymentmutations = extendType({
               where: {
                 appId: args.id,
               },
-              include: { App: { select: { name: true } } },
+              include: {
+                App: {
+                  select: {
+                    name: true,
+                    id: true,
+                    owner: {
+                      select: {
+                        builderDomain: true,
+                      },
+                    },
+                  },
+                },
+              },
             })
 
             axios
@@ -260,6 +272,9 @@ export const Deploymentmutations = extendType({
                 desdescription: androidProfile?.storeDescription,
                 keywords: androidProfile?.keywords,
                 iconHyperlink: androidProfile?.logo,
+                buildLink: `https://${androidProfile?.App.owner?.builderDomain}/admin/apps/${androidProfile?.App.id}/builds/`,
+                appId: androidProfile?.App.id,
+                builderDomain: androidProfile?.App.owner?.builderDomain,
               })
               .finally(() => {})
           } else {
@@ -267,12 +282,27 @@ export const Deploymentmutations = extendType({
               where: {
                 appId: args.id,
               },
-              include: { App: { select: { name: true } } },
+              include: {
+                App: {
+                  select: {
+                    name: true,
+                    id: true,
+                    owner: {
+                      select: {
+                        builderDomain: true,
+                      },
+                    },
+                  },
+                },
+              },
             })
 
             axios
               .post('https://hooks.zapier.com/hooks/catch/11801412/3y5cqzj/', {
                 appName: iosProfile?.App?.name,
+                buildLink: `https://${iosProfile?.App.owner?.builderDomain}/admin/apps/${iosProfile?.App.id}/builds/`,
+                appId: iosProfile?.App.id,
+                builderDomain: iosProfile?.App.owner?.builderDomain,
                 developerAccountInformation: {
                   primaryEmail: iosProfile?.primaryEmail,
                   phoneNumber: iosProfile?.phoneNumber,
