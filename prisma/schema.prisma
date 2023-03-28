@@ -106,8 +106,9 @@ model IosProfile {
 model AndroidProfile {
   id                     Int      @id @default(autoincrement())
   isEnrolledToGoogle     Boolean  @default(true)
-  willPublsihYourApp     Boolean  @default(true)
-  setupNewAccount        Boolean  @default(true)
+  willPublsihYourApp     Boolean? @default(true)
+  setupNewAccount        Boolean? @default(true)
+  addAdminToGoogle       Boolean  @default(true)
   googleDeveloperAccount String
   logo                   String
   storeDescription       String
