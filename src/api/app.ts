@@ -23,8 +23,10 @@ import {
   ApolloServerPluginDrainHttpServer,
   ApolloServerPluginLandingPageLocalDefault,
 } from 'apollo-server-core'
-import { exec } from 'child_process'
+// import { exec } from 'child_process'
 import { startCron } from './utils/cron'
+// import { intercomClient } from './utils/intercom'
+// import { Operators } from 'intercom-client'
 
 const schema = applyMiddleware(baseSchema, permissions)
 const express = createExpress()
@@ -187,16 +189,54 @@ const apolloServer = async () => {
 
   await apolloForCommontServer({ express, httpServer }, contextApollo)
 
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
   // apollo.installSubscriptionHandlers(app)
   express.set('port', process.env.PORT || 4000)
   const app = httpServer.listen(express.get('port'), async () => {
     // const users = await prisma.user.findMany({
-    //   where: { email: 'ioanagaskins@gmail.com' },
+    //   // where: { email: 'ioanagaskins@gmail.com' },
     //   // data: {
     //   //   stripeCustomerId: null,
     //   // },
-    //   include: { App: true },
+    //   select: {
+    //     email: true,
+    //     builderDomain: true,
+    //     builder: { select: { companyName: true } },
+    //     id: true,
+    //   },
     // })
+
+    // for (const user of users) {
+    //   await sleep(500)
+
+    //   try {
+    //     const contact = await intercomClient.contacts.search({
+    //       data: {
+    //         query: {
+    //           field: 'external_id',
+    //           operator: Operators.EQUALS,
+    //           value: user.id.toString(),
+    //         },
+    //       },
+    //     })
+    //     console.log('🚀 ~ file: app.ts:222 ~ app ~ contact:', contact)
+
+    //     const response = await intercomClient.contacts.update({
+    //       // email: user?.email,
+    //       id: contact.data[0].id,
+    //       customAttributes: {
+    //         // domain: user.builderDomain,
+    //         businessName: user.builder?.companyName,
+    //       },
+    //     })
+    //     console.log(
+    //       '🚀 ~ file: app.ts:218 ~ users.forEach ~ response:',
+    //       response,
+    //     )
+    //   } catch (error) {
+    //     console.log('🚀 ~ file: app.ts:219 ~ users.forEach ~ error:', error)
+    //   }
+    // }
     // const build = await prisma.appBuild.findMany({
     //   where: { id: 52 },
     //   include: { App: { include: { owner: { include: { builder: true } } } } },
@@ -256,7 +296,7 @@ const apolloServer = async () => {
     // console.log(
     //   '🚀 ~ file: app.ts ~ line 192 ~ app ~ users',
     //   await prisma.builder.findMany({
-    //     where: { domain: { contains: 'podcast' } },
+    //     where: { domain: { contains: 'coach.instantappnow.com' } },
     //     include: { owner: true },
     //   }),
     // )

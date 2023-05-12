@@ -39,6 +39,7 @@ export const AndroidProfile = objectType({
     t.model.logo()
     t.model.storeDescription()
     t.model.keywords()
+    t.model.addAdminToGoogle()
   },
 })
 
@@ -167,8 +168,9 @@ export const Deploymentmutations = extendType({
               t.nonNull.string('appStoreTitle')
               t.nonNull.string('keywords')
               t.nonNull.boolean('isEnrolledToGoogle')
-              t.nonNull.boolean('willPublsihYourApp')
-              t.nonNull.boolean('setupNewAccount')
+              t.boolean('willPublsihYourApp')
+              t.boolean('setupNewAccount')
+              t.nonNull.boolean('addAdminToGoogle')
             },
           }),
           required: true,
@@ -265,8 +267,9 @@ export const Deploymentmutations = extendType({
                 developerAccountInformation: {
                   developerAccount: androidProfile?.googleDeveloperAccount,
                   isEnrolledToGoogle: androidProfile?.isEnrolledToGoogle,
-                  willPublsihYourApp: androidProfile?.willPublsihYourApp,
-                  setupNewAccount: androidProfile?.setupNewAccount,
+                  // willPublsihYourApp: androidProfile?.willPublsihYourApp,
+                  addAdminToGoogle: androidProfile?.addAdminToGoogle,
+                  // setupNewAccount: androidProfile?.setupNewAccount,
                   appStoreTitle: androidProfile?.appStoreTitle,
                 },
                 desdescription: androidProfile?.storeDescription,

@@ -2,12 +2,13 @@ import { varAuth } from './defaults'
 import { CURRENT_CUSTOMER } from './queries'
 
 export const authMutation = {
-  asyncAuth: async ({ token, ...rest }: any) => {
+  asyncAuth: async ({ token, user, ...rest }: any) => {
     const client = rest.client
 
     const auth = varAuth()
     varAuth({
       ...auth,
+      user: user || auth.user,
       token,
     })
 
@@ -28,8 +29,8 @@ export const authMutation = {
         user: me,
       })
     } else {
+      await client.resetStore()
     }
-    await client.resetStore()
 
     return 'done'
   },

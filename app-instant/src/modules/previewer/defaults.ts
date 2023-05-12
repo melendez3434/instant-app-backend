@@ -33,4 +33,3 @@ export const setPreviewerDefaults = async () => {
 
   previewer({ ...(previewerCache || initState), loading: false })
 }
-setPreviewerDefaults()

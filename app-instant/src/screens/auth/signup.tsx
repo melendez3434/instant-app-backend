@@ -21,6 +21,7 @@ const SIGN_UP = gql`
       token
       user {
         id
+        builderDomain
       }
     }
   }
@@ -82,6 +83,7 @@ export default function SignUp() {
           console.log(res)
           await authMutation.asyncAuth({
             token: res.data.signupInApp.token,
+            user: res.data.signupInApp.user,
             client,
           })
           //@ts-ignore

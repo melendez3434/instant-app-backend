@@ -21,6 +21,7 @@ const LOGIN = gql`
       token
       user {
         id
+        builderDomain
       }
     }
   }
@@ -78,6 +79,7 @@ export default function Login() {
           console.log(res)
           await authMutation.asyncAuth({
             token: res.data.signinInApp.token,
+            user: res.data.signinInApp.user,
             client,
           })
           console.log('🚀 ~ file: login.tsx:79 ~ .then ~ res done')

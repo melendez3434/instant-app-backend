@@ -16,13 +16,18 @@ import Toast from 'react-native-toast-message'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
-import { varAuth } from './src/modules/auth/defaults'
+import { setAuthDefaults, varAuth } from './src/modules/auth/defaults'
 import { getAppid, getEndPoint } from './src/utlis/getAppId'
 import useCachedResources from './src/hooks/useCachedResources'
-import { useVarPreviewer, varPreviewer } from './src/modules/previewer/defaults'
+import {
+  setPreviewerDefaults,
+  useVarPreviewer,
+  varPreviewer,
+} from './src/modules/previewer/defaults'
 import PreviewerScreen from './src/screens/previewer'
 import { Button } from '@rneui/themed'
 import * as Linking from 'expo-linking'
+import { use } from 'passport'
 
 const endpointDev = getEndPoint()
 
@@ -130,6 +135,18 @@ export default function App() {
       }, 1000)
     }
   }, [])
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        await setAuthDefaults()
+        await setPreviewerDefaults()
+      } catch (error) {
+        console.log('🚀 ~ file: App.tsx:147 ~ useEffect ~ error', error)
+      }
+    })()
+  }, [])
+
   if (!isLoadingComplete || loading) {
     return null
   } else {

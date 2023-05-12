@@ -326,7 +326,8 @@ npx eas build --platform ${platform}  --json  --non-interactive
                     data: {
                       data: JSON.stringify({ buildData, appFile }),
                       appVersion: buildData.appVersion,
-                      appBuildVersion: Number(buildData.appBuildVersion),
+                      appBuildVersion:
+                        Number(buildData.appBuildVersion) || appBuildVersion,
                       status:
                         buildData.status == 'FINISHED' ? 'success' : 'failed',
                       url:

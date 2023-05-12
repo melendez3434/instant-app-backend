@@ -32,7 +32,15 @@ export const sendNotifications = async () => {
         toType: true,
       },
     })
-
+    console.log(
+      '🚀 ~ file: notifications.ts:35 ~ sendNotifications ~ notifications:',
+      notifications,
+    )
+    // await prisma.notificationToken.delete({
+    //   where: {
+    //     id: 188,
+    //   },
+    // })
     await Promise.all(
       notifications.map(async ({ appid, body, title, id, toType, to }) => {
         const users = await prisma.notificationToken.findMany({
@@ -80,6 +88,10 @@ const pushNotification = async ({ body, title }, users) => {
   // Create the messages that you want to send to clients
   let messages: any = []
   const tokens = users.map(({ token }) => token)
+  console.log(
+    '🚀 ~ file: notifications.ts:84 ~ pushNotification ~ users:',
+    users,
+  )
   for (let pushToken of tokens) {
     // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
 
@@ -110,22 +122,22 @@ const pushNotification = async ({ body, title }, users) => {
   // different strategies you could use. A simple one is to send one chunk at a
   // time, which nicely spreads the load out over time:
   for (let chunk of chunks) {
-    try {
-      let ticketChunk = await expo.sendPushNotificationsAsync(chunk)
-      console.log(
-        '🚀 ~ file: notifications.ts:73 ~ pushNotification ~ ticketChunk',
-        ticketChunk,
-      )
-      tickets.push(...ticketChunk)
-      // NOTE: If a ticket contains an error code in ticket.details.error, you
-      // must handle it appropriately. The error codes are listed in the Expo
-      // documentation:
-      // https://docs.expo.io/push-notifications/sending-notifications/#individual-errors
-    } catch (error) {
-      console.log(
-        '🚀 ~ file: notifications.ts:80 ~ pushNotification ~ error',
-        error,
-      )
-    }
+    // try {
+    let ticketChunk = await expo.sendPushNotificationsAsync(chunk)
+    console.log(
+      '🚀 ~ file: notifications.ts:73 ~ pushNotification ~ ticketChunk',
+      ticketChunk,
+    )
+    tickets.push(...ticketChunk)
+    // NOTE: If a ticket contains an error code in ticket.details.error, you
+    // must handle it appropriately. The error codes are listed in the Expo
+    // documentation:
+    // https://docs.expo.io/push-notifications/sending-notifications/#individual-errors
+    // } catch (error) {
+    //   console.log(
+    //     '🚀 ~ file: notifications.ts:80 ~ pushNotification ~ error',
+    //     error,
+    //   )
+    // }
   }
 }

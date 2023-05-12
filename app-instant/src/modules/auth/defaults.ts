@@ -41,4 +41,3 @@ export const setAuthDefaults = async () => {
 
   auth({ ...(authCache || initState), loading: false })
 }
-setAuthDefaults()

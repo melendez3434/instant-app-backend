@@ -3,19 +3,21 @@
 
 
 type AndroidProfile {
+  addAdminToGoogle: Boolean!
   appStoreTitle: String!
   googleDeveloperAccount: String!
   id: Int!
   isEnrolledToGoogle: Boolean!
   keywords: String!
   logo: String!
-  setupNewAccount: Boolean!
+  setupNewAccount: Boolean
   storeDescription: String!
-  willPublsihYourApp: Boolean!
+  willPublsihYourApp: Boolean
 }
 
 input AndroidProfileOrderByWithRelationInput {
   App: AppOrderByWithRelationInput
+  addAdminToGoogle: SortOrder
   appId: SortOrder
   appStoreTitle: SortOrder
   createdAt: SortOrder
@@ -35,6 +37,7 @@ input AndroidProfileWhereInput {
   App: AppWhereInput
   NOT: [AndroidProfileWhereInput!]
   OR: [AndroidProfileWhereInput!]
+  addAdminToGoogle: BoolFilter
   appId: IntFilter
   appStoreTitle: StringFilter
   createdAt: DateTimeFilter
@@ -43,10 +46,10 @@ input AndroidProfileWhereInput {
   isEnrolledToGoogle: BoolFilter
   keywords: StringFilter
   logo: StringFilter
-  setupNewAccount: BoolFilter
+  setupNewAccount: BoolNullableFilter
   storeDescription: StringFilter
   updatedAt: DateTimeFilter
-  willPublsihYourApp: BoolFilter
+  willPublsihYourApp: BoolNullableFilter
 }
 
 input AndroidProfileWhereUniqueInput {
@@ -395,6 +398,11 @@ type AuthPayLoadWithApp {
 input BoolFilter {
   equals: Boolean
   not: NestedBoolFilter
+}
+
+input BoolNullableFilter {
+  equals: Boolean
+  not: NestedBoolNullableFilter
 }
 
 enum BuildType {
@@ -886,6 +894,11 @@ type Mutation {
 input NestedBoolFilter {
   equals: Boolean
   not: NestedBoolFilter
+}
+
+input NestedBoolNullableFilter {
+  equals: Boolean
+  not: NestedBoolNullableFilter
 }
 
 input NestedDateTimeFilter {
@@ -1405,14 +1418,15 @@ type linkConnectionPayLoad {
 }
 
 input updateAndroidProfileInput {
+  addAdminToGoogle: Boolean!
   appStoreTitle: String!
   googleDeveloperAccount: String!
   isEnrolledToGoogle: Boolean!
   keywords: String!
   logo: String!
-  setupNewAccount: Boolean!
+  setupNewAccount: Boolean
   storeDescription: String!
-  willPublsihYourApp: Boolean!
+  willPublsihYourApp: Boolean
 }
 
 input updateAppAssetsInput {
