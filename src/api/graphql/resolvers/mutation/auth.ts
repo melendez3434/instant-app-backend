@@ -59,7 +59,7 @@ export const Mutation = mutationType({
         const isEmailExist = await ctx.db.user.findFirst({
           where: {
             email: email ? { equals: email, mode: 'insensitive' } : undefined,
-            role: { equals: 'superAdmin' },
+            // role: { equals: 'superAdmin' },
           },
         })
 
