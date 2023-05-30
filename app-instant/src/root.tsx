@@ -105,13 +105,18 @@ export default function MyRoot() {
   const responseListener = useRef()
   React.useEffect(() => {
     if (Platform.OS === 'web') return
-    registerForPushNotificationsAsync().then((token) =>
+    registerForPushNotificationsAsync().then((token) => {
+      console.log(
+        '🚀 ~ file: root.tsx:115 ~ registerForPushNotificationsAsync ~ token:',
+        token,
+      )
+
       token
         ? setExpoPushToken({
             variables: { token, id: getAppid() },
           }).catch((e) => console.log(e))
-        : null,
-    )
+        : null
+    })
 
     // This listener is fired whenever a notification is received while the app is foregrounded
     //@ts-ignore
@@ -143,8 +148,10 @@ export default function MyRoot() {
       })
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current)
-      Notifications.removeNotificationSubscription(responseListener.current)
+      Notifications.removeNotificationSubscription(
+        notificationListener.current!,
+      )
+      Notifications.removeNotificationSubscription(responseListener.current!)
     }
   }, [])
   if (!data?.app && !finalLoading)

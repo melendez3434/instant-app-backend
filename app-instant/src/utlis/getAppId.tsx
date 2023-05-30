@@ -2,7 +2,8 @@ import Constants from 'expo-constants'
 import { varPreviewer } from '../modules/previewer/defaults'
 
 export const getAppid = () => {
-  let appId = Constants.manifest?.extra?.appId || 1
+  let appId =
+    Constants.expoConfig?.extra?.appId || Constants.manifest?.extra?.appId || 1
   try {
     if (window?.location?.search?.split('=')[1]) {
       appId = Number(window?.location?.search?.split('=')[1] || 1)

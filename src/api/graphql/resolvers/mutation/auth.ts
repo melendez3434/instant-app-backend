@@ -28,90 +28,141 @@ function randomString(length, chars) {
 
 export const Mutation = mutationType({
   definition(t) {
-    t.field('signupSuperAdmin', {
+    t.field('signinSuperAdmin', {
       type: 'AuthPayLoad',
       args: {
-        email: nonNull(stringArg()),
-        name: nonNull(stringArg()),
-        logo: stringArg(),
-        companyName: stringArg(),
-        icon: stringArg(),
+        emailOrPhone: nonNull(stringArg()),
         password: nonNull(stringArg()),
       },
       async resolve(_root, args, ctx) {
-        const { email, password, logo, companyName, icon } = args
-        let slugedName = makeSlug(args.name.split(' ').slice(0, 2).join(' '))
-        console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
-        const isFirstTwoWordNameExist = await ctx.db.builder.findFirst({
+        const {
+          emailOrPhone,
+          password,
+          //  type
+        } = args
+        let phone, email
+        if (isEmail(emailOrPhone)) {
+          email = emailOrPhone
+        } else {
+          phone = emailOrPhone
+        }
+        if (email && phone)
+          throw new Error('you must provide email or phone not both')
+
+        if (!email && !phone) throw new Error('you must provide email or phone')
+        // await ctx.db.user.updateMany({
+        //   where: { email },
+        //   data: { role: 'CUSTOMER' },
+        // })
+        // lowercase their email
+
+        const isEmailExist = await ctx.db.user.findFirst({
           where: {
-            name: { equals: slugedName, mode: 'insensitive' },
+            email: email ? { equals: email, mode: 'insensitive' } : undefined,
+            role: { equals: 'superAdmin' },
           },
         })
 
-        if (isFirstTwoWordNameExist) {
-          slugedName = makeSlug(args.name.split(' ').slice(0, 3).join(' '))
+        if (!isEmailExist) {
+          throw new Error('Email does not exist')
+        }
+        const valid = await bcrypt.compare(password, isEmailExist.password)
+        if (!valid) {
+          throw new Error('Invalid Password!')
+        }
+        const token = ctx.auth.signInWithJWT(
+          isEmailExist,
+          // isEmailExist.shopDomain,
+          // ctx.host == 'www.b7r.store' ? 'admin.myb7r.store' : null,
+        )
 
-          const isFirstThreeWordNameExist = await ctx.db.builder.findFirst({
+        return { user: isEmailExist, token }
+      },
+    }),
+      t.field('signupSuperAdmin', {
+        type: 'AuthPayLoad',
+        args: {
+          email: nonNull(stringArg()),
+          name: nonNull(stringArg()),
+          logo: stringArg(),
+          companyName: stringArg(),
+          icon: stringArg(),
+          password: nonNull(stringArg()),
+        },
+        async resolve(_root, args, ctx) {
+          const { email, password, logo, companyName, icon } = args
+          let slugedName = makeSlug(args.name.split(' ').slice(0, 2).join(' '))
+          console.log('🚀 ~ file: auth.ts ~ line 35 ~ resolve ~ args', args)
+          const isFirstTwoWordNameExist = await ctx.db.builder.findFirst({
             where: {
               name: { equals: slugedName, mode: 'insensitive' },
             },
           })
-          if (isFirstThreeWordNameExist) {
-            throw new Error(
-              'Sorry but this name already exists' + ' ' + args.name,
-            )
-          }
-        }
-        // lowercase their email
-        email.toLowerCase()
-        if (password.length < 8)
-          throw new Error('password must be more than 8 characters')
 
-        const isEmailExist = await ctx.db.user.findFirst({
-          where: {
-            email: { equals: email, mode: 'insensitive' },
-            role: 'superAdmin',
-          },
-        })
+          if (isFirstTwoWordNameExist) {
+            slugedName = makeSlug(args.name.split(' ').slice(0, 3).join(' '))
 
-        if (isEmailExist) {
-          throw new Error('Email is already exist')
-        }
-        // hash their password
-        const hash = await hashPassword(password)
-        // create the user in the database
-        const admin = await ctx.db.user.create({
-          data: {
-            email,
-            password: hash,
-            role: 'superAdmin',
-          },
-        })
-        await ctx.db.builder.create({
-          data: {
-            domain: slugedName + '.' + process.env.DOMAIN,
-            name: slugedName,
-            logo,
-            companyName: companyName || slugedName,
-            icon: icon || logo,
-            owner: {
-              connect: {
-                id: admin.id,
+            const isFirstThreeWordNameExist = await ctx.db.builder.findFirst({
+              where: {
+                name: { equals: slugedName, mode: 'insensitive' },
               },
-            },
-            users: { connect: { id: admin.id } },
-          },
-        })
-        const token = ctx.auth.signInWithJWT(admin)
+            })
+            if (isFirstThreeWordNameExist) {
+              throw new Error(
+                'Sorry but this name already exists' + ' ' + args.name,
+              )
+            }
+          }
+          // lowercase their email
+          email.toLowerCase()
+          if (password.length < 8)
+            throw new Error('password must be more than 8 characters')
 
-        return {
-          user: await ctx.db.user.findUnique({
-            where: { id: admin.id },
-          }),
-          token,
-        }
-      },
-    }),
+          const isEmailExist = await ctx.db.user.findFirst({
+            where: {
+              email: { equals: email, mode: 'insensitive' },
+              role: 'superAdmin',
+            },
+          })
+
+          if (isEmailExist) {
+            throw new Error('Email is already exist')
+          }
+          // hash their password
+          const hash = await hashPassword(password)
+          // create the user in the database
+          const admin = await ctx.db.user.create({
+            data: {
+              email,
+              password: hash,
+              role: 'superAdmin',
+            },
+          })
+          await ctx.db.builder.create({
+            data: {
+              domain: slugedName + '.' + process.env.DOMAIN,
+              name: slugedName,
+              logo,
+              companyName: companyName || slugedName,
+              icon: icon || logo,
+              owner: {
+                connect: {
+                  id: admin.id,
+                },
+              },
+              users: { connect: { id: admin.id } },
+            },
+          })
+          const token = ctx.auth.signInWithJWT(admin)
+
+          return {
+            user: await ctx.db.user.findUnique({
+              where: { id: admin.id },
+            }),
+            token,
+          }
+        },
+      }),
       t.field('signup', {
         type: objectType({
           name: 'AuthPayLoadWithApp',

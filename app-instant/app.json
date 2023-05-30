@@ -20,12 +20,12 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.oakschurch",
+      "bundleIdentifier": "pumpandcrunch.com",
       "supportsTablet": true
     },
     "android": {
       "versionCode": 1,
-      "package": "com.oakschurch"
+      "package": "pumpandcrunch.com"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -38,7 +38,7 @@
       }
     },
     "runtimeVersion": {
-      "policy": "appVersion"
+      "policy": "sdkVersion"
     }
   }
 }

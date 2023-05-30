@@ -178,6 +178,13 @@ const auth = {
     role: ['all'],
     permissions: allow,
   },
+  signinSuperAdmin: {
+    name: 'signinSuperAdmin',
+    slug: 'signinSuperAdmin',
+    desc: '',
+    role: ['all'],
+    permissions: allow,
+  },
   signupSuperAdmin: {
     name: 'signupSuperAdmin',
     slug: 'signupSuperAdmin',
