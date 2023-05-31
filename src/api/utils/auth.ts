@@ -81,5 +81,6 @@ export class Auth {
   logout() {
     // this.res.clearCookie(this.accessTokenName)
     this.res.cookie(this.accessTokenName, '', cookieConfig)
+    this.res.cookie('www.instantappnow.com', '', cookieConfig)
   }
 }
