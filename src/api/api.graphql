@@ -1227,6 +1227,7 @@ type Query {
   apps(orderBy: AppOrderByWithRelationInput, skip: Int, take: Int, where: AppWhereInput): AppConnectionPayLoad
   checkWebsite(url: String!): Boolean
   deployRequests(orderBy: DeployRequestOrderByWithRelationInput, skip: Int, take: Int, where: DeployRequestWhereInput): DeployRequestConnectionPayLoad
+  getToken: AuthPayLoad
   iosProfile(id: Int!): IosProfile
   links(appId: Int!, orderBy: LinkOrderByWithRelationInput, skip: Int, take: Int, where: LinkWhereInput): linkConnectionPayLoad
   me: User

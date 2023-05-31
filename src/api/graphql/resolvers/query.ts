@@ -20,6 +20,21 @@ export const Query = queryType({
         return ctx.db.user.findUnique({ where: { id: me.id } })
       },
     }),
+      t.field('getToken', {
+        nullable: true,
+        type: 'AuthPayLoad',
+        async resolve(_root, args, ctx) {
+          const me = ctx.user
+
+          if (!me) return null
+          const user = await ctx.db.user.findUnique({ where: { id: me.id } })
+          const token = ctx.auth.signInWithJWT(user)
+          return {
+            user,
+            token,
+          }
+        },
+      }),
       t.field('checkWebsite', {
         type: 'Boolean',
         args: {

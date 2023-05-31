@@ -11,7 +11,6 @@ export const Builder = objectType({
     t.model.companyName()
     t.model.mailListId()
     t.model.mailApiToken()
-
     t.model.createdAt()
     t.model.updatedAt()
   },

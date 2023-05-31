@@ -16,6 +16,13 @@ export const queriesShield = {
     role: ['all'],
     permissions: allow,
   },
+  getToken: {
+    name: 'getToken',
+    slug: 'getToken',
+    desc: '',
+    role: ['all'],
+    permissions: allow,
+  },
   me: {
     name: 'me',
     slug: 'me',
