@@ -43,7 +43,9 @@ export class Auth {
     const { req, res, host } = this
 
     if (!req.headers.authorization) {
-      const cookie = req.cookies[this.accessTokenName]
+      const cookie =
+        req.cookies[this.accessTokenName] ||
+        req.cookies['www.instantappnow.com']
 
       if (cookie) req.headers.authorization = `bearer ${cookie}`
     }
