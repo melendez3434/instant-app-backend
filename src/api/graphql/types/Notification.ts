@@ -9,6 +9,7 @@ import {
   stringArg,
 } from 'nexus'
 import { sendNotifications } from '../../utils/notifications'
+import { prisma } from '../../utils/createContext'
 
 export const Notification = objectType({
   name: 'Notification',
@@ -244,3 +245,20 @@ export const NotifiMutation = extendType({
     })
   },
 })
+// prisma.notification
+//   .create({
+//     data: {
+//       App: { connect: { id: 27 } },
+//       title: 'test',
+//       body: 'test',
+//       publishAt: new Date(),
+//       toType: 'all',
+//       // to: to ? { connect: to.map((id) => ({ id })) } : undefined,
+//     },
+//   })
+//   .then((res) => {
+//     console.log('🚀 ~ file: Notification.ts:106 ~ resolve ~ res', res)
+//     sendNotifications().catch((e) => {
+//       console.log('🚀 ~ file: Notification.ts:106 ~ resolve ~ e', e)
+//     })
+//   })

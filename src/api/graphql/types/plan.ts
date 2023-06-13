@@ -32,6 +32,7 @@ export const PlanMutations = extendType({
         const user = await ctx.db.user.findUnique({
           where: { id: ctx.user.id },
         })
+        console.log('🚀 ~ file: plan.ts:35 ~ resolve ~ user:', user)
         const app = await ctx.db.app.findUnique({
           where: { id },
           select: { stripeSubId: true, id: true, name: true, trialLong: true },
@@ -80,7 +81,12 @@ export const PlanMutations = extendType({
           line_items: [
             {
               // price: prices.data[0].id,
-              price: process.env.STRIPE_PRODUCT_ID,
+              price:
+                user?.registerFrom == 'new'
+                  ? process.env.STRIPE_PRODUCT_ID_NEW
+                  : user?.registerFrom == 'annual'
+                  ? process.env.STRIPE_PRODUCT_ID_ANNUAL
+                  : process.env.STRIPE_PRODUCT_ID,
 
               // For metered billing, do not pass quantity
               quantity: 1,

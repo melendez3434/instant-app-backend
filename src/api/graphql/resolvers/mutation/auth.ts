@@ -188,6 +188,10 @@ export const Mutation = mutationType({
             trialLong,
             ...rest
           } = args
+          console.log(
+            '🚀 ~ file: auth.ts:191 ~ resolve ~ registerFrom:',
+            registerFrom,
+          )
 
           let appId
           // if (addAppInput) {

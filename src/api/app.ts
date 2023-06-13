@@ -293,6 +293,24 @@ const apolloServer = async () => {
     // console.log('🚀 ~ file: app.ts ~ line 192 ~ app ~ users', users)
     startCron()
 
+    // const notifications = await prisma.notificationToken.findMany({
+    //   where: { appid: 27 },
+    //   orderBy: { id: 'desc' },
+    //   include: {
+    //     user: true,
+    //   },
+    // })
+
+    // const notificationsa = await prisma.notificationToken.deleteMany({
+    //   where: {
+    //     id: {
+    //       in: [196, 187],
+    //     },
+    //   },
+    // })
+    // console.log('🚀 ~ file: app.ts:311 ~ app ~ notificationsa:', notificationsa)
+    // console.log('🚀 ~ file: app.ts:300 ~ app ~ notifications:', notifications)
+
     // console.log(
     //   '🚀 ~ file: app.ts ~ line 192 ~ app ~ users',
     //   await prisma.builder.findMany({
