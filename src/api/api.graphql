@@ -873,7 +873,7 @@ type Mutation {
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signinInApp(data: LoginInput!): AuthPayLoad
   signinSuperAdmin(emailOrPhone: String!, password: String!): AuthPayLoad
-  signup(addAppInput: addAppInput, email: String!, password: String!, registerFrom: String, trialLong: Int): AuthPayLoadWithApp
+  signup(addAppInput: addAppInput, email: String!, password: String!, registerFrom: String, trialLong: Int, utmPlan: String): AuthPayLoadWithApp
   signupInApp(data: SignUpInput!): AuthPayLoad
   signupSuperAdmin(companyName: String, email: String!, icon: String, logo: String, name: String!, password: String!): AuthPayLoad
   subscribe(id: Int!): String
@@ -1321,6 +1321,7 @@ type User {
   registerFrom: String
   role: Role!
   updatedAt: DateTime!
+  utmPlan: String
 }
 
 input UserEmailBuilderDomainCompoundUniqueInput {
@@ -1358,6 +1359,7 @@ input UserOrderByWithRelationInput {
   role: SortOrder
   stripeCustomerId: SortOrder
   updatedAt: SortOrder
+  utmPlan: SortOrder
 }
 
 input UserStripeCustomerIdBuilderDomainCompoundUniqueInput {
@@ -1388,6 +1390,7 @@ input UserWhereInput {
   role: EnumRoleFilter
   stripeCustomerId: StringNullableFilter
   updatedAt: DateTimeFilter
+  utmPlan: StringNullableFilter
 }
 
 input UserWhereUniqueInput {

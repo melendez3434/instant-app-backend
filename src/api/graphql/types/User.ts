@@ -19,6 +19,8 @@ export const User = objectType({
     t.model.password()
     t.model.role()
     t.model.registerFrom()
+    t.model.utmPlan()
+
     t.model.builderDomain()
     t.model.name()
 
