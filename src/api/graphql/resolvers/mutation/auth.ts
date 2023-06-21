@@ -176,6 +176,7 @@ export const Mutation = mutationType({
           email: nonNull(stringArg()),
           registerFrom: stringArg(),
           password: nonNull(stringArg()),
+          utmPlan: stringArg(),
           addAppInput: arg({ type: 'addAppInput' }),
           trialLong: intArg(),
         },
@@ -184,6 +185,7 @@ export const Mutation = mutationType({
             email,
             password,
             registerFrom,
+            utmPlan,
             addAppInput,
             trialLong,
             ...rest
@@ -242,6 +244,7 @@ export const Mutation = mutationType({
               builder: { connect: { domain: ctx.builderDomain } },
               role: 'user',
               registerFrom,
+              utmPlan,
             },
           })
           const token = ctx.auth.signInWithJWT(admin)

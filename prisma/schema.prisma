@@ -22,6 +22,7 @@ model User {
   builder            Builder?            @relation("builderToUsers", fields: [builderDomain], references: [domain], onDelete: Cascade)
   builderDomain      String?
   registerFrom       String?
+  utmPlan            String?
   inApp              App?                @relation("AppToUsers", fields: [appId], references: [id], onDelete: Cascade)
   appId              Int?
   notifications      Notification[]

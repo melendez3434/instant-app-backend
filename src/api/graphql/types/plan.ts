@@ -54,6 +54,7 @@ export const PlanMutations = extendType({
           userId: user?.id,
           appId: app?.id,
           utm: user?.registerFrom,
+          utmPlan: user?.utmPlan,
           trial: trialNumber,
           apollotrial:
             user?.registerFrom == 'apollosale' && trialNumber
@@ -82,9 +83,9 @@ export const PlanMutations = extendType({
             {
               // price: prices.data[0].id,
               price:
-                user?.registerFrom == 'new'
+                user?.utmPlan == 'new'
                   ? process.env.STRIPE_PRODUCT_ID_NEW
-                  : user?.registerFrom == 'annual'
+                  : user?.utmPlan == 'annual'
                   ? process.env.STRIPE_PRODUCT_ID_ANNUAL
                   : process.env.STRIPE_PRODUCT_ID,
 
