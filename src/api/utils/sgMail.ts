@@ -30,7 +30,7 @@ const sendSgMail = ({
     const result = sgMail.send(msg)
     return result
   } catch (error) {
-    console.log('🚀 ~ file: sgMail.ts:29 ~ error', error)
+    console.log('🚀 ~ file: sgMail.ts:33 ~ error:', error)
     return error
   }
 }

@@ -51,17 +51,18 @@ model Builder {
 }
 
 model App {
-  id          Int             @id @default(autoincrement())
-  name        String
-  website     String
-  appId       String
-  trialLong   Int             @default(0)
-  lang        String
-  isTrialEnd  Boolean         @default(false)
-  mustAuth    Boolean         @default(false)
-  userAgent   String?
-  tempOwner   String?
-  emailsFlags EmailTemplate[]
+  id            Int             @id @default(autoincrement())
+  name          String
+  website       String
+  appId         String
+  trialLong     Int             @default(0)
+  lang          String
+  isTrialEnd    Boolean         @default(false)
+  mustAuth      Boolean         @default(false)
+  userAgent     String?
+  tempOwner     String?
+  paymentAmount Float?
+  emailsFlags   EmailTemplate[]
 
   nextBill           DateTime?
   stripeSubId        String?             @unique

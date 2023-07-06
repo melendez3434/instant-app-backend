@@ -18,6 +18,8 @@ const handleSubscription = async (subscription) => {
       data: {
         planStatus: 'sub',
         nextBill: moment.unix(subscription.current_period_end).toDate(),
+        paymentAmount:
+          subscription.plan?.items?.data[0]?.price?.unit_amount / 100,
         // trialEndDate: new Date(),
         isTrialEnd: true,
       },

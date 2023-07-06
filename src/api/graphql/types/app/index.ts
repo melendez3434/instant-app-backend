@@ -27,7 +27,7 @@ export const App = objectType({
     t.model.isTrialEnd()
     t.model.trialLong()
     t.model.mustAuth()
-
+    t.model.paymentAmount()
     t.field('daysLeftInTrial', {
       type: 'Int',
       async resolve({ trialEndDate, planStatus }, args, ctx) {

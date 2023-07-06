@@ -70,6 +70,7 @@ type App {
   name: String!
   nextBill: DateTime
   owner: User
+  paymentAmount: Float
   planStatus: PlanStatus!
   trialLong: Int!
   userAgent: String
@@ -332,6 +333,7 @@ input AppOrderByWithRelationInput {
   notifications: NotificationOrderByRelationAggregateInput
   owner: UserOrderByWithRelationInput
   ownerId: SortOrder
+  paymentAmount: SortOrder
   planStatus: SortOrder
   stripeSubId: SortOrder
   tempOwner: SortOrder
@@ -368,6 +370,7 @@ input AppWhereInput {
   notifications: NotificationListRelationFilter
   owner: UserWhereInput
   ownerId: IntNullableFilter
+  paymentAmount: FloatNullableFilter
   planStatus: EnumPlanStatusFilter
   stripeSubId: StringNullableFilter
   tempOwner: StringNullableFilter
