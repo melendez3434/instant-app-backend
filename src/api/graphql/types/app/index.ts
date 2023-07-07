@@ -7,6 +7,8 @@ import {
   nonNull,
   objectType,
 } from 'nexus'
+import { stripe } from '../../../REST'
+import { prisma } from '../../../utils/createContext'
 var url = require('url')
 
 export const App = objectType({
@@ -27,7 +29,31 @@ export const App = objectType({
     t.model.isTrialEnd()
     t.model.trialLong()
     t.model.mustAuth()
-    t.model.paymentAmount()
+    t.model.paymentAmount({
+      async resolve({ paymentAmount, stripeSubId, id }) {
+        try {
+          if (!paymentAmount && stripeSubId) {
+            const subscription = await stripe.subscriptions.retrieve(
+              stripeSubId,
+            )
+            paymentAmount =
+              (subscription?.items?.data?.[0]?.price?.unit_amount || 0) / 100
+
+            await prisma.app.update({
+              where: {
+                id,
+              },
+              data: {
+                paymentAmount,
+              },
+            })
+          }
+        } catch (error) {
+          console.log('🚀 ~ file: index.ts:40 ~ resolve ~ error:', error)
+        }
+        return paymentAmount
+      },
+    })
     t.field('daysLeftInTrial', {
       type: 'Int',
       async resolve({ trialEndDate, planStatus }, args, ctx) {

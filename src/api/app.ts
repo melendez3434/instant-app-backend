@@ -1,6 +1,6 @@
 require('make-promises-safe')
 import cookieParser from 'cookie-parser'
-import doRestRouting from './REST'
+import doRestRouting, { stripe } from './REST'
 import slowDown from 'express-slow-down'
 import { ApolloServer } from 'apollo-server-express'
 import createExpress from 'express'
@@ -25,6 +25,7 @@ import {
 } from 'apollo-server-core'
 // import { exec } from 'child_process'
 import { startCron } from './utils/cron'
+import Stripe from 'stripe'
 // import { intercomClient } from './utils/intercom'
 // import { Operators } from 'intercom-client'
 
@@ -318,6 +319,19 @@ const apolloServer = async () => {
     //     include: { owner: true },
     //   }),
     // )
+
+    // const apps = await prisma.app.findMany({
+    //   where: { planStatus: 'sub', stripeSubId: { not: null } },
+    // })
+    // console.log('🚀 ~ file: app.ts:325 ~ app ~ apps:', apps)
+    // apps.forEach(async (app) => {
+    //   try {
+    //     stripe.subscriptions.retrieve(app.stripeSubId)
+    //   } catch (error) {
+    //     console.log('🚀 ~ file: app.ts:330 ~ app ~ error', error)
+    //   }
+    // })
+
     console.log('server running at port ' + (process.env.PORT || 4000))
   })
   app.setTimeout(25 * 1000) // 10 * 60 seconds * 1000 msecs = 10 minutes

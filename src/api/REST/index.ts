@@ -2,9 +2,12 @@ import { createContext, prisma } from '../utils/createContext'
 import moment from 'moment'
 import * as bcrypt from 'bcryptjs'
 import hashPassword from '../utils/hashPassword'
+import Stripe from 'stripe'
 
 const app = require('express')
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2022-08-01',
+})
 
 const handleSubscription = async (subscription) => {
   const status = subscription.status
