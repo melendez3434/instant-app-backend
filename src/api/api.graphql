@@ -549,8 +549,11 @@ enum DrawerMode {
 }
 
 enum EmailTemplate {
-  REMINDER
-  THREE_DAY_REMINDER
+  D_2_REMINDER
+  D_3_REMINDER
+  D_4_REMINDER
+  H_24_REMINDER
+  M_15_REMINDER
   WELCOME
 }
 

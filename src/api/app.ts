@@ -331,6 +331,18 @@ const apolloServer = async () => {
     //     console.log('🚀 ~ file: app.ts:330 ~ app ~ error', error)
     //   }
     // })
+    // await prisma.app.updateMany({
+    //   data: {
+    //     emailsFlags: {
+    //       set: [],
+    //     },
+    //   },
+    // })
+    // await prisma.user.deleteMany({
+    //   where: {
+    //     email: 'instantappbuilder@gmail.com',
+    //   },
+    // })
 
     console.log('server running at port ' + (process.env.PORT || 4000))
   })

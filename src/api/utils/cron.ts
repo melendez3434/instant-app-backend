@@ -65,42 +65,132 @@ const sendAllNotifications = async () => {
     // await sendNotifications()
     // send welcome email after 10 minutes to every new app
     await sendWelcomeEmail()
+    // send 15 minute reminder email after 15 minutes to every new app if the user didn't publish the app
+    await send15MReminderEmail()
+    await send24HReminderEmail()
+    await send2DReminderEmail()
+    await send3DReminderEmail()
+    await send4DReminderEmail()
+
     // send reminder email after 24 hour to every new app if the user didn't publish the app
     // await sendReminderEmail()
     // // send three day reminder email after 3 days to every new app if the user didn't publish the app
     // await sendThreeDayReminderEmail()
+
+    // send email to the user after 14 days of the trial period
   } catch (error) {
     console.log('🚀 ~ file: cron.ts:68 ~ sendAllNotifications ~ error', error)
   }
 }
-const sendThreeDayReminderEmail = async () => {
-  await sendEmailTemplate({
-    flag: 'THREE_DAY_REMINDER',
-    emailProps: {
-      subject: ({ name }) => `Your ${name} app is ready!`,
-    },
-  })
-}
+// const sendThreeDayReminderEmail = async () => {
+//   await sendEmailTemplate({
+//     flag: 'THREE_DAY_REMINDER',
+//     emailProps: {
+//       subject: ({ name }) => `Your ${name} app is ready!`,
+//     },
+//   })
+// }
 
-const sendReminderEmail = async () => {
-  await sendEmailTemplate({
-    flag: 'REMINDER',
-    emailProps: {
-      subject: 'We’re ready for you...',
-    },
-  })
-}
+// const sendReminderEmail = async () => {
+//   await sendEmailTemplate({
+//     flag: 'REMINDER',
+//     emailProps: {
+//       subject: 'We’re ready for you...',
+//     },
+//   })
+// }
 
 const sendWelcomeEmail = async () => {
   await sendEmailTemplate({
     flag: 'WELCOME',
-    emailProps: {
-      subject: (variables) =>
-        `Welcome to ${variables.owner?.builder?.companyName}! `,
-      // subject: ' Let’s get your app live! 2 Steps to go...',
-    },
+    // emailProps: {
+    //   subject: (variables) =>
+    //     `Welcome to ${variables.owner?.builder?.companyName}! `,
+    //   // subject: ' Let’s get your app live! 2 Steps to go...',
+    // },
   })
 }
+
+const send15MReminderEmail = async () => {
+  await sendEmailTemplate({
+    flag: 'M_15_REMINDER',
+  })
+}
+
+const send24HReminderEmail = async () => {
+  await sendEmailTemplate({
+    flag: 'H_24_REMINDER',
+  })
+}
+const send2DReminderEmail = async () => {
+  await sendEmailTemplate({
+    flag: 'D_2_REMINDER',
+  })
+}
+const send3DReminderEmail = async () => {
+  await sendEmailTemplate({
+    flag: 'D_3_REMINDER',
+  })
+}
+const send4DReminderEmail = async () => {
+  await sendEmailTemplate({
+    flag: 'D_4_REMINDER',
+  })
+}
+
+const getRangeFilter = (flag: EmailTemplate) => {
+  switch (flag) {
+    case 'WELCOME':
+      return {
+        lt: moment().toDate(),
+        gt: moment().subtract(30, 'minute').toDate(),
+      }
+      break
+    case 'M_15_REMINDER':
+      return {
+        lt: moment().subtract(15, 'minute').toDate(),
+        gt: moment().subtract(24, 'hour').toDate(),
+      }
+    case 'H_24_REMINDER':
+      return {
+        lt: moment().subtract(24, 'hour').toDate(),
+        gt: moment().subtract(2, 'day').toDate(),
+      }
+    case 'D_2_REMINDER':
+      return {
+        lt: moment().subtract(2, 'day').toDate(),
+        gt: moment().subtract(3, 'day').toDate(),
+      }
+    case 'D_3_REMINDER':
+      return {
+        lt: moment().subtract(3, 'day').toDate(),
+        gt: moment().subtract(4, 'day').toDate(),
+      }
+    case 'D_4_REMINDER':
+      return {
+        lt: moment().subtract(4, 'day').toDate(),
+        gt: moment().subtract(5, 'day').toDate(),
+      }
+  }
+}
+
+// flag === 'THREE_DAY_REMINDER'
+// ? {
+//     lt: moment().subtract(3, 'day').toDate(),
+//     gt: moment().subtract(4, 'day').toDate(),
+//   }
+// : flag === 'REMINDER'
+// ? {
+//     lt: moment().subtract(24, 'hour').toDate(),
+//     gt: moment().subtract(25, 'hour').toDate(),
+//   }
+// : flag === 'WELCOME'
+// ? {
+//     lt: moment().toDate(),
+//     gt: moment().subtract(60, 'minute').toDate(),
+//   }
+// : undefined,
+
 const sendEmailTemplate = async ({
   flag,
   select = {},
@@ -108,37 +198,27 @@ const sendEmailTemplate = async ({
 }: {
   select?: Prisma.AppSelect
   flag: EmailTemplate
-  emailProps: {
+  emailProps?: {
     subject: string | ((variables?: any) => string)
     variables?: any
   }
 }) => {
-  const apps = await prisma.app.findMany({
+  const date = getRangeFilter(flag)
+  console.log('🚀 ~ file: cron.ts:207 ~ date:', date)
+  const appsB4Filter = await prisma.app.findMany({
     where: {
-      NOT: { emailsFlags: { hasSome: [flag] } },
+      // NOT: { emailsFlags: { has: flag } },
       // createdAt: { lt: moment().subtract(24, 'hour').toDate() },
-      createdAt:
-        flag === 'THREE_DAY_REMINDER'
-          ? {
-              lt: moment().subtract(3, 'day').toDate(),
-              gt: moment().subtract(4, 'day').toDate(),
-            }
-          : flag === 'REMINDER'
-          ? {
-              lt: moment().subtract(24, 'hour').toDate(),
-              gt: moment().subtract(25, 'hour').toDate(),
-            }
-          : flag === 'WELCOME'
-          ? {
-              lt: moment().toDate(),
-              gt: moment().subtract(60, 'minute').toDate(),
-            }
-          : undefined,
+      createdAt: date,
       // AND: [{ AndroidProfile: { is: null } }, { iosProfile: { is: null } }],
     },
+    orderBy: {
+      id: 'desc',
+    },
+    take: 2,
     select: {
       ...select,
-
+      emailsFlags: true,
       name: true,
       id: true,
       tempOwner: true,
@@ -156,11 +236,19 @@ const sendEmailTemplate = async ({
       },
     },
   })
+  console.log('🚀 ~ file: cron.ts:239 ~ appsB4Filter:', appsB4Filter)
+  const apps = appsB4Filter.filter((app) => {
+    return !app.emailsFlags.includes(flag)
+  })
+
   console.log(
     '🚀 ~ file: cron.ts:150 ~ apps:',
     apps,
     flag,
     await prisma.app.findMany({
+      // where: {
+      //   AND: [{ NOT: { emailsFlags: { hasSome: [flag] } } }],
+      // },
       take: 1,
       orderBy: { createdAt: 'desc' },
     }),
@@ -180,9 +268,9 @@ const sendEmailTemplate = async ({
       const { id, name, owner, tempOwner } = variables
       const EmailAddress = owner?.email || tempOwner
       const subject =
-        typeof emailProps.subject === 'function'
+        typeof emailProps?.subject === 'function'
           ? emailProps.subject(variables)
-          : emailProps.subject
+          : emailProps?.subject
       try {
         EmailAddress &&
           (await sendSgMail({
@@ -197,8 +285,9 @@ const sendEmailTemplate = async ({
               profileLink: `https://${owner?.builderDomain}/profile`,
               unsubscribeLink: `https://${owner?.builderDomain}/unsubscribe`,
               appName: name,
+              appUrl: `https://${owner?.builderDomain}/app/${id}`,
               url: 'https://' + owner?.builderDomain,
-              ...(emailProps.variables || {}),
+              ...(emailProps?.variables || {}),
             },
           }))
 
@@ -223,7 +312,7 @@ const sendEmailTemplate = async ({
 }
 
 export const startCron = async () => {
-  // sendAllNotifications()
+  sendAllNotifications()
   cronManager.add(
     'sendNotifications',
     '*/5 * * * *',
