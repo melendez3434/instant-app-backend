@@ -313,6 +313,7 @@ input AppOrderByRelationAggregateInput {
 
 input AppOrderByWithRelationInput {
   AndroidProfile: AndroidProfileOrderByWithRelationInput
+  androidLiveUrl: SortOrder
   appBuilds: AppBuildOrderByRelationAggregateInput
   appId: SortOrder
   assets: AppAssetOrderByWithRelationInput
@@ -321,6 +322,7 @@ input AppOrderByWithRelationInput {
   design: AppDesignOrderByWithRelationInput
   emailsFlags: SortOrder
   id: SortOrder
+  iosLiveUrl: SortOrder
   iosProfile: IosProfileOrderByWithRelationInput
   isTrialEnd: SortOrder
   lang: SortOrder
@@ -350,6 +352,7 @@ input AppWhereInput {
   AndroidProfile: AndroidProfileWhereInput
   NOT: [AppWhereInput!]
   OR: [AppWhereInput!]
+  androidLiveUrl: StringNullableFilter
   appBuilds: AppBuildListRelationFilter
   appId: StringFilter
   assets: AppAssetWhereInput
@@ -358,6 +361,7 @@ input AppWhereInput {
   design: AppDesignWhereInput
   emailsFlags: EnumEmailTemplateNullableListFilter
   id: IntFilter
+  iosLiveUrl: StringNullableFilter
   iosProfile: IosProfileWhereInput
   isTrialEnd: BoolFilter
   lang: StringFilter
@@ -549,10 +553,14 @@ enum DrawerMode {
 }
 
 enum EmailTemplate {
+  ANDROID_LIVE
+  ANDROID_PUBLISH
   D_2_REMINDER
   D_3_REMINDER
   D_4_REMINDER
   H_24_REMINDER
+  IOS_LIVE
+  IOS_PUBLISH
   M_15_REMINDER
   WELCOME
 }
@@ -891,6 +899,7 @@ type Mutation {
   updateDeployRequest(data: updateDeployRequestInput!, id: Int!): DeployRequest
   updateIosProfile(data: updateIosProfileInput!, id: Int!): IosProfile
   updateLink(data: updateLinkInput!, id: Int!): Link
+  updateLiveUrl(data: updateLiveUrlInput!, id: Int!): App
   updateMyBuilder(data: updateMyBuilderInput!): Builder
   updateMyProfile(data: updateMyProfileInput!): User
   updateNotification(body: String!, id: Int!, publishAt: DateTime, title: String!, to: [Int!], toType: ToType!): Notification
@@ -1509,6 +1518,11 @@ input updateLinkInput {
   icon: String
   name: String
   type: LinkType
+}
+
+input updateLiveUrlInput {
+  platform: AppBuildPlatform
+  url: String
 }
 
 input updateMyBuilderInput {

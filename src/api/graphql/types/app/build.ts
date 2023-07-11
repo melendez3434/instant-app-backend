@@ -17,6 +17,7 @@ const path = require('path')
 import fs from 'fs'
 import { Context } from '../../../utils/context'
 import { intercomClient } from '../../../utils/intercom'
+import { sendEmailTemplate } from '../../../utils/cron'
 
 export const AppBuild = objectType({
   name: 'AppBuild',
@@ -338,6 +339,15 @@ npx eas build --platform ${platform}  --json  --non-interactive
                   })
                   if (process.env.NODE_ENV !== 'development') {
                     try {
+                      buildData.status == 'FINISHED' &&
+                        sendEmailTemplate({
+                          id,
+                          flag:
+                            platform == 'android'
+                              ? 'ANDROID_PUBLISH'
+                              : 'IOS_PUBLISH',
+                        })
+
                       const response = await intercomClient.events.create({
                         eventName: 'app-build-success',
                         createdAt: Math.floor(Date.now() / 1000),

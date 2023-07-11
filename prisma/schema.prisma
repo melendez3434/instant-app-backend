@@ -51,18 +51,20 @@ model Builder {
 }
 
 model App {
-  id            Int             @id @default(autoincrement())
-  name          String
-  website       String
-  appId         String
-  trialLong     Int             @default(0)
-  lang          String
-  isTrialEnd    Boolean         @default(false)
-  mustAuth      Boolean         @default(false)
-  userAgent     String?
-  tempOwner     String?
-  paymentAmount Float?
-  emailsFlags   EmailTemplate[]
+  id             Int             @id @default(autoincrement())
+  name           String
+  website        String
+  iosLiveUrl     String?
+  androidLiveUrl String?
+  appId          String
+  trialLong      Int             @default(0)
+  lang           String
+  isTrialEnd     Boolean         @default(false)
+  mustAuth       Boolean         @default(false)
+  userAgent      String?
+  tempOwner      String?
+  paymentAmount  Float?
+  emailsFlags    EmailTemplate[]
 
   nextBill           DateTime?
   stripeSubId        String?             @unique
@@ -346,4 +348,8 @@ enum EmailTemplate {
   D_2_REMINDER
   D_3_REMINDER
   D_4_REMINDER
+  ANDROID_PUBLISH
+  IOS_PUBLISH
+  ANDROID_LIVE
+  IOS_LIVE
 }

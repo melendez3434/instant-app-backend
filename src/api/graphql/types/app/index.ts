@@ -9,6 +9,7 @@ import {
 } from 'nexus'
 import { stripe } from '../../../REST'
 import { prisma } from '../../../utils/createContext'
+import { sendEmailTemplate } from '../../../utils/cron'
 var url = require('url')
 
 export const App = objectType({
@@ -229,6 +230,43 @@ export const Appmutations = extendType({
             owner: { connect: { id: ctx.user.id } },
           },
         })
+      },
+    })
+
+    t.field('updateLiveUrl', {
+      type: 'App',
+      args: {
+        id: nonNull(intArg()),
+        data: arg({
+          type: inputObjectType({
+            name: 'updateLiveUrlInput',
+            definition(t) {
+              t.string('url')
+              t.field({ name: 'platform', type: 'AppBuildPlatform' })
+            },
+          }),
+          required: true,
+        }),
+      },
+
+      async resolve(_root, args, ctx) {
+        let { platform, url } = args.data
+        const app = await ctx.db.app.update({
+          where: { id: args.id },
+          data: {
+            iosLiveUrl: platform == 'ios' ? url : undefined,
+            androidLiveUrl: platform == 'android' ? url : undefined,
+          },
+        })
+
+        sendEmailTemplate({
+          id: args.id,
+          flag: platform == 'android' ? 'ANDROID_PUBLISH' : 'IOS_PUBLISH',
+        })
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err))
+
+        return app
       },
     })
     t.field('updateApp', {

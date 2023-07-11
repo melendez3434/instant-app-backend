@@ -191,11 +191,13 @@ const getRangeFilter = (flag: EmailTemplate) => {
 //   }
 // : undefined,
 
-const sendEmailTemplate = async ({
+export const sendEmailTemplate = async ({
   flag,
   select = {},
   emailProps,
+  id,
 }: {
+  id?: number
   select?: Prisma.AppSelect
   flag: EmailTemplate
   emailProps?: {
@@ -207,6 +209,7 @@ const sendEmailTemplate = async ({
   console.log('🚀 ~ file: cron.ts:207 ~ date:', date)
   const appsB4Filter = await prisma.app.findMany({
     where: {
+      id: id ? id : undefined,
       // NOT: { emailsFlags: { has: flag } },
       // createdAt: { lt: moment().subtract(24, 'hour').toDate() },
       createdAt: date,

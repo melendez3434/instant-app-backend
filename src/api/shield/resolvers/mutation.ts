@@ -70,6 +70,13 @@ const appMutationsShield = {
     role: ['all'],
     permissions: isAppOwner,
   },
+  updateLiveUrl: {
+    name: 'updateLiveUrl',
+    slug: 'updateLiveUrl',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
   addDeployRequest: {
     name: 'addDeployRequest',
     slug: 'addDeployRequest',
