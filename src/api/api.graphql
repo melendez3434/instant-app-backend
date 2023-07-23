@@ -424,10 +424,12 @@ type Builder {
   domain: String!
   icon: String
   id: Int!
+  isStripeConnected: Boolean
   logo: String
   mailApiToken: String
   mailListId: String
   name: String!
+  stripeAccountId: String
   updatedAt: DateTime!
 }
 
@@ -443,6 +445,7 @@ input BuilderOrderByWithRelationInput {
   name: SortOrder
   owner: UserOrderByWithRelationInput
   ownerId: SortOrder
+  stripeAccountId: SortOrder
   updatedAt: SortOrder
   users: UserOrderByRelationAggregateInput
 }
@@ -462,6 +465,7 @@ input BuilderWhereInput {
   name: StringFilter
   owner: UserWhereInput
   ownerId: IntFilter
+  stripeAccountId: StringNullableFilter
   updatedAt: DateTimeFilter
   users: UserListRelationFilter
 }
@@ -880,6 +884,7 @@ type Mutation {
   endMyTrial(id: Int!): Boolean
   fastSignup(email: String!, website: String!): Boolean
   generateBuild(androidCertAuto: Boolean, buildType: BuildType! = apk, distributionCertificate: String, distributionCertificatePassword: String, id: Int!, keyAlias: String, keyPassword: String, keystorePassword: String, keystoreUrl: String, platform: AppBuildPlatform!, provisioningProfilePath: String): AppBuild
+  getStripeExpressLink: String
   removeNotification(id: Int!): Notification
   requestReset(email: String!): String
   resetPassword(password: String!): User

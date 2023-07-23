@@ -1,8 +1,6 @@
 import moment from 'moment'
 import { extendType, intArg, nonNull } from 'nexus'
-
-// This is your test secret API key.
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+import { stripe } from '../../REST'
 
 export const PlanMutations = extendType({
   type: 'Mutation',
@@ -37,22 +35,42 @@ export const PlanMutations = extendType({
           where: { id },
           select: { stripeSubId: true, id: true, name: true, trialLong: true },
         })
+        const builder = await ctx.db.builder.findUnique({
+          where: { domain: ctx.builderDomain },
+          select: { stripeAccountId: true },
+        })
+        let account: any = {}
+        try {
+          account = await stripe.accounts.retrieve(builder?.stripeAccountId!)
+        } catch (error) {
+          console.log('🚀 ~ file: plan.ts:49 ~ resolve ~ error:', error)
+        }
+        const price =
+          user?.utmPlan == 'new'
+            ? process.env.STRIPE_PRODUCT_ID_NEW
+            : user?.utmPlan == 'annual'
+            ? process.env.STRIPE_PRODUCT_ID_ANNUAL
+            : process.env.STRIPE_PRODUCT_ID
+        const priceOfProduct = await stripe.prices.retrieve(price!)
+
+        console.log('🚀 ~ file: builder.ts:23 ~ resolve ~ account:', account)
+
         const trialNumber = app?.trialLong
 
         if (app?.stripeSubId) {
           const returnUrl = YOUR_DOMAIN
 
           const portalSession = await stripe.billingPortal.sessions.create({
-            customer: user?.stripeCustomerId,
+            customer: user?.stripeCustomerId!,
             return_url: returnUrl + `/app/${id}`,
           })
 
           return portalSession.url
         }
-        const metadata = {
+        const metadata: any = {
           builderName: ctx.builderDomain.split('.')[0],
-          userId: user?.id,
-          appId: app?.id,
+          userId: user?.id.toString(),
+          appId: app?.id.toString(),
           utm: user?.registerFrom,
           utmPlan: user?.utmPlan,
           trial: trialNumber,
@@ -74,7 +92,7 @@ export const PlanMutations = extendType({
           }))
         const session = await stripe.checkout.sessions.create({
           billing_address_collection: 'auto',
-          client_reference_id: user?.id,
+          client_reference_id: user?.id.toString() ?? undefined,
           customer: customer?.id ?? undefined,
           customer_email: customer?.id ? undefined : ctx.user.email,
 
@@ -82,12 +100,7 @@ export const PlanMutations = extendType({
           line_items: [
             {
               // price: prices.data[0].id,
-              price:
-                user?.utmPlan == 'new'
-                  ? process.env.STRIPE_PRODUCT_ID_NEW
-                  : user?.utmPlan == 'annual'
-                  ? process.env.STRIPE_PRODUCT_ID_ANNUAL
-                  : process.env.STRIPE_PRODUCT_ID,
+              price,
 
               // For metered billing, do not pass quantity
               quantity: 1,
@@ -102,6 +115,16 @@ export const PlanMutations = extendType({
             // trial_end: moment().add(3, 'day').unix(),
             trial_period_days: trialNumber || undefined,
           },
+          payment_intent_data:
+            builder?.stripeAccountId && account?.details_submitted
+              ? {
+                  transfer_data: {
+                    amount: (priceOfProduct?.unit_amount || 0) * 0.75,
+                    // The destination of this Payment Intent is the pilot's Stripe account
+                    destination: builder?.stripeAccountId,
+                  },
+                }
+              : undefined,
           mode: 'subscription',
           success_url: `${YOUR_DOMAIN}/app/${id}/deploy?success=true&session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${YOUR_DOMAIN}/subscribe/?canceled=true`,
@@ -124,7 +147,7 @@ export const PlanMutations = extendType({
           console.log('🚀 ~ file: plan.ts:115 ~ resolve ~ app:', app)
 
           const subscription = await stripe.subscriptions.update(
-            app?.stripeSubId,
+            app?.stripeSubId!,
             { trial_end: 'now' },
           )
           // await ctx.db.app.update({

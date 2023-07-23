@@ -1,4 +1,5 @@
 import { arg, extendType, inputObjectType, intArg, objectType } from 'nexus'
+import { stripe } from '../../REST'
 
 export const Builder = objectType({
   name: 'Builder',
@@ -11,8 +12,23 @@ export const Builder = objectType({
     t.model.companyName()
     t.model.mailListId()
     t.model.mailApiToken()
+    t.model.stripeAccountId()
     t.model.createdAt()
     t.model.updatedAt()
+    t.field('isStripeConnected', {
+      type: 'Boolean',
+      async resolve(source, args, ctx) {
+        // Retrieve the user's Stripe account and check if they have finished onboarding
+        const account = await stripe.accounts.retrieve(source.stripeAccountId!)
+        console.log('🚀 ~ file: builder.ts:23 ~ resolve ~ account:', account)
+        if (account.details_submitted) {
+          return true
+        } else {
+          console.log('The onboarding process was not completed.')
+          return false
+        }
+      },
+    })
   },
 })
 

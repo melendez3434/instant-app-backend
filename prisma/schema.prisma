@@ -8,11 +8,10 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  role  Role    @default(user)
-  email String
-  name  String?
-
+  id                 Int                 @id @default(autoincrement())
+  role               Role                @default(user)
+  email              String
+  name               String?
   password           String
   stripeCustomerId   String?
   createdAt          DateTime            @default(now())
@@ -35,19 +34,21 @@ model User {
 }
 
 model Builder {
-  id           Int      @id @default(autoincrement())
-  name         String
-  domain       String   @unique
-  companyName  String?
-  mailApiToken String?
-  mailListId   String?
-  icon         String?
-  logo         String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  owner        User     @relation("builderToOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId      Int      @unique
-  users        User[]   @relation("builderToUsers")
+  id              Int     @id @default(autoincrement())
+  name            String
+  domain          String  @unique
+  companyName     String?
+  mailApiToken    String?
+  mailListId      String?
+  icon            String?
+  logo            String?
+  stripeAccountId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  owner     User     @relation("builderToOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId   Int      @unique
+  users     User[]   @relation("builderToUsers")
 }
 
 model App {
