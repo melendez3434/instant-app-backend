@@ -343,6 +343,8 @@ const apolloServer = async () => {
     //     email: 'instantappbuilder@gmail.com',
     //   },
     // })
+    // const users = await prisma.user.findMany({})
+    // console.log('🚀 ~ file: app.ts:348 ~ app ~ users:', users)
 
     console.log('server running at port ' + (process.env.PORT || 4000))
   })

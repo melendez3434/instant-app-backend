@@ -42,6 +42,7 @@ export const PlanMutations = extendType({
         let account: any = {}
         try {
           account = await stripe.accounts.retrieve(builder?.stripeAccountId!)
+          console.log('🚀 ~ file: plan.ts:45 ~ resolve ~ account:', account)
         } catch (error) {
           console.log('🚀 ~ file: plan.ts:49 ~ resolve ~ error:', error)
         }
@@ -52,6 +53,10 @@ export const PlanMutations = extendType({
             ? process.env.STRIPE_PRODUCT_ID_ANNUAL
             : process.env.STRIPE_PRODUCT_ID
         const priceOfProduct = await stripe.prices.retrieve(price!)
+        console.log(
+          '🚀 ~ file: plan.ts:56 ~ resolve ~ priceOfProduct:',
+          priceOfProduct,
+        )
 
         console.log('🚀 ~ file: builder.ts:23 ~ resolve ~ account:', account)
 
@@ -114,6 +119,13 @@ export const PlanMutations = extendType({
             description: app?.name,
             // trial_end: moment().add(3, 'day').unix(),
             trial_period_days: trialNumber || undefined,
+            transfer_data:
+              builder?.stripeAccountId && account?.details_submitted
+                ? {
+                    destination: builder?.stripeAccountId,
+                    amount_percent: 75,
+                  }
+                : undefined,
           },
           payment_intent_data:
             builder?.stripeAccountId && account?.details_submitted
