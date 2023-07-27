@@ -18,7 +18,7 @@ export const stripeMutations = extendType({
           // Define the parameters to create a new Stripe account with
 
           const account = await stripe.accounts.create({
-            type: 'express',
+            type: 'standard',
             // country: user.country || undefined,
             email: user.email || undefined,
             business_type: 'individual',

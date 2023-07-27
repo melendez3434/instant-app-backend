@@ -346,7 +346,7 @@ const apolloServer = async () => {
     // const users = await prisma.user.findMany({})
     // console.log('🚀 ~ file: app.ts:348 ~ app ~ users:', users)
     // await prisma.app.update({
-    //   where: { id: 542 },
+    //   where: { id: 569 },
     //   data: {
     //     isTrialEnd: false,
     //   },
