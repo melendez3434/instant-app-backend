@@ -35,6 +35,7 @@ const handleSubscription = async (subscription) => {
       data: {
         planStatus: 'inTrial',
         trialEndDate: moment.unix(subscription.trial_end).toDate(),
+        isTrialEnd: false,
       },
     })
   } else {
