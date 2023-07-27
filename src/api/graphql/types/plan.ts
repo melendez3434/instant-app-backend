@@ -37,7 +37,7 @@ export const PlanMutations = extendType({
         })
         const builder = await ctx.db.builder.findUnique({
           where: { domain: ctx.builderDomain },
-          select: { stripeAccountId: true },
+          select: { stripeAccountId: true, companyName: true },
         })
         let account: any = {}
         try {
@@ -57,21 +57,79 @@ export const PlanMutations = extendType({
           '🚀 ~ file: plan.ts:56 ~ resolve ~ priceOfProduct:',
           priceOfProduct,
         )
+        let lastPrice = price
+
+        if (builder?.stripeAccountId && account?.details_submitted) {
+          const prices = await stripe.prices.list(
+            {},
+            {
+              stripeAccount: builder?.stripeAccountId,
+            },
+          )
+          console.log('🚀 ~ file: plan.ts:63 ~ resolve ~ prices:', prices)
+          lastPrice = prices.data.find(
+            (price) =>
+              // price.product == priceOfProduct.product &&
+              price.unit_amount == priceOfProduct.unit_amount &&
+              price.recurring?.interval == priceOfProduct.recurring?.interval,
+          )?.id
+          if (!lastPrice) {
+            const products = await stripe.products.list(
+              {},
+              {
+                stripeAccount: builder?.stripeAccountId,
+              },
+            )
+            console.log('🚀 ~ file: plan.ts:74 ~ resolve ~ products:', products)
+            const product = products.data.find(
+              (product) =>
+                product.name == (builder.companyName! || 'Instant App'),
+            )
+            console.log('🚀 ~ file: plan.ts:77 ~ resolve ~ product:', product)
+
+            lastPrice = (
+              await stripe.prices.create(
+                {
+                  unit_amount: priceOfProduct.unit_amount || 0,
+                  currency: priceOfProduct.currency,
+                  recurring: {
+                    interval: priceOfProduct.recurring?.interval!,
+                    interval_count: priceOfProduct.recurring?.interval_count,
+                    // aggregate_usage: priceOfProduct.recurring?.aggregate_usage!,
+                    trial_period_days:
+                      priceOfProduct.recurring?.trial_period_days!,
+                    usage_type: priceOfProduct.recurring?.usage_type!,
+                  },
+                  product_data: !product?.id
+                    ? {
+                        name: builder.companyName! || 'Instant App',
+                      }
+                    : undefined,
+                  product: product?.id || undefined,
+                },
+                {
+                  stripeAccount: builder?.stripeAccountId,
+                },
+              )
+            ).id
+          }
+        }
 
         console.log('🚀 ~ file: builder.ts:23 ~ resolve ~ account:', account)
 
         const trialNumber = app?.trialLong
+        try {
+          if (app?.stripeSubId) {
+            const returnUrl = YOUR_DOMAIN
 
-        if (app?.stripeSubId) {
-          const returnUrl = YOUR_DOMAIN
+            const portalSession = await stripe.billingPortal.sessions.create({
+              customer: user?.stripeCustomerId!,
+              return_url: returnUrl + `/app/${id}`,
+            })
 
-          const portalSession = await stripe.billingPortal.sessions.create({
-            customer: user?.stripeCustomerId!,
-            return_url: returnUrl + `/app/${id}`,
-          })
-
-          return portalSession.url
-        }
+            return portalSession.url
+          }
+        } catch (error) {}
         const metadata: any = {
           builderName: ctx.builderDomain.split('.')[0],
           userId: user?.id.toString(),
@@ -84,63 +142,101 @@ export const PlanMutations = extendType({
               ? 'yes'
               : undefined,
         }
-        const customer = !user?.stripeCustomerId
-          ? await stripe.customers.create({
-              email: ctx.user.email,
-              metadata,
-            })
+        let isCustomerExist: any = false
+        console.log(
+          '🚀 ~ file: plan.ts:88 ~ resolve ~ isCustomerExist:',
+          isCustomerExist,
+        )
+        try {
+          isCustomerExist = user?.stripeCustomerId
+            ? await stripe.customers.retrieve(
+                user?.stripeCustomerId,
+                {},
+                {
+                  stripeAccount:
+                    builder?.stripeAccountId && account?.details_submitted
+                      ? builder?.stripeAccountId
+                      : undefined,
+                },
+              )
+            : false
+        } catch (error) {
+          console.log('🚀 ~ file: plan.ts:107 ~ resolve ~ error:', error)
+        }
+        console.log(
+          '🚀 ~ file: plan.ts:88 ~ resolve ~ isCustomerExist:',
+          isCustomerExist,
+        )
+        const customer = !isCustomerExist?.id
+          ? await stripe.customers.create(
+              {
+                email: ctx.user.email,
+                metadata,
+              },
+              {
+                stripeAccount:
+                  account?.details_submitted && builder?.stripeAccountId
+                    ? builder?.stripeAccountId
+                    : undefined,
+              },
+            )
           : { id: user?.stripeCustomerId }
-        !user?.stripeCustomerId &&
-          (await ctx.db.user.update({
-            where: { id: ctx.user.id },
-            data: { stripeCustomerId: customer.id },
-          }))
-        const session = await stripe.checkout.sessions.create({
-          billing_address_collection: 'auto',
-          client_reference_id: user?.id.toString() ?? undefined,
-          customer: customer?.id ?? undefined,
-          customer_email: customer?.id ? undefined : ctx.user.email,
 
-          metadata,
-          line_items: [
-            {
-              // price: prices.data[0].id,
-              price,
+        await ctx.db.user.update({
+          where: { id: ctx.user.id },
+          data: { stripeCustomerId: customer.id },
+        })
 
-              // For metered billing, do not pass quantity
-              quantity: 1,
-            },
-          ],
-          // payment_intent_data: {
-          //   metadata,
-          // },
-          subscription_data: {
+        const session = await stripe.checkout.sessions.create(
+          {
+            billing_address_collection: 'auto',
+            client_reference_id: user?.id.toString() ?? undefined,
+            customer: customer?.id ?? undefined,
+            customer_email: customer?.id ? undefined : ctx.user.email,
+
             metadata,
-            description: app?.name,
-            // trial_end: moment().add(3, 'day').unix(),
-            trial_period_days: trialNumber || undefined,
-            transfer_data:
-              builder?.stripeAccountId && account?.details_submitted
-                ? {
-                    destination: builder?.stripeAccountId,
-                    amount_percent: 75,
-                  }
+            line_items: [
+              {
+                // price: prices.data[0].id,
+                price: lastPrice,
+
+                // For metered billing, do not pass quantity
+                quantity: 1,
+              },
+            ],
+            // payment_intent_data: {
+            //   metadata,
+            // },
+            subscription_data: {
+              metadata,
+              description: app?.name,
+              // trial_end: moment().add(3, 'day').unix(),
+              trial_period_days: trialNumber || undefined,
+              application_fee_percent:
+                builder?.stripeAccountId && account?.details_submitted
+                  ? 25
+                  : undefined,
+
+              // transfer_data:
+              //   builder?.stripeAccountId && account?.details_submitted
+              //     ? {
+              //         destination: builder?.stripeAccountId,
+              //         amount_percent: 75,
+              //       }
+              //     : undefined,
+            },
+
+            mode: 'subscription',
+            success_url: `${YOUR_DOMAIN}/app/${id}/deploy?success=true&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${YOUR_DOMAIN}/subscribe/?canceled=true`,
+          },
+          {
+            stripeAccount:
+              account?.details_submitted && builder?.stripeAccountId
+                ? builder?.stripeAccountId
                 : undefined,
           },
-          payment_intent_data:
-            builder?.stripeAccountId && account?.details_submitted
-              ? {
-                  transfer_data: {
-                    amount: (priceOfProduct?.unit_amount || 0) * 0.75,
-                    // The destination of this Payment Intent is the pilot's Stripe account
-                    destination: builder?.stripeAccountId,
-                  },
-                }
-              : undefined,
-          mode: 'subscription',
-          success_url: `${YOUR_DOMAIN}/app/${id}/deploy?success=true&session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${YOUR_DOMAIN}/subscribe/?canceled=true`,
-        })
+        )
         console.log('🚀 ~ file: plan.ts ~ line 31 ~ resolve ~ session', session)
 
         return session.url

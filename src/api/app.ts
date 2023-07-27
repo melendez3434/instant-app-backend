@@ -345,12 +345,12 @@ const apolloServer = async () => {
     // })
     // const users = await prisma.user.findMany({})
     // console.log('🚀 ~ file: app.ts:348 ~ app ~ users:', users)
-    await prisma.app.update({
-      where: { id: 542 },
-      data: {
-        isTrialEnd: false,
-      },
-    })
+    // await prisma.app.update({
+    //   where: { id: 542 },
+    //   data: {
+    //     isTrialEnd: false,
+    //   },
+    // })
     console.log('server running at port ' + (process.env.PORT || 4000))
   })
   app.setTimeout(25 * 1000) // 10 * 60 seconds * 1000 msecs = 10 minutes
