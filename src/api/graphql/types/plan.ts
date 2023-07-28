@@ -12,6 +12,7 @@ export const PlanMutations = extendType({
         // trial: intArg(),
       },
       async resolve(source, { id }, ctx) {
+        console.log('🚀 ~ file: plan.ts:15 ~ resolve ~ id:', id)
         const YOUR_DOMAIN = 'http://' + ctx.builderDomain
         console.log(
           '🚀 ~ file: plan.ts:18 ~ resolve ~ YOUR_DOMAIN:',
@@ -86,32 +87,41 @@ export const PlanMutations = extendType({
                 product.name == (builder.companyName! || 'Instant App'),
             )
             console.log('🚀 ~ file: plan.ts:77 ~ resolve ~ product:', product)
-
-            lastPrice = (
-              await stripe.prices.create(
-                {
-                  unit_amount: priceOfProduct.unit_amount || 0,
-                  currency: priceOfProduct.currency,
-                  recurring: {
-                    interval: priceOfProduct.recurring?.interval!,
-                    interval_count: priceOfProduct.recurring?.interval_count,
-                    // aggregate_usage: priceOfProduct.recurring?.aggregate_usage!,
-                    trial_period_days:
-                      priceOfProduct.recurring?.trial_period_days!,
-                    usage_type: priceOfProduct.recurring?.usage_type!,
+            try {
+              lastPrice = (
+                await stripe.prices.create(
+                  {
+                    unit_amount: priceOfProduct.unit_amount || 0,
+                    currency: priceOfProduct.currency,
+                    recurring: {
+                      interval: priceOfProduct.recurring?.interval!,
+                      interval_count: priceOfProduct.recurring?.interval_count,
+                      // aggregate_usage: priceOfProduct.recurring?.aggregate_usage!,
+                      trial_period_days:
+                        priceOfProduct.recurring?.trial_period_days ||
+                        undefined,
+                      usage_type: priceOfProduct.recurring?.usage_type!,
+                    },
+                    product_data: !product?.id
+                      ? {
+                          name: builder.companyName! || 'Instant App',
+                        }
+                      : undefined,
+                    product: product?.id || undefined,
                   },
-                  product_data: !product?.id
-                    ? {
-                        name: builder.companyName! || 'Instant App',
-                      }
-                    : undefined,
-                  product: product?.id || undefined,
-                },
-                {
-                  stripeAccount: builder?.stripeAccountId,
-                },
+                  {
+                    stripeAccount: builder?.stripeAccountId,
+                  },
+                )
+              ).id
+              console.log(
+                '🚀 ~ file: plan.ts:116 ~ resolve ~ lastPrice:',
+                lastPrice,
               )
-            ).id
+            } catch (error) {
+              console.log('🚀 ~ file: plan.ts:120 ~ resolve ~ error:', error)
+              throw new Error('Something went wrong')
+            }
           }
         }
 
