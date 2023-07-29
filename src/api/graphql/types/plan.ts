@@ -38,7 +38,11 @@ export const PlanMutations = extendType({
         })
         const builder = await ctx.db.builder.findUnique({
           where: { domain: ctx.builderDomain },
-          select: { stripeAccountId: true, companyName: true },
+          select: {
+            stripeAccountId: true,
+            companyName: true,
+            stripeWebhookSecret: true,
+          },
         })
         let account: any = {}
         try {
@@ -54,6 +58,17 @@ export const PlanMutations = extendType({
             ? process.env.STRIPE_PRODUCT_ID_ANNUAL
             : process.env.STRIPE_PRODUCT_ID
         const priceOfProduct = await stripe.prices.retrieve(price!)
+        if (!builder?.stripeWebhookSecret) {
+          const hook = await stripe.webhookEndpoints.create({
+            url: 'https://instantappnow.herokuapp.com/rest/stripe/webhook',
+            enabled_events: ['*'],
+          })
+          console.log('🚀 ~ file: plan.ts:69 ~ resolve ~ hook:', hook)
+          await ctx.db.builder.update({
+            where: { domain: ctx.builderDomain },
+            data: { stripeWebhookSecret: hook.secret },
+          })
+        }
         console.log(
           '🚀 ~ file: plan.ts:56 ~ resolve ~ priceOfProduct:',
           priceOfProduct,

@@ -446,6 +446,7 @@ input BuilderOrderByWithRelationInput {
   owner: UserOrderByWithRelationInput
   ownerId: SortOrder
   stripeAccountId: SortOrder
+  stripeWebhookSecret: SortOrder
   updatedAt: SortOrder
   users: UserOrderByRelationAggregateInput
 }
@@ -466,6 +467,7 @@ input BuilderWhereInput {
   owner: UserWhereInput
   ownerId: IntFilter
   stripeAccountId: StringNullableFilter
+  stripeWebhookSecret: StringNullableFilter
   updatedAt: DateTimeFilter
   users: UserListRelationFilter
 }

@@ -66,6 +66,7 @@ const router = (express) => {
     async (request, response) => {
       try {
         let event = request.body
+        console.log('🚀 ~ file: index.ts:69 ~ request.body:', request.body)
         // Replace this endpoint secret with your endpoint's unique secret
         // If you are testing with the CLI, find the secret by running 'stripe listen'
         // If you are using an endpoint defined with the API or dashboard, look in your webhook settings
@@ -74,24 +75,24 @@ const router = (express) => {
         // Otherwise use the basic event deserialized with JSON.parse
         console.log('🚀 ~ file: index.ts:27 ~ endpointSecret', endpointSecret)
 
-        if (endpointSecret) {
-          // Get the signature sent by Stripe
-          const signature = request.headers['stripe-signature']
-          console.log('🚀 ~ file: index.ts:30 ~ signature', signature)
-          try {
-            event = stripe.webhooks.constructEvent(
-              request.body,
-              signature,
-              endpointSecret,
-            )
-          } catch (err: any) {
-            console.log(
-              `⚠️  Webhook signature verification failed.`,
-              err.message,
-            )
-            return response.sendStatus(400)
-          }
-        }
+        // if (endpointSecret) {
+        //   // Get the signature sent by Stripe
+        //   const signature = request.headers['stripe-signature']
+        //   console.log('🚀 ~ file: index.ts:30 ~ signature', signature)
+        //   try {
+        //     event = stripe.webhooks.constructEvent(
+        //       request.body,
+        //       signature,
+        //       endpointSecret,
+        //     )
+        //   } catch (err: any) {
+        //     console.log(
+        //       `⚠️  Webhook signature verification failed.`,
+        //       err.message,
+        //     )
+        //     return response.sendStatus(400)
+        //   }
+        // }
         let subscription
         let status
 

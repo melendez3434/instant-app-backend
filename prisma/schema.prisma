@@ -34,15 +34,16 @@ model User {
 }
 
 model Builder {
-  id              Int     @id @default(autoincrement())
-  name            String
-  domain          String  @unique
-  companyName     String?
-  mailApiToken    String?
-  mailListId      String?
-  icon            String?
-  logo            String?
-  stripeAccountId String?
+  id                  Int     @id @default(autoincrement())
+  name                String
+  domain              String  @unique
+  companyName         String?
+  mailApiToken        String?
+  mailListId          String?
+  icon                String?
+  logo                String?
+  stripeAccountId     String?
+  stripeWebhookSecret String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
