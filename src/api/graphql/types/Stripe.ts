@@ -39,6 +39,8 @@ export const stripeMutations = extendType({
           })
         }
 
+        const account = await stripe.accounts.retrieve(accountId!)
+        if (account.details_submitted) return 'https://dashboard.stripe.com'
         // Create an account link for the user's Stripe account
         const accountLink = await stripe.accountLinks.create({
           account: accountId,
