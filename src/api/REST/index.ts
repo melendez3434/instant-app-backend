@@ -3,6 +3,7 @@ import moment from 'moment'
 import * as bcrypt from 'bcryptjs'
 import hashPassword from '../utils/hashPassword'
 import Stripe from 'stripe'
+import axios from 'axios'
 
 const app = require('express')
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -293,7 +294,15 @@ const handleStripeEvent = async (event: Stripe.Event) => {
       break
     case 'customer.subscription.created':
       await handleSubscription(event.data.object)
-
+      await axios.post('https://hooks.zapier.com/hooks/catch/8366730/31zbzcq', {
+        ...subscription.metadata,
+        amount:
+          Number(subscription.items.data[0].price.unit_amount_decimal) / 100,
+        frequency:
+          subscription.items.data[0].price.recurring.interval_count +
+          ' ' +
+          subscription.items.data[0].price.recurring.interval,
+      })
       // Then define and call a method to handle the subscription created.
       // handleSubscriptionCreated(subscription);
       break
