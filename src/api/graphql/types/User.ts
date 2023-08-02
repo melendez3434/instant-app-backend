@@ -23,6 +23,7 @@ export const User = objectType({
 
     t.model.builderDomain()
     t.model.name()
+    t.model.isHuslStripeUser()
 
     t.int('appsCount', {
       async resolve({ id }, args, ctx) {

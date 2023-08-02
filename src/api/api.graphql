@@ -1338,6 +1338,7 @@ type User {
   createdAt: DateTime!
   email: String!
   id: Int!
+  isHuslStripeUser: Boolean!
   name: String
   password: String!
   registerFrom: String
@@ -1371,6 +1372,7 @@ input UserOrderByWithRelationInput {
   email: SortOrder
   id: SortOrder
   inApp: AppOrderByWithRelationInput
+  isHuslStripeUser: SortOrder
   name: SortOrder
   notificationTokens: NotificationTokenOrderByRelationAggregateInput
   notifications: NotificationOrderByRelationAggregateInput
@@ -1402,6 +1404,7 @@ input UserWhereInput {
   email: StringFilter
   id: IntFilter
   inApp: AppWhereInput
+  isHuslStripeUser: BoolFilter
   name: StringNullableFilter
   notificationTokens: NotificationTokenListRelationFilter
   notifications: NotificationListRelationFilter

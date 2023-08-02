@@ -209,7 +209,12 @@ export const PlanMutations = extendType({
 
         await ctx.db.user.update({
           where: { id: ctx.user.id },
-          data: { stripeCustomerId: customer.id },
+          data: {
+            stripeCustomerId: customer.id,
+            isHuslStripeUser: !(
+              account?.details_submitted && builder?.stripeAccountId
+            ),
+          },
         })
 
         const session = await stripe.checkout.sessions.create(
