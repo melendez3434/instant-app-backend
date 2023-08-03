@@ -115,8 +115,8 @@ export const Mutation = mutationType({
           }
           // lowercase their email
           email.toLowerCase()
-          if (password.length < 8)
-            throw new Error('password must be more than 8 characters')
+          if (password.length < 6)
+            throw new Error('password must be more than 6 characters')
 
           const isEmailExist = await ctx.db.user.findFirst({
             where: {
@@ -220,8 +220,8 @@ export const Mutation = mutationType({
           // lowercase their email
           email.toLowerCase()
 
-          if (password.length < 8)
-            throw new Error('password must be more than 8 characters')
+          if (password.length < 6)
+            throw new Error('password must be more than 6 characters')
 
           const isEmailExist = await ctx.db.user.findFirst({
             where: {
@@ -479,8 +479,8 @@ export const Mutation = mutationType({
         // lowercase their email
         email.toLowerCase()
 
-        if (password.length < 8)
-          throw new Error('password must be more than 8 characters')
+        if (password.length < 6)
+          throw new Error('password must be more than 6 characters')
 
         const isEmailExist = await ctx.db.user.findFirst({
           where: {
