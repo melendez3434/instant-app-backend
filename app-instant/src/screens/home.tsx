@@ -197,13 +197,14 @@ export default function HomeScreen() {
           }}
           onNavigationStateChange={async (event) => {
             try {
+              varWebsiteUrl(event.url)
+
               if (event.url.includes('pushpay.com/g/oakschurchntx')) {
                 console.log(
                   '🚀 ~ file: home.tsx:200 ~ onNavigationStateChange={ aaa~ event:',
                   event,
                 )
 
-                varWebsiteUrl(event.url)
                 setTimeout(() => {
                   varWebsiteUrl(data.app?.website)
                 }, 1000)

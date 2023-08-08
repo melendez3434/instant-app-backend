@@ -26,6 +26,7 @@ import {
 // import { exec } from 'child_process'
 import { startCron } from './utils/cron'
 import Stripe from 'stripe'
+import hashPassword from './utils/hashPassword'
 // import { intercomClient } from './utils/intercom'
 // import { Operators } from 'intercom-client'
 
@@ -250,9 +251,29 @@ const apolloServer = async () => {
     // )
     // console.log('🚀 ~ file: app.ts:247 ~ app ~ users:', users[0].App[0])
 
-    // const app = await prisma.user.findMany({
-    //   where: { id: 24 },
+    // const app = await prisma.builder.findMany({
+    //   where: {
+    //     owner: {
+    //       email: 'wedding@huslnft.com',
+    //     },
+    //   },
+    //   include: {
+    //     owner: true,
+    //   },
+    //   // where: { id: 24 },
     // })
+
+    // console.log(
+    //   '🚀 ~ file: app.ts:256 ~ app ~ app:',
+    //   app,
+
+    //   // await prisma.user.update({
+    //   //   where: { id: 8 },
+    //   //   data: {
+    //   //     password: await hashPassword('12345678'),
+    //   //   },
+    //   // }),
+    // )
     // console.log('🚀 ~ file: app.ts:194 ~ app ~ app:', app)
     // const apps = await prisma.appBuild.findMany({
     //   where: { status: 'failed' },
