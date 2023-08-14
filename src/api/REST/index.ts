@@ -241,23 +241,28 @@ const router = (express) => {
   })
 }
 
-const handleStripeEvent = async (event: Stripe.Event) => {
-  let subscription
+const handleStripeEvent = async (event) => {
+  const subscription = event.data.object as Stripe.Subscription
   let status
 
   // Handle the event
   switch (event.type) {
     case 'checkout.session.completed':
-      subscription = event.data.object
-      console.log('🚀 ~ file: index.ts ~ line 47 ~ subscription', subscription)
-      status = subscription.status
-      if (status == 'complete' && subscription.payment_status == 'paid') {
+      const session = event.data.object as Stripe.Checkout.Session
+      console.log('🚀 ~ file: index.ts ~ line 47 ~ session', session)
+      status = session.status
+      if (status == 'complete' && session.payment_status == 'paid') {
+        if (!session.metadata?.appId || !session.subscription) {
+          throw new Error('AppId or SubscriptionId is missing')
+        }
+
         await prisma.app.update({
           where: {
-            id: Number(subscription.metadata.appId),
+            id: Number(session.metadata?.appId),
           },
           data: {
-            stripeSubId: subscription.subscription,
+            //@ts-ignore
+            stripeSubId: session.subscription! || undefined,
             // owner: { update: { stripeCustomerId: subscription.customer } },
           },
         })
@@ -267,7 +272,6 @@ const handleStripeEvent = async (event: Stripe.Event) => {
       // handleSubscriptionTrialEnding(subscription);
       break
     case 'customer.subscription.trial_will_end':
-      subscription = event.data.object
       status = subscription.status
       console.log(`Subscription status is ${status}.`)
       // Then define and call a method to handle the subscription trial ending.
@@ -283,7 +287,6 @@ const handleStripeEvent = async (event: Stripe.Event) => {
 
       break
     case 'customer.subscription.deleted':
-      subscription = event.data.object
       console.log('🚀 ~ file: index.ts ~ line 73 ~ subscription', subscription)
       status = subscription.status
       console.log(`Subscription status is ${status}.`)
@@ -299,9 +302,9 @@ const handleStripeEvent = async (event: Stripe.Event) => {
         amount:
           Number(subscription.items.data[0].price.unit_amount_decimal) / 100,
         frequency:
-          subscription.items.data[0].price.recurring.interval_count +
+          subscription.items.data[0].price.recurring?.interval_count +
           ' ' +
-          subscription.items.data[0].price.recurring.interval,
+          subscription.items.data[0].price.recurring?.interval,
       })
       // Then define and call a method to handle the subscription created.
       // handleSubscriptionCreated(subscription);
