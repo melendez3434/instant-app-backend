@@ -243,6 +243,10 @@ const router = (express) => {
 
 const handleStripeEvent = async (event) => {
   const subscription = event.data.object as Stripe.Subscription
+  console.log(
+    '🚀 ~ file: index.ts:246 ~ handleStripeEvent ~ subscription:',
+    subscription,
+  )
   let status
 
   // Handle the event

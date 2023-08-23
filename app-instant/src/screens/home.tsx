@@ -199,7 +199,10 @@ export default function HomeScreen() {
             try {
               varWebsiteUrl(event.url)
 
-              if (event.url.includes('pushpay.com/g/oakschurchntx')) {
+              if (
+                event.url.includes('pushpay.com/g/oakschurchntx') ||
+                event.url.includes('donorbox')
+              ) {
                 console.log(
                   '🚀 ~ file: home.tsx:200 ~ onNavigationStateChange={ aaa~ event:',
                   event,
