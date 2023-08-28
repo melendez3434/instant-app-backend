@@ -239,6 +239,37 @@ const router = (express) => {
       res.status(500).send({ message: err.message })
     }
   })
+
+  express.get('/rest/stripe/:domain', async (req, res) => {
+    console.log('🚀 ~ file: index.ts:245 ~ express.get ~ req:', req.params)
+    if (req.ctx?.user?.role !== 'platformAdmin')
+      return res.status(401).send({ message: 'Unauthorized' })
+    // if (req.query?.take && Number(req.query?.take) > 100)
+    //   return res.status(400).send({ message: 'Take must be less than 100' })
+
+    const builder = await prisma.builder.findUnique({
+      where: {
+        domain: req.params.domain,
+      },
+      select: {
+        stripeAccountId: true,
+      },
+    })
+
+    const account = builder?.stripeAccountId
+      ? await stripe.accounts.retrieve(builder?.stripeAccountId!)
+      : {
+          details_submitted: false,
+        }
+    try {
+      res.status(200).send({
+        stripeAccountId: builder?.stripeAccountId,
+        isConnected: Boolean(account.details_submitted!),
+      })
+    } catch (err: any) {
+      res.status(500).send({ message: err.message })
+    }
+  })
 }
 
 const handleStripeEvent = async (event) => {

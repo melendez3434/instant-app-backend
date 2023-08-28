@@ -315,7 +315,7 @@ export const sendEmailTemplate = async ({
 }
 
 export const startCron = async () => {
-  sendAllNotifications()
+  // sendAllNotifications()
   cronManager.add(
     'sendNotifications',
     '*/5 * * * *',

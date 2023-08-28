@@ -372,6 +372,20 @@ const apolloServer = async () => {
     //     isTrialEnd: false,
     //   },
     // })
+
+    // const apps = await prisma.app.findMany({
+    //   where: {
+    //     owner: {
+    //       email: 'myeverydayscrubs@gmail.com',
+    //     },
+    //   },
+    // })
+    // console.log('🚀 ~ file: app.ts:383 ~ app ~ apps:', apps)
+
+    // await prisma.app.delete({
+    //   where: { id: 827 },
+    // })
+
     console.log('server running at port ' + (process.env.PORT || 4000))
   })
   app.setTimeout(25 * 1000) // 10 * 60 seconds * 1000 msecs = 10 minutes
