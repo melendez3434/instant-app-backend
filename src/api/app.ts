@@ -375,8 +375,8 @@ const apolloServer = async () => {
 
     // const apps = await prisma.app.findMany({
     //   where: {
-    //     owner: {
-    //       email: 'myeverydayscrubs@gmail.com',
+    //     website: {
+    //       contains: 'www.beerpaws.com',
     //     },
     //   },
     // })
