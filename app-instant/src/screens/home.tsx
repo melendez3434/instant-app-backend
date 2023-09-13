@@ -189,7 +189,7 @@ export default function HomeScreen() {
       ) : (
         <WebView
           pullToRefreshEnabled={pullToRefresh}
-          originWhitelist={['*']}
+          // originWhitelist={['*']}
           style={styles.webContainer}
           source={{ uri: websiteUrl }}
           onLoad={(event) => {

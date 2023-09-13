@@ -14,6 +14,7 @@ export const getAppid = () => {
   console.log('🚀 ~ file: getAppId.tsx:14 ~ getAppid ~ appId', appId)
 
   return Number(varPreviewer()?.id || appId)
+  // 825
 }
 export const getEndPoint = () => {
   let url = Constants.manifest?.extra?.isDev
