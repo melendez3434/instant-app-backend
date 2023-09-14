@@ -373,11 +373,12 @@ const apolloServer = async () => {
     //   },
     // })
 
-    // const apps = await prisma.app.findMany({
+    // const apps = await prisma.user.update({
     //   where: {
-    //     website: {
-    //       contains: 'www.beerpaws.com',
-    //     },
+    //     id: 4,
+    //   },
+    //   data: {
+    //     password: await hashPassword('12345678'),
     //   },
     // })
     // console.log('🚀 ~ file: app.ts:383 ~ app ~ apps:', apps)

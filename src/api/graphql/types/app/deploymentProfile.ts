@@ -338,7 +338,7 @@ export const Deploymentmutations = extendType({
             name: 'updateDeployRequestInput',
             definition(t) {
               t.nonNull.string('reason')
-              t.nonNull.field('status', { type: 'AppBuildStatus' })
+              t.field('status', { type: 'AppBuildStatus' })
             },
           }),
           required: true,
