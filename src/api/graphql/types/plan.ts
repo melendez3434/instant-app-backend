@@ -730,7 +730,7 @@ export const createSubscription = async (id: number) => {
       //   metadata,
       // },
       description: app?.name,
-      trial_period_days: trialNumber || 7,
+      trial_period_days: trialNumber || 14,
       application_fee_percent:
         builder?.stripeAccountId && account?.details_submitted ? 25 : undefined,
     },
