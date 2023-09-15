@@ -15,16 +15,13 @@ export const User = objectType({
   definition(t) {
     t.model.id()
     t.model.email()
-
     t.model.password()
     t.model.role()
     t.model.registerFrom()
     t.model.utmPlan()
-
     t.model.builderDomain()
     t.model.name()
     t.model.isHuslStripeUser()
-
     t.int('appsCount', {
       async resolve({ id }, args, ctx) {
         return await ctx.db.app.count({ where: { ownerId: id } })

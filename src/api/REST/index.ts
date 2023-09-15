@@ -4,6 +4,7 @@ import * as bcrypt from 'bcryptjs'
 import hashPassword from '../utils/hashPassword'
 import Stripe from 'stripe'
 import axios from 'axios'
+import { createSubscription } from '../graphql/types'
 
 const app = require('express')
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -57,7 +58,10 @@ const router = (express) => {
   })
 
   // This is your Stripe CLI webhook secret for testing your endpoint locally.
+  // const endpointSecret =
+  //   'whsec_af57873fa0e4c9681a2e80822415b4101706b6cd531d6a3bae562cbabc04690d'
   const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET
+
   const endpointSecretConnect = process.env.STRIPE_ENDPOINT_SECRET_CONNECT
 
   // const endpointSecret =
@@ -287,6 +291,14 @@ const handleStripeEvent = async (event) => {
       console.log('🚀 ~ file: index.ts ~ line 47 ~ session', session)
       status = session.status
       if (status == 'complete' && session.payment_status == 'paid') {
+        if (
+          session.mode == 'payment' &&
+          session.metadata?.appId &&
+          session.metadata.startTrial == 'true'
+        ) {
+          return await createSubscription(Number(session.metadata?.appId!))
+        }
+
         if (!session.metadata?.appId || !session.subscription) {
           throw new Error('AppId or SubscriptionId is missing')
         }

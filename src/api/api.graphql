@@ -897,6 +897,7 @@ type Mutation {
   signup(addAppInput: addAppInput, email: String!, password: String!, registerFrom: String, trialLong: Int, utmPlan: String): AuthPayLoadWithApp
   signupInApp(data: SignUpInput!): AuthPayLoad
   signupSuperAdmin(companyName: String, email: String!, icon: String, logo: String, name: String!, password: String!): AuthPayLoad
+  startTrial(id: Int!): String
   subscribe(id: Int!): String
   updateAndroidProfile(data: updateAndroidProfileInput!, id: Int!): AndroidProfile
   updateApp(data: updateAppInput!, id: Int!): App
@@ -1505,7 +1506,7 @@ input updateAppInput {
 
 input updateDeployRequestInput {
   reason: String!
-  status: AppBuildStatus!
+  status: AppBuildStatus
 }
 
 input updateIosProfileInput {
