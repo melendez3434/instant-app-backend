@@ -350,7 +350,7 @@ export const Deploymentmutations = extendType({
           where: { id },
           data: {
             reason: data.reason,
-            status: data.status,
+            status: data.status || undefined,
           },
         })
       },
