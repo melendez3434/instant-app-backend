@@ -1,5 +1,6 @@
 import moment from 'moment'
-import { extendType, intArg, nonNull } from 'nexus'
+import axios from 'axios'
+import { extendType, intArg, nonNull, stringArg } from 'nexus'
 import { stripe } from '../../REST'
 
 export const PlanMutations = extendType({
@@ -296,6 +297,38 @@ export const PlanMutations = extendType({
           console.log('🚀 ~ file: plan.ts:130 ~ resolve ~ error:', error)
           return false
         }
+        return true
+      },
+    })
+
+    t.field('cancelMyPlan', {
+      type: 'Boolean',
+      args: { id: nonNull(intArg()), reasonToCancel: stringArg() },
+      async resolve(source, { id, reasonToCancel }, ctx) {
+        try {
+          const app = await ctx.db.app.findUnique({
+            where: { id },
+            select: { stripeSubId: true, id: true, name: true },
+          })
+
+          await stripe.subscriptions.cancel(app?.stripeSubId!)
+
+          await ctx.db.app.update({
+            where: { id },
+            data: { planStatus: 'stopped' },
+          })
+
+          await axios.post(
+            'https://hooks.zapier.com/hooks/catch/14790059/3rql6ok/',
+            {
+              ...app,
+              reasonToCancel,
+            },
+          )
+        } catch (error) {
+          return false
+        }
+
         return true
       },
     })

@@ -28,6 +28,13 @@ const appMutationsShield = {
     role: ['all'],
     permissions: isAuth,
   },
+  cancelMyPlan: {
+    name: 'cancelMyPlan',
+    slug: 'cancelMyPlan',
+    desc: '',
+    role: ['all'],
+    permissions: isAppOwner,
+  },
   // editMyPlan: {
   //   name: 'editMyPlan',
   //   slug: 'editMyPlan',
