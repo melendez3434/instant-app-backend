@@ -43,6 +43,10 @@ const authenticate = (req: any, res: any): Promise<any | null> => {
         const newUser = await prisma.user.findUnique({
           where: { id: payload.userId },
           // where: { id: 7 },
+          // email: {
+          //   equals: 'info@oakschurch.com',
+          //   mode: 'insensitive',
+          // },
           select: {
             id: true,
             email: true,

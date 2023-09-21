@@ -198,7 +198,7 @@ export default function HomeScreen() {
           }}
           onNavigationStateChange={async (event) => {
             try {
-              varWebsiteUrl(event.url)
+              if (event.url !== 'about:blank') varWebsiteUrl(event.url)
 
               if (
                 event.url.includes('pushpay.com/g/oakschurchntx') ||

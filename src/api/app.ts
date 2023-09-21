@@ -251,14 +251,12 @@ const apolloServer = async () => {
     // )
     // console.log('🚀 ~ file: app.ts:247 ~ app ~ users:', users[0].App[0])
 
-    // const app = await prisma.builder.findMany({
+    // const app = await prisma.builder.update({
     //   where: {
-    //     owner: {
-    //       email: 'wedding@huslnft.com',
-    //     },
+    //     domain: 'yasdadasinstantappnow.com',
     //   },
-    //   include: {
-    //     owner: true,
+    //   data: {
+    //     stripeAccountId: null,
     //   },
     //   // where: { id: 24 },
     // })
