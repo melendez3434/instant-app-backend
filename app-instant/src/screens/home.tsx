@@ -193,7 +193,11 @@ export default function HomeScreen() {
           style={styles.webContainer}
           source={{ uri: websiteUrl }}
           onLoad={(event) => {
-            setPageTitle(event.nativeEvent.title)
+            setPageTitle(
+              event.nativeEvent.title == 'about:blank'
+                ? data.app.name
+                : event.nativeEvent.title,
+            )
             setLoading(false)
           }}
           onNavigationStateChange={async (event) => {

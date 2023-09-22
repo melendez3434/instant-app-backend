@@ -362,7 +362,12 @@ const apolloServer = async () => {
     //     email: 'instantappbuilder@gmail.com',
     //   },
     // })
-    // const users = await prisma.user.findMany({})
+    // const users = await prisma.user.findMany({
+    //   where: {
+    //     builderDomain: 'apps-tomorrow.instantappnow.com',
+    //     role: 'superAdmin',
+    //   },
+    // })
     // console.log('🚀 ~ file: app.ts:348 ~ app ~ users:', users)
     // await prisma.app.update({
     //   where: { id: 569 },
@@ -373,7 +378,7 @@ const apolloServer = async () => {
 
     // const apps = await prisma.user.update({
     //   where: {
-    //     id: 4,
+    //     id: 751,
     //   },
     //   data: {
     //     password: await hashPassword('12345678'),
