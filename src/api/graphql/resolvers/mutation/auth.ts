@@ -174,6 +174,7 @@ export const Mutation = mutationType({
         }),
         args: {
           email: nonNull(stringArg()),
+          phone: nonNull(stringArg()),
           registerFrom: stringArg(),
           password: nonNull(stringArg()),
           utmPlan: stringArg(),
@@ -183,6 +184,7 @@ export const Mutation = mutationType({
         async resolve(_root, args, ctx) {
           const {
             email,
+            phone,
             password,
             registerFrom,
             utmPlan,
@@ -240,6 +242,7 @@ export const Mutation = mutationType({
             data: {
               ...rest,
               email,
+              phone,
               password: hash,
               builder: { connect: { domain: ctx.builderDomain } },
               role: 'user',

@@ -894,7 +894,7 @@ type Mutation {
   signin(emailOrPhone: String!, password: String!): AuthPayLoad
   signinInApp(data: LoginInput!): AuthPayLoad
   signinSuperAdmin(emailOrPhone: String!, password: String!): AuthPayLoad
-  signup(addAppInput: addAppInput, email: String!, password: String!, registerFrom: String, trialLong: Int, utmPlan: String): AuthPayLoadWithApp
+  signup(addAppInput: addAppInput, email: String!, password: String!, phone: String!, registerFrom: String, trialLong: Int, utmPlan: String): AuthPayLoadWithApp
   signupInApp(data: SignUpInput!): AuthPayLoad
   signupSuperAdmin(companyName: String, email: String!, icon: String, logo: String, name: String!, password: String!): AuthPayLoad
   startTrial(id: Int!): String
@@ -1342,6 +1342,7 @@ type User {
   isHuslStripeUser: Boolean!
   name: String
   password: String!
+  phone: String
   registerFrom: String
   role: Role!
   updatedAt: DateTime!
@@ -1378,6 +1379,7 @@ input UserOrderByWithRelationInput {
   notificationTokens: NotificationTokenOrderByRelationAggregateInput
   notifications: NotificationOrderByRelationAggregateInput
   password: SortOrder
+  phone: SortOrder
   registerFrom: SortOrder
   resetToken: SortOrder
   resetTokenExpiry: SortOrder
@@ -1410,6 +1412,7 @@ input UserWhereInput {
   notificationTokens: NotificationTokenListRelationFilter
   notifications: NotificationListRelationFilter
   password: StringFilter
+  phone: StringNullableFilter
   registerFrom: StringNullableFilter
   resetToken: StringNullableFilter
   resetTokenExpiry: IntNullableFilter

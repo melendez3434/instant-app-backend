@@ -15,6 +15,7 @@ export const User = objectType({
   definition(t) {
     t.model.id()
     t.model.email()
+    t.model.phone()
     t.model.password()
     t.model.role()
     t.model.registerFrom()
